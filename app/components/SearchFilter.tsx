@@ -1,6 +1,9 @@
 import { useState, useRef, useEffect } from "react";
 import { FaSearch, FaFilter } from "react-icons/fa";
-
+interface SearchFilterProps {
+  searchQuery: string;
+  setSearchQuery: React.Dispatch<React.SetStateAction<string>>;
+}
 // Custom hook to handle click outside to close the dropdown
 const useOutsideClick = (ref: any, handler: () => void) => {
   useEffect(() => {
@@ -17,7 +20,7 @@ const useOutsideClick = (ref: any, handler: () => void) => {
   }, [ref, handler]);
 };
 
-const SearchFilter: React.FC = () => {
+const SearchFilter: React.FC<SearchFilterProps> = ({ searchQuery, setSearchQuery }) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [filterOption, setFilterOption] = useState<string>("all");
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -51,7 +54,9 @@ const SearchFilter: React.FC = () => {
         {/* Search Input */}
         <input
           type="text"
-          placeholder="Name"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          placeholder="Search profiles..."
           className="w-full px-4 py-2 rounded-full focus:outline-none"
         />
         {/* Search Button */}
