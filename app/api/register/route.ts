@@ -86,7 +86,7 @@ export async function PUT(req: NextRequest) {
   const number = formData.get('number') as string;
 
   // Handle the image if provided (optional)
-  const image = formData.get('image') as Blob | null;
+  const image = formData.get('image') as File | null;
   let imageUrl = null;
 
   if (image) {
