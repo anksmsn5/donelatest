@@ -124,7 +124,7 @@ export default function Register() {
     </div>
   </div>
 
-  {/* Other input fields */}
+  
   {[
     { label: "First Name", name: "first_name", type: "text" },
     { label: "Last Name", name: "last_name", type: "text" },
@@ -139,7 +139,7 @@ export default function Register() {
         type={type}
         className="border border-gray-300 rounded-lg py-2 px-4 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
         name={name}
-        value={formValues[name as keyof Omit<FormValues, 'image'>] as string} {/* Handle non-file inputs */}
+        value={formValues[name as keyof Omit<FormValues, 'image'>] as string} // Handle non-file inputs
         onChange={handleChange}
         required
       />
