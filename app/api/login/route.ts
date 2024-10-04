@@ -8,10 +8,11 @@ import debug from 'debug';
 import { eq } from 'drizzle-orm';
 import { promises as fs } from 'fs';
 import path from 'path';
+import { SECRET_KEY } from '@/lib/constants';
 
 import jwt from 'jsonwebtoken';
 import next from 'next';
-const SECRET_KEY = process.env.SECRET_KEY;
+ 
 
 export async function POST(req: NextRequest) {
 
@@ -33,7 +34,7 @@ export async function POST(req: NextRequest) {
         type:'coach',
         image:coach[0].image
       };
-      const token = jwt.sign(payload, process.env.SECRET_KEY, { expiresIn: "1h" });
+      const token = jwt.sign(payload,SECRET_KEY, { expiresIn: "1h" });
       return NextResponse.json({ token:token,type:'coach' });
     }
   }
@@ -54,7 +55,7 @@ export async function POST(req: NextRequest) {
           type:'player',
           image:user[0].image
         };
-        const token = jwt.sign(payload, process.env.SECRET_KEY, { expiresIn: "1h" });
+        const token = jwt.sign(payload,SECRET_KEY, { expiresIn: "1h" });
         return NextResponse.json({ token:token,type:'player' });
       }
     }
