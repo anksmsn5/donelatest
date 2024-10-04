@@ -12,7 +12,14 @@ export async function PATCH(req: NextRequest) {
   const logError = debug('app:error');
   const body = await req.json();
   const token=localStorage.getItem('token');
-  const decoded = jwt.verify(token, SECRET_KEY);
+  
+  let decoded;
+  try {
+    decoded = jwt.verify(token, SECRET_KEY);
+  } catch (error) {
+    return NextResponse.json({ message: 'Invalid or expired token' }, { status: 401 });
+  }
+  
   const userId = decoded.id; 
   const { email, password, first_name, last_name, grade_level, location, birthday, gender, sport, team, position, number, image } = body;
 
