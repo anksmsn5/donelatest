@@ -13,12 +13,18 @@ interface Evaluation {
   created_at: string;
 }
 
+interface EvaluationsByStatus {
+  Requested: Evaluation[];
+  Accepted: Evaluation[];
+  Completed: Evaluation[];
+  Declined: Evaluation[];
+}
+
 interface DashboardTabsProps {
-  evaluations: Record<string, Evaluation[]>; // Grouped by status
+  evaluations: EvaluationsByStatus; // Change this line
 }
 
 const DashboardTabs: React.FC<DashboardTabsProps> = ({ evaluations }) => {
-  // Define activeTab as a union type of the keys
   const [activeTab, setActiveTab] = useState<'Requested' | 'Accepted' | 'Completed' | 'Declined'>('Requested');
 
   const tabs = [
@@ -28,8 +34,7 @@ const DashboardTabs: React.FC<DashboardTabsProps> = ({ evaluations }) => {
     { id: 'Declined', label: 'Declined' },
   ];
 
-  // Ensure evaluations is defined and provide a fallback
-  const activeEvaluations = evaluations ? evaluations[activeTab] || [] : [];
+  const activeEvaluations = evaluations[activeTab] || [];
 
   return (
     <div className="flex flex-col mt-4">
@@ -38,7 +43,7 @@ const DashboardTabs: React.FC<DashboardTabsProps> = ({ evaluations }) => {
           <button
             key={tab.id}
             className={`p-2 font-semibold ${activeTab === tab.id ? 'border-b-2 border-blue-500' : ''}`}
-            onClick={() => setActiveTab(tab.id as typeof activeTab)} // Cast to correct type
+            onClick={() => setActiveTab(tab.id as typeof activeTab)}
           >
             {tab.label}
           </button>
