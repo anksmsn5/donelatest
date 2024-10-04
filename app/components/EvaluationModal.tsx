@@ -3,12 +3,12 @@ import { useState } from 'react';
 import Swal from 'sweetalert2';
 interface EvaluationModalProps {
   onClose: () => void;
-  
+  isOpen: boolean;
   coachId: string | null;   // Added coachId prop
   playerId: string | null;  // Added playerId prop
 }
 
-const EvaluationModal: React.FC<EvaluationModalProps> = ({ onClose, coachId, playerId }) => {
+const EvaluationModal: React.FC<EvaluationModalProps> = ({ isOpen,onClose, coachId, playerId }) => {
   const [reviewTitle, setReviewTitle] = useState<string>('');
   const [primaryVideoUrl, setPrimaryVideoUrl] = useState<string>('');
   const [videoUrl2, setVideoUrl2] = useState<string>('');
@@ -16,7 +16,7 @@ const EvaluationModal: React.FC<EvaluationModalProps> = ({ onClose, coachId, pla
   const [videoDescription, setVideoDescription] = useState<string>('');
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
-
+  if (!isOpen) return null;
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
