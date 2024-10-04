@@ -1,4 +1,6 @@
 {
-  "/coach/[slug]/page": "app/coach/[slug]/page.js",
-  "/dashboard/page": "app/dashboard/page.js"
+  "/_not-found/page": "app/_not-found/page.js",
+  "/page": "app/page.js",
+  "/api/coach/signup/route": "app/api/coach/signup/route.js",
+  "/login/page": "app/login/page.js"
 }
