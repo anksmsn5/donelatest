@@ -41,7 +41,7 @@ const CoachProfile = ({ params }: CoachProfileProps) => {
         const data = await response.json();
         setCoachData(data);
       } catch (err) {
-        setError(err.message);
+        setError("Some error occurrred.");
       } finally {
         setLoading(false);
       }
