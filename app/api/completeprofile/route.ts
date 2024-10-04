@@ -6,8 +6,7 @@ import { db } from '../../../lib/db';
 import { users } from '../../../lib/schema';
 import debug from 'debug';
 import jwt from 'jsonwebtoken';
-
-const SECRET_KEY = process.env.SECRET_KEY;
+import { SECRET_KEY } from '@/lib/constants';
 
 export async function PATCH(req: NextRequest) {
   const logError = debug('app:error');

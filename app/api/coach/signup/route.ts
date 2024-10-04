@@ -8,8 +8,9 @@ import { promises as fs } from 'fs';
 import path from 'path';
 import jwt from 'jsonwebtoken';
 import next from 'next';
+import { SECRET_KEY } from '@/lib/constants';
 
-const SECRET_KEY = "JHGJHG&^*&^*&HGJHGJ657668768JHJHGJHG*&^*&^*&^";
+
 export async function POST(req: NextRequest) {
 
     const logError = debug('app:error');
