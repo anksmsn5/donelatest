@@ -46,20 +46,24 @@ export async function GET(req: NextRequest) {
             return NextResponse.json({ message: 'Invalid player ID' }, { status: 400 });
         }
 
-        // Use numericPlayerId here instead of playerId
+        // Create an array to hold the conditions
+        const conditions = [eq(playerEvaluation.player_id, numericPlayerId)];
+
+        // Add evaluation status condition if it is defined
+        if (status) {
+            conditions.push(eq(playerEvaluation.evaluation_status, status));
+        }
+
         const result = await db
             .select()
             .from(playerEvaluation)
-            .where(
-                eq(playerEvaluation.player_id, numericPlayerId), // Ensure this is a number
-                status ? eq(playerEvaluation.evaluation_status, status) : undefined // Check if status is defined
-            )
+            .where(...conditions) // Spread the conditions array
             .execute();
 
         return NextResponse.json({ message: result, status: status }, { status: 200 });
     } catch (error) {
         console.error('Error during fetching evaluations:', error); // Log the error for debugging
-        return NextResponse.json({ message:'Failed to fetch data' }, { status: 500 });
+        return NextResponse.json({ message:  'Failed to fetch data' }, { status: 500 });
     }
 }
 
