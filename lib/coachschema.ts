@@ -7,6 +7,7 @@ import {
     timestamp,
     uniqueIndex,
     date,
+    integer
   } from "drizzle-orm/pg-core";
   
   export const coaches = pgTable(
