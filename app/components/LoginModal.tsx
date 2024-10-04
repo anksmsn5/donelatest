@@ -2,6 +2,8 @@
 import { useState } from 'react';
 import jwt from 'jsonwebtoken';
 interface LoginModalProps {
+  isOpen: boolean;
+  coachslug: string;
   onClose: () => void;
 }
 
