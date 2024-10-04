@@ -4,8 +4,8 @@ import Swal from 'sweetalert2';
 interface EvaluationModalProps {
   onClose: () => void;
   
-  coachId: string;   // Added coachId prop
-  playerId: string;  // Added playerId prop
+  coachId: string | null;   // Added coachId prop
+  playerId: string | null;  // Added playerId prop
 }
 
 const EvaluationModal: React.FC<EvaluationModalProps> = ({ onClose, coachId, playerId }) => {

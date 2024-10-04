@@ -4,7 +4,7 @@ import { FC } from 'react';
 interface ProfileProps {
   name: string;
   imageUrl: string;
-  
+   playerId={playerId || ''}
   averageCompletionTime: string;
   evaluations: string;
 }

@@ -13,6 +13,7 @@ interface CoachData {
   firstName: string;
   lastName: string;
   image: string;
+  
   createdAt: string; // or Date if your API returns a Date object
   expectedCharge: number;
   slug: string; // If slug is part of the response
@@ -167,9 +168,14 @@ const CoachProfile = ({ params }: CoachProfileProps) => {
         <LoginModal isOpen={isModalOpen} coachslug={coachData.slug} onClose={() => setIsModalOpen(false)} />
       )}
 
-      {isevaludationModalopen && (
-        <EvaluationModal isOpen={isModalOpen} coachId={coachData.id} playerId={playerId} onClose={() => setIsevaluationModalOpen(false)} />
-      )}
+{isevaludationModalopen && playerId && (
+  <EvaluationModal
+    isOpen={isevaludationModalopen}
+    coachId={coachData.id} 
+    playerId={playerId} 
+    onClose={() => setIsevaluationModalOpen(false)} 
+  />
+)}
     </>
   );
 };
