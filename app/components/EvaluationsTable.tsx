@@ -63,10 +63,10 @@ const EvaluationsTable: React.FC<EvaluationsTableProps> = ({ data }) => {
           const { key, ...rowProps } = row.getRowProps(); // Destructure key
           return (
             <tr {...rowProps} key={row.id}> {/* Use row.id as key */}
-              {row.cells.map(cell => {
+              {row.cells.map((cell, index) => {
                 const { key, ...cellProps } = cell.getCellProps();
                 return (
-                  <td key={cell.id} {...cellProps} className="border border-gray-300 p-2">
+                  <td key={`${row.id}-${index}`} {...cellProps} className="border border-gray-300 p-2">
                     {cell.render('Cell')}
                   </td>
                 );
