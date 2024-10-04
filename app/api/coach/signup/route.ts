@@ -9,7 +9,7 @@ import path from 'path';
 import jwt from 'jsonwebtoken';
 import next from 'next';
 
-const SECRET_KEY = process.env.SECRET_KEY;
+const SECRET_KEY = "JHGJHG&^*&^*&HGJHGJ657668768JHJHGJHG*&^*&^*&^";
 export async function POST(req: NextRequest) {
 
     const logError = debug('app:error');
