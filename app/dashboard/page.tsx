@@ -3,22 +3,7 @@ import React, { useEffect, useState } from 'react';
 import '../globals.css';
 import Sidebar from '../components/Sidebar';
 import DashboardTabs from '../components/DashboardTabs';
-
-interface Evaluation {
-  id: number;
-  review_title: string;
-  // ... other properties
-}
-
-interface EvaluationsByStatus {
-  Requested: Evaluation[];
-  Accepted: Evaluation[];
-  Completed: Evaluation[];
-  Declined: Evaluation[];
-}
-
-// Define a type for possible evaluation statuses
-type EvaluationStatus = 'Requested' | 'Accepted' | 'Completed' | 'Declined';
+import { Evaluation, EvaluationsByStatus } from '../types/types'; // Adjust path as needed
 
 const Dashboard: React.FC = () => {
   const [evaluations, setEvaluations] = useState<EvaluationsByStatus>({
@@ -39,7 +24,7 @@ const Dashboard: React.FC = () => {
       );
 
       const groupedEvaluations = responses.reduce((acc: EvaluationsByStatus, curr: Evaluation[], index: number) => {
-        const status: EvaluationStatus = ['Requested', 'Accepted', 'Completed', 'Declined'][index] as EvaluationStatus;
+        const status = ['Requested', 'Accepted', 'Completed', 'Declined'][index];
         acc[status] = curr; // Group evaluations by status
         return acc;
       }, { Requested: [], Accepted: [], Completed: [], Declined: [] });

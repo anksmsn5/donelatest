@@ -1,27 +1,9 @@
 import React, { useState } from 'react';
 import EvaluationsTable from './EvaluationsTable';
-
-interface Evaluation {
-  id: number;
-  review_title: string;
-  primary_video_link: string;
-  video_link_two?: string;
-  video_link_three?: string;
-  video_description?: string;
-  evaluation_status: string;
-  payment_status: string;
-  created_at: string;
-}
-
-interface EvaluationsByStatus {
-  Requested: Evaluation[];
-  Accepted: Evaluation[];
-  Completed: Evaluation[];
-  Declined: Evaluation[];
-}
+import { Evaluation, EvaluationsByStatus } from '../types/types'; // Adjust path as needed
 
 interface DashboardTabsProps {
-  evaluations: EvaluationsByStatus; // Change this line
+  evaluations: EvaluationsByStatus; // Use the shared type here
 }
 
 const DashboardTabs: React.FC<DashboardTabsProps> = ({ evaluations }) => {
