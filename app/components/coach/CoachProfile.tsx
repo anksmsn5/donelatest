@@ -4,12 +4,12 @@ import { FC } from 'react';
 interface ProfileProps {
   name: string;
   imageUrl: string;
-   playerId={playerId || ''}
+   playerId:string;
   averageCompletionTime: string;
   evaluations: string;
 }
 
-const CoachProfile: FC<ProfileProps> = ({ name, imageUrl, averageCompletionTime, evaluations }) => {
+const CoachProfile: FC<ProfileProps> = ({ name, imageUrl, averageCompletionTime, evaluations, playerId }) => {
   return (
     <div className="profile-container">
       <div className="profile-image">
