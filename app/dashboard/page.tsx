@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import '../globals.css';
 import Sidebar from '../components/Sidebar';
 import DashboardTabs from '../components/DashboardTabs';
-import { Evaluation, EvaluationsByStatus } from '../types/types'; // Adjust path as needed
+import { Evaluation, EvaluationsByStatus, EvaluationStatus } from '../types/types'; // Import the shared types
 
 const Dashboard: React.FC = () => {
   const [evaluations, setEvaluations] = useState<EvaluationsByStatus>({
@@ -23,8 +23,9 @@ const Dashboard: React.FC = () => {
         )
       );
 
+      // Define status as an EvaluationStatus to ensure it is typed correctly
       const groupedEvaluations = responses.reduce((acc: EvaluationsByStatus, curr: Evaluation[], index: number) => {
-        const status = ['Requested', 'Accepted', 'Completed', 'Declined'][index];
+        const status: EvaluationStatus = ['Requested', 'Accepted', 'Completed', 'Declined'][index] as EvaluationStatus;
         acc[status] = curr; // Group evaluations by status
         return acc;
       }, { Requested: [], Accepted: [], Completed: [], Declined: [] });
