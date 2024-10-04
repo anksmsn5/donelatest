@@ -39,7 +39,7 @@ export default function Home(): JSX.Element {
         console.log(data);
         setProfiles(data); // Assuming the data is an array of profiles
       } catch (err) {
-        setError(err.message);
+        setError("Some error occured");
       } finally {
         setLoading(false); // Set loading to false after the fetch is complete
       }
