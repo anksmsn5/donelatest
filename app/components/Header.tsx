@@ -9,13 +9,13 @@ import defaultImage from '../public/default.jpg';
 
 interface DecodedToken {
   name: string;
-  image?: string; // Make sure to include image as an optional property
+  image?: string;
 }
 
 const Header: React.FC = () => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const [userName, setUserName] = useState<string | null>(null);
-  const [profilepic, setProfilepic] = useState<string>(defaultImage); // Default image can be set here
+  const [profilepic, setProfilepic] = useState<string>(defaultImage.src); // Use the src property
   const [dropdownOpen, setDropdownOpen] = useState<boolean>(false);
 
   const handleLogout = async () => {
@@ -29,10 +29,10 @@ const Header: React.FC = () => {
     const token: string | null = localStorage.getItem('token');
 
     if (token) {
-      const decoded = jwt.decode(token) as DecodedToken | null; // Decode without verifying
-      if (decoded && typeof decoded.name === 'string') { // Check that decoded is valid and has name
+      const decoded = jwt.decode(token) as DecodedToken | null; 
+      if (decoded && typeof decoded.name === 'string') {
         setUserName(decoded.name);
-        setProfilepic(decoded.image || defaultImage); // Use defaultImage if no image is found
+        setProfilepic(decoded.image || defaultImage.src); // Use src property for profile pic
         setIsAuthenticated(true);
       } else {
         setIsAuthenticated(false);
