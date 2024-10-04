@@ -6,6 +6,7 @@ import Head from 'next/head';
 
 // Define a type for the profile
 interface Profile {
+  id:number;
   name: string;
   organization: string;
   image: string;
