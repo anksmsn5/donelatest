@@ -53,7 +53,7 @@ const EvaluationModal: React.FC<EvaluationModalProps> = ({ isOpen,onClose, coach
       await Swal.fire({
         icon: 'success',
         title: 'Success',
-        text: response.message || 'Evaluation submitted successfully.',
+        text: 'Evaluation submitted successfully.',
         confirmButtonText: 'Go to Dashboard',
     });
 
