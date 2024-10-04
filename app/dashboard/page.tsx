@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import React, { useEffect, useState } from 'react';
 import '../globals.css';
 import Sidebar from '../components/Sidebar';
@@ -16,6 +16,9 @@ interface EvaluationsByStatus {
   Completed: Evaluation[];
   Declined: Evaluation[];
 }
+
+// Define a type for possible evaluation statuses
+type EvaluationStatus = 'Requested' | 'Accepted' | 'Completed' | 'Declined';
 
 const Dashboard: React.FC = () => {
   const [evaluations, setEvaluations] = useState<EvaluationsByStatus>({
@@ -36,7 +39,7 @@ const Dashboard: React.FC = () => {
       );
 
       const groupedEvaluations = responses.reduce((acc: EvaluationsByStatus, curr: Evaluation[], index: number) => {
-        const status = ['Requested', 'Accepted', 'Completed', 'Declined'][index];
+        const status: EvaluationStatus = ['Requested', 'Accepted', 'Completed', 'Declined'][index] as EvaluationStatus;
         acc[status] = curr; // Group evaluations by status
         return acc;
       }, { Requested: [], Accepted: [], Completed: [], Declined: [] });
