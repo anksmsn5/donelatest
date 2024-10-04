@@ -43,7 +43,7 @@ const CoachProfile = ({ params }: CoachProfileProps) => {
   useEffect(() => {
     const fetchCoachData = async () => {
       try {
-        const response = await fetch(`${API_URL}coach/${slug}`, {
+        const response = await fetch(`/coach/${slug}`, {
           cache: 'no-store', // optional: prevents caching for fresh data
         });
 

@@ -1,8 +1,9 @@
 {
-  "/dashboard/page": "app/dashboard/page.js",
-  "/page": "app/page.js",
-  "/completeprofile/page": "app/completeprofile/page.js",
-  "/api/coach/[slug]/route": "app/api/coach/[slug]/route.js",
+  "/browse/page": "app/browse/page.js",
   "/coach/[slug]/page": "app/coach/[slug]/page.js",
-  "/browse/page": "app/browse/page.js"
+  "/completeprofile/page": "app/completeprofile/page.js",
+  "/api/coach/signup/route": "app/api/coach/signup/route.js",
+  "/page": "app/page.js",
+  "/dashboard/page": "app/dashboard/page.js",
+  "/api/coach/[slug]/route": "app/api/coach/[slug]/route.js"
 }
