@@ -1,5 +1,4 @@
-// components/Tabs.tsx
-import { useState } from 'react';
+import React, { useState } from 'react';
 import EvaluationsTable from './EvaluationsTable';
 
 interface Evaluation {
@@ -15,11 +14,12 @@ interface Evaluation {
 }
 
 interface DashboardTabsProps {
-  evaluations: Evaluation[]; // Accept an array instead of grouped by status
+  evaluations: Record<string, Evaluation[]>; // Grouped by status
 }
 
 const DashboardTabs: React.FC<DashboardTabsProps> = ({ evaluations }) => {
-  const [activeTab, setActiveTab] = useState<string>('Requested');
+  // Define activeTab as a union type of the keys
+  const [activeTab, setActiveTab] = useState<'Requested' | 'Accepted' | 'Completed' | 'Declined'>('Requested');
 
   const tabs = [
     { id: 'Requested', label: 'Requested' },
@@ -27,9 +27,6 @@ const DashboardTabs: React.FC<DashboardTabsProps> = ({ evaluations }) => {
     { id: 'Completed', label: 'Completed' },
     { id: 'Declined', label: 'Declined' },
   ];
-
-  // Debugging output to check evaluations structure
-  console.log('Evaluations Prop:', evaluations);
 
   // Ensure evaluations is defined and provide a fallback
   const activeEvaluations = evaluations ? evaluations[activeTab] || [] : [];
@@ -41,7 +38,7 @@ const DashboardTabs: React.FC<DashboardTabsProps> = ({ evaluations }) => {
           <button
             key={tab.id}
             className={`p-2 font-semibold ${activeTab === tab.id ? 'border-b-2 border-blue-500' : ''}`}
-            onClick={() => setActiveTab(tab.id)}
+            onClick={() => setActiveTab(tab.id as typeof activeTab)} // Cast to correct type
           >
             {tab.label}
           </button>
@@ -53,37 +50,5 @@ const DashboardTabs: React.FC<DashboardTabsProps> = ({ evaluations }) => {
     </div>
   );
 };
-
-export async function getServerSideProps(context: any) {
-  const playerId = context.query.playerId; // Get playerId from query parameters
-  console.log('Player ID:', playerId); // Log playerId
-
-  const responses = await Promise.all(
-    ['Requested', 'Accepted', 'Completed', 'Declined'].map(status =>
-      fetch(`http://localhost:3000/api/evaluation?playerId=${playerId}&status=${status}`) // Update the fetch URL accordingly
-        .then(res => {
-          if (!res.ok) {
-            throw new Error(`Failed to fetch data for status: ${status}`);
-          }
-          return res.json();
-        })
-    )
-  );
-
-  console.log('Responses:', responses);
-
-  const evaluations = responses.reduce((acc: Record<string, Evaluation[]>, curr: Evaluation[], index: number) => {
-    const status = ['Requested', 'Accepted', 'Completed', 'Declined'][index];
-    acc[status] = curr; // Group evaluations by status
-    return acc;
-  }, {});
-
-  console.log('Evaluations:', evaluations);
-
-  return {
-    props: { evaluations },
-  };
-}
-
 
 export default DashboardTabs;
