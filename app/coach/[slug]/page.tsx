@@ -52,8 +52,15 @@ const CoachProfile = ({ params }: CoachProfileProps) => {
 
     if (token) {
       const decoded = jwt.verify(token, SECRET_KEY); 
-      // Decode without verifying
-      setPlayerId(decoded.id);
+      if (typeof decoded === 'string') {
+          // Handle the case where the token is invalid
+          console.error('Invalid token');
+          return;
+      }
+    
+      // Safely get userId from decoded, defaulting to null if not found
+      const userId = decoded.id || null; 
+      setPlayerId(userId);
       setIsAuthenticated(true);
     } else {
       setIsAuthenticated(false);
