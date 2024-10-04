@@ -84,6 +84,7 @@ export default function Home(): JSX.Element {
           >
             {profiles.map((coach, index) => (
               <ProfileCard
+              key={coach.id || index}
               name={coach.name}
               image={coach.image}
               organization={coach.clubName}
