@@ -88,7 +88,7 @@ export default function Home(): JSX.Element {
               name={coach.name}
               image={coach.image}
               organization={coach.clubName}
-              rating="3"
+              rating={3}
               slug={coach.slug}
               
               /> 
