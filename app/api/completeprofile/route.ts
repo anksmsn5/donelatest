@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { hash } from 'bcryptjs';
 import { db } from '../../../lib/db';
 import { users } from '../../../lib/schema';
+import { eq } from 'drizzle-orm';
 import debug from 'debug';
 import jwt, { JwtPayload } from 'jsonwebtoken'; // Import JwtPayload
 import { SECRET_KEY } from '@/lib/constants';
@@ -69,7 +70,7 @@ export async function PATCH(req: NextRequest) {
         number: number || undefined,
         image: image || undefined
       })
-      .where(users.id.eq(userId)) // Update by user ID
+      .where(eq(users.id,userId)) // Update by user ID
       .returning();
 
     // Respond with the updated user data
