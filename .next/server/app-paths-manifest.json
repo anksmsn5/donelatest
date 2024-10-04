@@ -1,9 +1,7 @@
 {
-  "/_not-found/page": "app/_not-found/page.js",
-  "/completeprofile/page": "app/completeprofile/page.js",
   "/register/page": "app/register/page.js",
+  "/completeprofile/page": "app/completeprofile/page.js",
   "/dashboard/page": "app/dashboard/page.js",
   "/page": "app/page.js",
-  "/browse/page": "app/browse/page.js",
-  "/api/coach/signup/route": "app/api/coach/signup/route.js"
+  "/browse/page": "app/browse/page.js"
 }

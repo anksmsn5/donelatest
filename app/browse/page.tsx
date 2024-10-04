@@ -7,7 +7,7 @@ import Head from 'next/head';
 // Define a type for the profile
 interface Profile {
   id:number;
-  name: string;
+  firstName: string;
   organization: string;
   image: string;
   rating: number;
@@ -67,7 +67,7 @@ const Home = () => {
             {filteredProfiles.map((profile, index) => (
               <ProfileCard
                 key={profile.id}
-                name={profile.name} // Change from firstName to name
+                name={profile.firstName} // Change from firstName to name
                 organization={profile.clubName} // Ensure this matches your Profile interface
                 image={profile.image}
                 rating={profile.rating}
