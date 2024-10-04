@@ -49,8 +49,10 @@ export async function GET(req: NextRequest) {
         const result = await db
             .select()
             .from(playerEvaluation)
-            .where(eq(playerEvaluation.player_id, numericPlayerId)) // Use numericPlayerId
-            .where(eq(playerEvaluation.evaluation_status, status))
+            .where(
+                eq(playerEvaluation.player_id, playerId),
+                eq(playerEvaluation.evaluation_status, status)
+            )
             .execute();
 
         return NextResponse.json({ message: result, status: status }, { status: 200 });
