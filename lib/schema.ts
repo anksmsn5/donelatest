@@ -8,7 +8,7 @@ import {
   uniqueIndex,
   date,
   decimal,
-  integer
+  integer // Ensure integer is imported from drizzle-orm/pg-core
 } from "drizzle-orm/pg-core";
 
 // Users table
@@ -39,8 +39,6 @@ export const users = pgTable(
 );
 
 // Coaches table
- 
-
 export const coaches = pgTable(
   "coaches",
   {
@@ -49,7 +47,7 @@ export const coaches = pgTable(
     lastName: varchar("lastName"),
     email: varchar("email"),
     phoneNumber: varchar("phoneNumber"),
-    gender: varchar("gender"),  // Using the enum for gender
+    gender: varchar("gender"),
     location: varchar("location"),
     sport: varchar("sport"),
     clubName: varchar("clubName"),
@@ -67,46 +65,47 @@ export const coaches = pgTable(
   }
 );
 
+// Player Evaluation table
 export const playerEvaluation = pgTable(
   "player_evaluation",
   {
     id: serial("id").primaryKey(),
     player_id: integer("player_id").notNull(), 
-    coach_id: integer("coach_id").notNull(), 
-    review_title: varchar("review_title").notNull(), // Title of the review
-    primary_video_link: text("primary_video_link").notNull(), // Primary video link
-    video_link_two: text("video_link_two"), // Optional second video link
-    video_link_three: text("video_link_three"), // Optional third video link
-    video_description: text("video_description").notNull(), // Description of the video
-    evaluation_status: varchar("evaluation_status").default("Requested").notNull(), // Default value
-    payment_status: varchar("payment_status"), // Payment status, can be NULL if not set
-    created_at: timestamp("created_at").defaultNow().notNull(), // Automatically set current timestamp
-    updated_at: timestamp("updated_at").defaultNow().notNull(), // Automatically set current timestamp
+    coach_id: integer("coach_id").notNull(),
+    review_title: varchar("review_title").notNull(),
+    primary_video_link: text("primary_video_link").notNull(),
+    video_link_two: text("video_link_two"),
+    video_link_three: text("video_link_three"),
+    video_description: text("video_description").notNull(),
+    evaluation_status: varchar("evaluation_status").default("Requested").notNull(),
+    payment_status: varchar("payment_status"),
+    created_at: timestamp("created_at").defaultNow().notNull(),
+    updated_at: timestamp("updated_at").defaultNow().notNull(),
   },
   (playerEvaluation) => {
     return {
-      uniqueIdx: uniqueIndex("player_evaluation_unique_idx").on(playerEvaluation.player_id, playerEvaluation.review_title), // Unique index on player_id and review_title
+      uniqueIdx: uniqueIndex("player_evaluation_unique_idx").on(playerEvaluation.player_id, playerEvaluation.review_title),
     };
   }
 );
 
-
+// Payments table
 export const payments = pgTable(
   "payments",
   {
-    id: serial("id").primaryKey(), // Unique identifier for each payment
-    player_id: varchar("player_id").notNull(), // Reference to the player's unique identifier
-    coach_id: varchar("coach_id").notNull(), // Reference to the coach's unique identifier
-    evaluation_id: varchar("evaluation_id").notNull(), // Reference to the evaluation's unique identifier
-    amount: decimal("amount", { precision: 10, scale: 2 }).notNull(), // Payment amount with precision and scale
-    status: varchar("status").notNull(), // Status of the payment (e.g., completed, pending)
-    payment_info: text("payment_info"), // Additional payment-related information (nullable)
-    created_at: timestamp("created_at").defaultNow().notNull(), // Automatically set current timestamp
-    description: text("description"), // Optional description for the payment (nullable)
+    id: serial("id").primaryKey(),
+    player_id: varchar("player_id").notNull(),
+    coach_id: varchar("coach_id").notNull(),
+    evaluation_id: varchar("evaluation_id").notNull(),
+    amount: decimal("amount", { precision: 10, scale: 2 }).notNull(),
+    status: varchar("status").notNull(),
+    payment_info: text("payment_info"),
+    created_at: timestamp("created_at").defaultNow().notNull(),
+    description: text("description"),
   },
   (payments) => {
     return {
-      uniqueIdx: uniqueIndex("payments_unique_idx").on(payments.player_id, payments.coach_id, payments.evaluation_id), // Unique index for player_id, coach_id, and evaluation_id
+      uniqueIdx: uniqueIndex("payments_unique_idx").on(payments.player_id, payments.coach_id, payments.evaluation_id),
     };
   }
 );
