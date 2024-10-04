@@ -135,8 +135,15 @@ export async function GET(req: NextRequest) {
   if (!token) {
     return NextResponse.json({ message: 'No token provided.' }, { status: 401 });
   }
-  const decoded = jwt.verify(token, SECRET_KEY);
-  const userId = decoded.id;
+  const decoded = jwt.verify(token, SECRET_KEY); // No type assertion here initially
+
+  // Type guard to check if decoded is JwtPayload
+  if (typeof decoded === 'string') {
+    return NextResponse.json({ message: 'Invalid or expired token' }, { status: 400 });
+  }
+
+  // Safely get userId from decoded, defaulting to null if not found
+  const userId = decoded.id || null; 
 
 
   return NextResponse.json({ userId }, { status: 200 });
