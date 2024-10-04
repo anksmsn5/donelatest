@@ -47,8 +47,8 @@ const EvaluationsTable: React.FC<EvaluationsTableProps> = ({ data }) => {
           <tr {...headerGroup.getHeaderGroupProps()} key={headerGroup.id}>
             {headerGroup.headers.map(column => (
               <th
-                {...column.getHeaderProps()} // Spread the column props first
-                key={column.id} // Add key here
+                {...column.getHeaderProps()}
+                key={column.id}
                 className="border border-gray-300 p-2 bg-gray-200"
               >
                 {column.render('Header')}
@@ -60,8 +60,9 @@ const EvaluationsTable: React.FC<EvaluationsTableProps> = ({ data }) => {
       <tbody {...getTableBodyProps()}>
         {rows.map(row => {
           prepareRow(row);
+          const { key, ...rowProps } = row.getRowProps(); // Destructure key
           return (
-            <tr key={row.id} {...row.getRowProps()}>
+            <tr {...rowProps} key={row.id}> {/* Use row.id as key */}
               {row.cells.map(cell => {
                 const { key, ...cellProps } = cell.getCellProps();
                 return (
