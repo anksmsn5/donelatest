@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import '../globals.css'; 
@@ -9,12 +9,13 @@ import defaultImage from '../public/default.jpg';
 
 interface DecodedToken {
   name: string;
+  image?: string; // Make sure to include image as an optional property
 }
 
 const Header: React.FC = () => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
-  const [userName, setUserName] = useState<DecodedToken | null>(null);
-  const [profilepic,setProfilepic] = useState<DecodedToken | null>(null);
+  const [userName, setUserName] = useState<string | null>(null);
+  const [profilepic, setProfilepic] = useState<string>(defaultImage); // Default image can be set here
   const [dropdownOpen, setDropdownOpen] = useState<boolean>(false);
 
   const handleLogout = async () => {
@@ -28,10 +29,14 @@ const Header: React.FC = () => {
     const token: string | null = localStorage.getItem('token');
 
     if (token) {
-      const decoded = jwt.decode(token) as DecodedToken; // Decode without verifying
-      setUserName(decoded.name);
-      setProfilepic(decoded.image || '/default.jpeg');
-      setIsAuthenticated(true);
+      const decoded = jwt.decode(token) as DecodedToken | null; // Decode without verifying
+      if (decoded && typeof decoded.name === 'string') { // Check that decoded is valid and has name
+        setUserName(decoded.name);
+        setProfilepic(decoded.image || defaultImage); // Use defaultImage if no image is found
+        setIsAuthenticated(true);
+      } else {
+        setIsAuthenticated(false);
+      }
     } else {
       setIsAuthenticated(false);
     }
@@ -51,7 +56,7 @@ const Header: React.FC = () => {
           <ul className="flex space-x-4">
             {isAuthenticated ? (
               <>
-              <li>
+                <li>
                   <Link href="/completeprofile" className="text-black hover:text-blue-300">
                     Hello, {userName ? userName : 'User'}!
                   </Link>
@@ -59,11 +64,11 @@ const Header: React.FC = () => {
                 <li className="relative">
                   <button onClick={toggleDropdown} className="flex items-center">
                     <Image 
-                      src={ profilepic|| defaultImage} // Replace with your default image path
+                      src={profilepic}
                       alt="Profile"
                       width={40}
                       height={40}
-                      className="rounded-full" // Make the image circular
+                      className="rounded-full" 
                     />
                   </button>
                   {dropdownOpen && (
@@ -83,7 +88,6 @@ const Header: React.FC = () => {
                     </div>
                   )}
                 </li>
-                
               </>
             ) : (
               <>
