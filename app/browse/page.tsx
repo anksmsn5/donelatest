@@ -43,7 +43,7 @@ const Home = () => {
 
   // Filter profiles based on the search query
   const filteredProfiles = profiles.filter((profile) =>
-    profile.name.toLowerCase().includes(searchQuery.toLowerCase()) // Check against name
+    profile.firstName.includes(searchQuery.toLowerCase()) // Check against name
   );
 
   return (
