@@ -71,16 +71,8 @@ const CoachProfile = ({ params }: CoachProfileProps) => {
     const token: string | null = localStorage.getItem('token');
 
     if (token) {
-      const decoded = jwt.verify(token, SECRET_KEY); 
-      if (typeof decoded === 'string') {
-          // Handle the case where the token is invalid
-          console.error('Invalid token');
-          return;
-      }
-    
-      // Safely get userId from decoded, defaulting to null if not found
-      const userId = decoded.id || null; 
-      setPlayerId(userId);
+     
+      setPlayerId(9);
       setIsAuthenticated(true);
     } else {
       setIsAuthenticated(false);
