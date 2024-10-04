@@ -48,7 +48,8 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ token: token }, { status: 200 });
   } catch (error) {
     logError('Error registering user: %O', error);
-    if (error.constraint == 'users_email_unique') {
+    const err = error as any;
+    if (err.constraint == 'users_email_unique') {
       return NextResponse.json({ message: "This Email ID is already in use." }, { status: 500 });
     }
 
