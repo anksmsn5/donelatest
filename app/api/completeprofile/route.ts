@@ -11,15 +11,21 @@ import { SECRET_KEY } from '@/lib/constants';
 export async function PATCH(req: NextRequest) {
   const logError = debug('app:error');
   const body = await req.json();
-  const token=localStorage.getItem('token');
+  const authHeader = req.headers.get('authorization');
+    if (!authHeader) {
+      return NextResponse.json({ message: 'Authorization header missing' }, { status: 400 });
+    }
+
+    const token = authHeader.split(' ')[1];
   
   let decoded;
   try {
+    
     decoded = jwt.verify(token, SECRET_KEY);
   } catch (error) {
     return NextResponse.json({ message: 'Invalid or expired token' }, { status: 401 });
   }
-  
+
   const userId = decoded.id; 
   const { email, password, first_name, last_name, grade_level, location, birthday, gender, sport, team, position, number, image } = body;
 
