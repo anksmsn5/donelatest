@@ -15,7 +15,7 @@ async function main() {
     position: "bar",   // Add 'last_name'
     number: "bar",   // Add 'last_name'
     password: "bar",   // Add 'last_name'
-    createdAt:Date(),   // Add 'last_name'
+    createdAt:new Date(),   // Add 'last_name'
   };
   
   const res = await insertUser(newUser);
