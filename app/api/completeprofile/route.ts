@@ -4,6 +4,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { hash } from 'bcryptjs';
 import { db } from '../../../lib/db';
 import { users } from '../../../lib/schema';
+import { eq } from 'drizzle-orm';
 import debug from 'debug';
 import jwt from 'jsonwebtoken';
 import { SECRET_KEY } from '@/lib/constants';
@@ -26,7 +27,7 @@ export async function PATCH(req: NextRequest) {
     return NextResponse.json({ message: 'Invalid or expired token' }, { status: 401 });
   }
 
-  const userId = decoded.id; 
+  const userId = decoded.id || null; 
   const { email, password, first_name, last_name, grade_level, location, birthday, gender, sport, team, position, number, image } = body;
 
   if (!userId) {
@@ -53,7 +54,7 @@ export async function PATCH(req: NextRequest) {
         
       })
     
-      .where(users.id.eq(userId)) // Update by email
+      .where(eq(users.id,userId)) // Update by email
       .returning();
 
     // Respond with the updated user data or a success message
