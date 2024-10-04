@@ -7,6 +7,7 @@ import Image from 'next/image';
 import LoginModal from '../../components/LoginModal'; // Import the modal
 import EvaluationModal from '@/app/components/EvaluationModal';
 import jwt from 'jsonwebtoken';
+import { usePathname } from 'next/navigation';
 
 interface CoachData {
   id: string; // or number depending on your data structure

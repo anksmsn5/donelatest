@@ -1,7 +1,7 @@
 {
-  "/register/page": "app/register/page.js",
+  "/browse/page": "app/browse/page.js",
   "/completeprofile/page": "app/completeprofile/page.js",
   "/dashboard/page": "app/dashboard/page.js",
   "/page": "app/page.js",
-  "/browse/page": "app/browse/page.js"
+  "/coach/[slug]/page": "app/coach/[slug]/page.js"
 }
