@@ -59,7 +59,7 @@ const CoachProfile = ({ params }: CoachProfileProps) => {
 
         const data: CoachData = await response.json(); // Specify the type of data
         console.log(data); // Log the entire data object to inspect its structure
-        setCoachData(data[0]);
+        setCoachData(data);
       } catch (err) {
         setError("Some error occurred.");
       } finally {

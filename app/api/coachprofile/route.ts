@@ -22,9 +22,19 @@ import { SECRET_KEY } from '@/lib/constants';
         .where(
           eq(coaches.slug,slug)
         )
+        .limit(1) 
         .execute();
+        const payload = {
+            firstName: coachlist[0].firstName,
+            lastName: coachlist[0].lastName,
+            id: coachlist[0].id,
+            expectedCharge: coachlist[0].expectedCharge,
+            createdAt: coachlist[0].createdAt,
+            
+            image:coachlist[0].image
+          };
   
-      return NextResponse.json(coachlist);
+      return NextResponse.json(payload);
     } catch (error) {
       const err = error as any;
       console.error('Error fetching coaches:', error);
