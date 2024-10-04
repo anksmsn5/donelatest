@@ -10,6 +10,8 @@ interface Profile {
   organization: string;
   image: string;
   rating: number;
+  slug: string; // Add slug if it's part of the profile
+  clubName: string; // Add clubName if it's part of the profile
 }
 
 const Home = () => {
@@ -18,7 +20,6 @@ const Home = () => {
   const [loading, setLoading] = useState<boolean>(true); // State for loading status
   const [error, setError] = useState<string | null>(null); // State for error handling
 
- 
   // Fetch coach data from API
   useEffect(() => {
     const fetchProfiles = async () => {
@@ -30,7 +31,7 @@ const Home = () => {
         const data = await response.json();
         setProfiles(data); // Assuming the data is an array of profiles
       } catch (err) {
-        setError("Some issue occured.");
+        setError("Some issue occurred.");
       } finally {
         setLoading(false); // Set loading to false after the fetch is complete
       }
@@ -41,7 +42,7 @@ const Home = () => {
 
   // Filter profiles based on the search query
   const filteredProfiles = profiles.filter((profile) =>
-    profile.firstName
+    profile.name.toLowerCase().includes(searchQuery.toLowerCase()) // Check against name
   );
 
   return (
@@ -65,12 +66,11 @@ const Home = () => {
             {filteredProfiles.map((profile, index) => (
               <ProfileCard
                 key={index}
-                name={profile.firstName}
-                organization={profile.clubName}
+                name={profile.name} // Change from firstName to name
+                organization={profile.clubName} // Ensure this matches your Profile interface
                 image={profile.image}
                 rating={profile.rating}
-                slug={profile.slug }
-               
+                slug={profile.slug} // Ensure slug is also part of Profile interface
               />
             ))}
           </div>
