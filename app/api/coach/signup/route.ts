@@ -75,8 +75,9 @@ export async function POST(req: NextRequest) {
   
       return NextResponse.json({ token: token }, { status: 200 });
     } catch (error) {
+      const err = error as any;
       logError('Error registering user: %O', error);
-      if (error.constraint == 'users_email_unique') {
+      if (err.constraint == 'users_email_unique') {
         return NextResponse.json({ message: "This Email ID is already in use." }, { status: 500 });
       }
   
@@ -97,6 +98,7 @@ export async function POST(req: NextRequest) {
   
       return NextResponse.json(coachlist);
     } catch (error) {
+      const err = error as any;
       console.error('Error fetching coaches:', error);
       return NextResponse.json({ message: 'Failed to fetch coaches' }, { status: 500 });
     }
