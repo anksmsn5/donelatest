@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { db } from '../../../lib/db'; // Adjust the import based on your file structure
 import { playerEvaluation } from '../../../lib/schema'; // Adjust if necessary
 import { eq } from 'drizzle-orm';
+import { and } from 'drizzle-orm';
 
 export async function POST(req: NextRequest) {
     const body = await req.json();
@@ -57,7 +58,7 @@ export async function GET(req: NextRequest) {
         const result = await db
             .select()
             .from(playerEvaluation)
-            .where(...conditions) // Spread the conditions array
+            .where(and(...conditions)) // Spread the conditions array
             .execute();
 
         return NextResponse.json({ message: result, status: status }, { status: 200 });
