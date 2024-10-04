@@ -7,6 +7,17 @@ import Image from 'next/image';
 import LoginModal from '../../components/LoginModal'; // Import the modal
 import EvaluationModal from '@/app/components/EvaluationModal';
 import jwt from 'jsonwebtoken';
+
+interface CoachData {
+  id: string; // or number depending on your data structure
+  firstName: string;
+  lastName: string;
+  image: string;
+  createdAt: string; // or Date if your API returns a Date object
+  expectedCharge: number;
+  slug: string; // If slug is part of the response
+}
+
 interface CoachProfileProps {
   params: {
     slug: string;
@@ -18,9 +29,9 @@ const CoachProfile = ({ params }: CoachProfileProps) => {
   const { slug } = params;
 
   // State for managing coach data and modal visibility
-  const [coachData, setCoachData] = useState(null);
+  const [coachData, setCoachData] = useState<CoachData | null>(null); // Use CoachData type
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isevaludationModalopen,setIsevaluationModalOpen]=useState(false);
+  const [isevaludationModalopen, setIsevaluationModalOpen] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
@@ -38,10 +49,10 @@ const CoachProfile = ({ params }: CoachProfileProps) => {
           throw new Error('Coach not found');
         }
 
-        const data = await response.json();
+        const data: CoachData = await response.json(); // Specify the type of data
         setCoachData(data);
       } catch (err) {
-        setError("Some error occurrred.");
+        setError("Some error occurred.");
       } finally {
         setLoading(false);
       }
@@ -77,7 +88,6 @@ const CoachProfile = ({ params }: CoachProfileProps) => {
     month: 'long',
     day: 'numeric',
   });
- 
 
   return (
     <>
@@ -124,43 +134,40 @@ const CoachProfile = ({ params }: CoachProfileProps) => {
               <p className="ml-2">Joined {joiningDate}</p>
             </div>
             {isAuthenticated ? (
-            <div className="mt-2 flex justify-center items-center text-sm text-gray-500">
-              <span>Rate</span>
-              <p className="ml-2">  ${coachData.expectedCharge}</p>
-            </div>
-            ):(
+              <div className="mt-2 flex justify-center items-center text-sm text-gray-500">
+                <span>Rate</span>
+                <p className="ml-2">  ${coachData.expectedCharge}</p>
+              </div>
+            ) : (
               <></>
             )}
 
-
             {!isAuthenticated ? (
-             <>
-            <button
-              onClick={() => setIsModalOpen(true)} // Open modal on click
-              className="mt-6 bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
-            >
-              Sign in to book
-            </button>
-            </>
+              <>
+                <button
+                  onClick={() => setIsModalOpen(true)} // Open modal on click
+                  className="mt-6 bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
+                >
+                  Sign in to book
+                </button>
+              </>
             ) : (
-
               <button
-              onClick={() => setIsevaluationModalOpen(true)} // Open modal on click
-              className="mt-6 bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
-            >
-              Procced to Evaluation
-            </button>
+                onClick={() => setIsevaluationModalOpen(true)} // Open modal on click
+                className="mt-6 bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
+              >
+                Proceed to Evaluation
+              </button>
             )}
           </div>
         </div>
       </div>
 
-      
       {isModalOpen && (
         <LoginModal isOpen={isModalOpen} coachslug={coachData.slug} onClose={() => setIsModalOpen(false)} />
       )}
 
-{isevaludationModalopen && (
+      {isevaludationModalopen && (
         <EvaluationModal isOpen={isModalOpen} coachId={coachData.id} playerId={playerId} onClose={() => setIsevaluationModalOpen(false)} />
       )}
     </>
