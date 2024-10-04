@@ -61,7 +61,16 @@ const EvaluationsTable: React.FC<EvaluationsTableProps> = ({ data }) => {
         {rows.map(row => {
           prepareRow(row);
           return (
-            <div>NA</div>
+            <tr key={row.id} {...row.getRowProps()}>
+              {row.cells.map(cell => {
+                const { key, ...cellProps } = cell.getCellProps();
+                return (
+                  <td key={cell.id} {...cellProps} className="border border-gray-300 p-2">
+                    {cell.render('Cell')}
+                  </td>
+                );
+              })}
+            </tr>
           );
         })}
       </tbody>
