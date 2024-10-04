@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from 'next/server';
- 
 import { db } from '../../../lib/db'; // Adjust the import based on your file structure
 import { playerEvaluation } from '../../../lib/schema'; // Adjust if necessary
 import { eq } from 'drizzle-orm';
@@ -10,7 +9,7 @@ export async function POST(req: NextRequest) {
 
     try {
         const { reviewTitle, primaryVideoUrl, videoUrl2, videoUrl3, videoDescription, coachId, playerId } = body;
- 
+
         // Await the insertion and ensure you are capturing the result
         const result = await db.insert(playerEvaluation).values({
             player_id: playerId,
@@ -26,36 +25,37 @@ export async function POST(req: NextRequest) {
             updated_at: new Date(),
         }).returning();
 
-       
-
-        return NextResponse.json({ message:"Evaluation Request Submitted Successfully." }, { status: 200 });
+        return NextResponse.json({ message: "Evaluation Request Submitted Successfully." }, { status: 200 });
     } catch (error) {
         console.error('Error during insertion:', error); // Log the error for debugging
-        return NextResponse.json({ message:'Failed to insert data' }, { status: 500 });
+        return NextResponse.json({ message: 'Failed to insert data' }, { status: 500 });
     }
 }
 
-
-
 export async function GET(req: NextRequest) {
-    
     const url = new URL(req.url);
     const playerId = url.searchParams.get('playerId')?.trim();
     const status = url.searchParams.get('status')?.trim();
 
- 
-try{
-    const result = await db
-        .select()
-        .from(playerEvaluation)
-        .where(eq(playerEvaluation.player_id, playerId))
-        .where(eq(playerEvaluation.evaluation_status, status))
-        .execute();
-    return NextResponse.json({ message:result,status:status }, { status: 200 });
- 
+    try {
+        // Ensure playerId is a number
+        const numericPlayerId = playerId ? parseInt(playerId, 10) : null;
+
+        // Check if playerId is valid
+        if (numericPlayerId === null || isNaN(numericPlayerId)) {
+            return NextResponse.json({ message: 'Invalid player ID' }, { status: 400 });
+        }
+
+        const result = await db
+            .select()
+            .from(playerEvaluation)
+            .where(eq(playerEvaluation.player_id, numericPlayerId)) // Use numericPlayerId
+            .where(eq(playerEvaluation.evaluation_status, status))
+            .execute();
+
+        return NextResponse.json({ message: result, status: status }, { status: 200 });
     } catch (error) {
-        console.error('Error during insertion:', error); // Log the error for debugging
-        return NextResponse.json({ message: error.message || 'Failed to insert data' }, { status: 500 });
+        console.error('Error during fetching evaluations:', error); // Log the error for debugging
+        return NextResponse.json({ message: error.message || 'Failed to fetch data' }, { status: 500 });
     }
 }
-
