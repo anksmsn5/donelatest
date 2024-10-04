@@ -72,7 +72,7 @@ const CoachProfile = ({ params }: CoachProfileProps) => {
 
     if (token) {
      
-      setPlayerId(9);
+      setPlayerId('9');
       setIsAuthenticated(true);
     } else {
       setIsAuthenticated(false);
