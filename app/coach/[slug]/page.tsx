@@ -63,19 +63,20 @@ const CoachProfile = ({ params }: CoachProfileProps) => {
     fetchCoachData();
     const token: string | null = localStorage.getItem('token');
 
-    if (token) {
+    try {
       const decoded = jwt.verify(token, SECRET_KEY); 
-      if (typeof decoded === 'string') {
-          // Handle the case where the token is invalid
-          console.error('Invalid token');
+      // Check if decoded is an object and contains expected properties
+      if (typeof decoded !== 'object' || decoded === null) {
+          console.error('Decoded token is not valid');
           return;
       }
-    
-      // Safely get userId from decoded, defaulting to null if not found
+
+      // Safely get userId from decoded
       const userId = decoded.id || null; 
       setPlayerId(userId);
       setIsAuthenticated(true);
-    } else {
+    } catch (error) {
+      console.error('Token verification failed:', error);
       setIsAuthenticated(false);
     }
   }, [slug]); // Only re-run the effect if the slug changes

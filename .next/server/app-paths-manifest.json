@@ -1,7 +1,7 @@
 {
-  "/browse/page": "app/browse/page.js",
-  "/completeprofile/page": "app/completeprofile/page.js",
   "/dashboard/page": "app/dashboard/page.js",
+  "/browse/page": "app/browse/page.js",
   "/page": "app/page.js",
-  "/coach/[slug]/page": "app/coach/[slug]/page.js"
+  "/coach/[slug]/page": "app/coach/[slug]/page.js",
+  "/completeprofile/page": "app/completeprofile/page.js"
 }
