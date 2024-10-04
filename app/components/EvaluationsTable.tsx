@@ -1,6 +1,6 @@
 // components/EvaluationsTable.tsx
 import React from 'react';
-import { useTable } from 'react-table';
+import { useTable, Column } from 'react-table';
 
 interface Evaluation {
   id: number;
@@ -19,7 +19,8 @@ interface EvaluationsTableProps {
 }
 
 const EvaluationsTable: React.FC<EvaluationsTableProps> = ({ data }) => {
-  const columns = React.useMemo(
+  // Explicitly define the column type
+  const columns: Column<Evaluation>[] = React.useMemo(
     () => [
       { Header: 'Review Title', accessor: 'review_title' },
       { Header: 'Primary Video Link', accessor: 'primary_video_link' },
@@ -39,7 +40,7 @@ const EvaluationsTable: React.FC<EvaluationsTableProps> = ({ data }) => {
     headerGroups,
     rows,
     prepareRow,
-  } = useTable({ columns, data });
+  } = useTable<Evaluation>({ columns, data }); // Pass the Evaluation type here
 
   return (
     <table {...getTableProps()} className="min-w-full border-collapse border border-gray-300">
@@ -64,7 +65,6 @@ const EvaluationsTable: React.FC<EvaluationsTableProps> = ({ data }) => {
           return (
             <tr key={row.id} {...row.getRowProps()}>
               {row.cells.map(cell => {
-                // Destructure the props and omit the `key` prop
                 const { key, ...cellProps } = cell.getCellProps();
                 return (
                   <td key={cell.id} {...cellProps} className="border border-gray-300 p-2">
