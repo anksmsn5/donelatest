@@ -65,7 +65,7 @@ const Home = () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {filteredProfiles.map((profile, index) => (
               <ProfileCard
-                key={index}
+                key={profile.id}
                 name={profile.name} // Change from firstName to name
                 organization={profile.clubName} // Ensure this matches your Profile interface
                 image={profile.image}
