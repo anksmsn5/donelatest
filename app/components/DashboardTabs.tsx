@@ -15,7 +15,7 @@ interface Evaluation {
 }
 
 interface DashboardTabsProps {
-  evaluations: Record<string, Evaluation[]>; // Grouped by status
+  evaluations: Evaluation[]; // Accept an array instead of grouped by status
 }
 
 const DashboardTabs: React.FC<DashboardTabsProps> = ({ evaluations }) => {
