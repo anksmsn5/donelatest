@@ -19,7 +19,6 @@ interface EvaluationsTableProps {
 }
 
 const EvaluationsTable: React.FC<EvaluationsTableProps> = ({ data }) => {
-  // Explicitly define the column type
   const columns: Column<Evaluation>[] = React.useMemo(
     () => [
       { Header: 'Review Title', accessor: 'review_title' },
@@ -40,7 +39,7 @@ const EvaluationsTable: React.FC<EvaluationsTableProps> = ({ data }) => {
     headerGroups,
     rows,
     prepareRow,
-  } = useTable<Evaluation>({ columns, data }); // Pass the Evaluation type here
+  } = useTable<Evaluation>({ columns, data });
 
   return (
     <table {...getTableProps()} className="min-w-full border-collapse border border-gray-300">
@@ -49,8 +48,7 @@ const EvaluationsTable: React.FC<EvaluationsTableProps> = ({ data }) => {
           <tr {...headerGroup.getHeaderGroupProps()} key={headerGroup.id}>
             {headerGroup.headers.map(column => (
               <th
-                key={column.id}
-                {...column.getHeaderProps()}
+                {...column.getHeaderProps()} // Spread the column props first
                 className="border border-gray-300 p-2 bg-gray-200"
               >
                 {column.render('Header')}
