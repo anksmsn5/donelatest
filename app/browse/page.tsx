@@ -30,7 +30,7 @@ const Home = () => {
         const data = await response.json();
         setProfiles(data); // Assuming the data is an array of profiles
       } catch (err) {
-        setError(err.message);
+        setError("Some issue occured.");
       } finally {
         setLoading(false); // Set loading to false after the fetch is complete
       }
