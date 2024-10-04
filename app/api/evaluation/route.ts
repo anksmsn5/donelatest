@@ -31,7 +31,7 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ message:"Evaluation Request Submitted Successfully." }, { status: 200 });
     } catch (error) {
         console.error('Error during insertion:', error); // Log the error for debugging
-        return NextResponse.json({ message: error.message || 'Failed to insert data' }, { status: 500 });
+        return NextResponse.json({ message:'Failed to insert data' }, { status: 500 });
     }
 }
 
