@@ -41,18 +41,25 @@ const CoachProfile = ({ params }: CoachProfileProps) => {
 
   // Fetch coach data
   useEffect(() => {
+    const payload={
+      slug:slug
+    }
     const fetchCoachData = async () => {
       try {
-        const response = await fetch(`/coach/${slug}`, {
-          cache: 'no-store', // optional: prevents caching for fresh data
+        const response = await fetch(`/api/coachprofile/`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
         });
 
         if (!response.ok) {
           throw new Error('Coach not found');
         }
 
+
         const data: CoachData = await response.json(); // Specify the type of data
-        setCoachData(data);
+        console.log(data); // Log the entire data object to inspect its structure
+        setCoachData(data[0]);
       } catch (err) {
         setError("Some error occurred.");
       } finally {
