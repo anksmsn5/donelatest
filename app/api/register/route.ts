@@ -8,10 +8,11 @@ import debug from 'debug';
 import { eq } from 'drizzle-orm';
 import { promises as fs } from 'fs';
 import path from 'path';
+import { SECRET_KEY } from '@/lib/constants';
 
 import jwt from 'jsonwebtoken';
 import next from 'next';
-const SECRET_KEY = process.env.SECRET_KEY;
+ 
 
 export async function POST(req: NextRequest) {
 
