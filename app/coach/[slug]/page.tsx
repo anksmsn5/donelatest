@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { Metadata } from 'next';
-import { API_URL, BASEURL } from '../../../lib/constants';
+import { API_URL, BASEURL, SECRET_KEY } from '../../../lib/constants';
 import Image from 'next/image';
 import LoginModal from '../../components/LoginModal'; // Import the modal
 import EvaluationModal from '@/app/components/EvaluationModal';
@@ -51,8 +51,8 @@ const CoachProfile = ({ params }: CoachProfileProps) => {
     const token: string | null = localStorage.getItem('token');
 
     if (token) {
-     
-      const decoded = jwt.decode(token) as DecodedToken; // Decode without verifying
+      const decoded = jwt.verify(token, SECRET_KEY); 
+      // Decode without verifying
       setPlayerId(decoded.id);
       setIsAuthenticated(true);
     } else {
