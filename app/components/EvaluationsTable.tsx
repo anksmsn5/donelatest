@@ -1,4 +1,3 @@
-// components/EvaluationsTable.tsx
 import React from 'react';
 import { useTable, Column } from 'react-table';
 
@@ -49,6 +48,7 @@ const EvaluationsTable: React.FC<EvaluationsTableProps> = ({ data }) => {
             {headerGroup.headers.map(column => (
               <th
                 {...column.getHeaderProps()} // Spread the column props first
+                key={column.id} // Add key here
                 className="border border-gray-300 p-2 bg-gray-200"
               >
                 {column.render('Header')}
