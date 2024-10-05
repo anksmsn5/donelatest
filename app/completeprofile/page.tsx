@@ -155,31 +155,31 @@ export default function Register() {
 
 
 {[
-                { label: "Grade Level", name: "grade_level", options: ["Select Grade Level", "1", "2", "3"] },
-                { label: "Gender", name: "gender", options: ["Select Gender", "Male", "Female", "Other"] },
-                { label: "Sport", name: "sport", options: ["Select Sport", "Soccer", "Basketball", "Baseball"] },
-                { label: "Position", name: "position", options: ["Select Position", "Forward", "Defender", "Goalkeeper"] },
-                { label: "Number", name: "number", options: ["Select Number", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10"] },
-              ].map(({ label, name, options }) => (
-                <div className="mb-4" key={name}>
-                  <label htmlFor={name} className="block text-gray-700 text-sm font-semibold mb-2">
-                    {label}
-                  </label>
-                  <select
-                    name={name}
-                    className="border border-gray-300 rounded-lg py-2 px-4 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    value={formValues[name as keyof FormValues] || ""}
-                    onChange={handleChange}
-                    required
-                  >
-                    {options.map((option) => (
-                      <option key={option} value={option}>
-                        {option}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              ))}
+  { label: "Grade Level", name: "grade_level", options: ["Select Grade Level", "1", "2", "3"] },
+  { label: "Gender", name: "gender", options: ["Select Gender", "Male", "Female", "Other"] },
+  { label: "Sport", name: "sport", options: ["Select Sport", "Soccer", "Basketball", "Baseball"] },
+  { label: "Position", name: "position", options: ["Select Position", "Forward", "Defender", "Goalkeeper"] },
+  { label: "Number", name: "number", options: ["Select Number", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10"] },
+].map(({ label, name, options }) => (
+  <div className="mb-4" key={name}>
+    <label htmlFor={name} className="block text-gray-700 text-sm font-semibold mb-2">
+      {label}
+    </label>
+    <select
+      name={name}
+      className="border border-gray-300 rounded-lg py-2 px-4 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+      value={formValues[name as keyof Omit<FormValues, 'image'>] || ""} // Exclude 'image' from the key lookup
+      onChange={handleChange}
+      required
+    >
+      {options.map((option) => (
+        <option key={option} value={option}>
+          {option}
+        </option>
+      ))}
+    </select>
+  </div>
+))}
 
  
 
