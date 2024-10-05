@@ -68,7 +68,7 @@ const CoachProfile = ({ params }: CoachProfileProps) => {
     };
 
     fetchCoachData();
-   setPlayerId(session?.user.id);
+    setPlayerId(session?.user?.id || null);
   
   }, [session,slug]); // Only re-run the effect if the slug changes
 
