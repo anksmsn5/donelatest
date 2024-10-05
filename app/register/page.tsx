@@ -1,40 +1,45 @@
 "use client";
-import { useState } from 'react';
- 
+import { useEffect, useState } from 'react';
+import { signIn, useSession  } from 'next-auth/react';
 import Brand from '../public/images/brand.jpg';
 import Image from 'next/image';
 
 interface FormValues {
   email: string;
   password: string;
+  loginAs: "player";
 }
 
 export default function Register() {
   const [formValues, setFormValues] = useState<FormValues>({ email: '', password: '' });
   const [error, setError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
-
+  const { data: session } = useSession();
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     setError(null);
     setSuccessMessage(null);
-    console.log(formValues);
+     
     try {
       const response = await fetch('/api/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formValues),
       });
-      console.log(response);
+      
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(errorData.message || 'Something went wrong!');
       }
+console.log(formValues.email);
+      const res = await signIn('credentials', {
+        redirect: false,
+        email: formValues.email,
+        password: formValues.password,
+        loginAs: "player",
+      });
 
-      const data = await response.json();
-      localStorage.setItem('token', data.token); // Store token in localStorage
-      // Redirect to protected route or homepage
-      window.location.href = '/completeprofile';
+      //window.location.href = '/completeprofile';
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Something went wrong!');
     }
@@ -44,7 +49,14 @@ export default function Register() {
     const { name, value } = event.target;
     setFormValues({ ...formValues, [name]: value });
   };
-
+  useEffect(() => {
+    // Check session data after login
+    if (session) {
+     if (!session.user.name) {
+        window.location.href = '/completeprofile';
+      }
+    }
+  }, [session]);
   return (
     <>
     

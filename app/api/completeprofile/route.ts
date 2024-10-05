@@ -4,7 +4,7 @@ import { db } from '../../../lib/db';
 import { users } from '../../../lib/schema';
 import { eq } from 'drizzle-orm';
 import debug from 'debug';
-import jwt, { JwtPayload } from 'jsonwebtoken'; // Import JwtPayload
+ 
 import { SECRET_KEY } from '@/lib/constants';
 
 export async function PATCH(req: NextRequest) {
@@ -14,30 +14,7 @@ export async function PATCH(req: NextRequest) {
     // Parse the request body
     const body = await req.json();
 
-    // Get the token from the Authorization header
-    const authHeader = req.headers.get('authorization');
-    if (!authHeader) {
-      return NextResponse.json({ message: 'Authorization header missing' }, { status: 400 });
-    }
-
-    const token = authHeader.split(' ')[1]; // Extract token from "Bearer <token>"
-
-    // Verify the JWT token
-    const decoded = jwt.verify(token, SECRET_KEY); // No type assertion here initially
-
-    // Type guard to check if decoded is JwtPayload
-    if (typeof decoded === 'string') {
-      return NextResponse.json({ message: 'Invalid or expired token' }, { status: 400 });
-    }
-
-    // Safely get userId from decoded, defaulting to null if not found
-    const userId = decoded.id || null; // This will set userId to null if decoded.id is undefined or falsy
-
-    if (!userId) {
-      return NextResponse.json({ message: 'User ID not found in token' }, { status: 400 });
-    }
-
-    // Extract fields from the request body
+    
     const {
       email,
       password,
@@ -51,7 +28,8 @@ export async function PATCH(req: NextRequest) {
       team,
       position,
       number,
-      image
+      image,
+      playerID
     } = body;
 
     // Update the user in the database
@@ -70,7 +48,7 @@ export async function PATCH(req: NextRequest) {
         number: number || undefined,
         image: image || undefined
       })
-      .where(eq(users.id,userId)) // Update by user ID
+      .where(eq(users.id,playerID)) // Update by user ID
       .returning();
 
     // Respond with the updated user data

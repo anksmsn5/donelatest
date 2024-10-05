@@ -1,5 +1,6 @@
 "use client"; // Ensure this is a client component
 import { useState } from 'react';
+import { signIn, useSession  } from 'next-auth/react';
 import jwt from 'jsonwebtoken';
 interface LoginModalProps {
   isOpen: boolean;
@@ -13,10 +14,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ onClose,coachslug }) => {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
-  interface DecodedToken {
-    name: string;
-    type: string; // Add type field to match with your existing logic
-  }
+  const { data: session } = useSession();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -31,21 +29,19 @@ const LoginModal: React.FC<LoginModalProps> = ({ onClose,coachslug }) => {
 
     // Simulating an API call
     try {
-      const response = await fetch('/api/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email, password,coachslug,loginAs }),
+      const response = await signIn('credentials', {
+        redirect: false,
+        email: email,
+        password:password,
+        loginAs:loginAs,
       });
+
+ 
 
       if (!response.ok) {
         throw new Error('Login failed');
       }
-      const data = await response.json();
-      const decoded = jwt.decode(data.token) as DecodedToken;
-
-      localStorage.setItem('token', data.token);
+      
       setIsAuthenticated(true);
        window.location.href = '/coach/'+coachslug;
       onClose(); // Close the modal after successful login
@@ -73,7 +69,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ onClose,coachslug }) => {
         {error && <p className="text-red-500 mb-4">{error}</p>}
 
         <form onSubmit={handleSubmit}>
-          <div className="mb-4">
+          <div className="mb-4">{coachslug}
             <label htmlFor="email" className="block text-gray-700 mb-2">
               Email
             </label>

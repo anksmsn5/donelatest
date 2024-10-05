@@ -1,11 +1,14 @@
 "use client";
 import React, { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { useSession, signOut } from 'next-auth/react';
 import Link from 'next/link';
 import '../globals.css'; 
 import Logo from '../public/images/logo.png';
 import Image from 'next/image';
 import jwt from 'jsonwebtoken';
 import defaultImage from '../public/default.jpg';
+ 
 
 interface DecodedToken {
   name: string;
@@ -17,35 +20,27 @@ const Header: React.FC = () => {
   const [userName, setUserName] = useState<string | null>(null);
   const [profilepic, setProfilepic] = useState<string>(defaultImage.src); // Use the src property
   const [dropdownOpen, setDropdownOpen] = useState<boolean>(false);
-
+  const { data: session, status } = useSession();
+  const router = useRouter();
   const handleLogout = async () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('modalShown');
-    
+    await signOut(); // Sign out using NextAuth.js
     window.location.href = '/login';
   };
 
-  useEffect(() => {
-    const token: string | null = localStorage.getItem('token');
-
-    if (token) {
-      const decoded = jwt.decode(token) as DecodedToken | null; 
-      if (decoded && typeof decoded.name === 'string') {
-        setUserName(decoded.name);
-        setProfilepic(decoded.image || defaultImage.src); // Use src property for profile pic
-        setIsAuthenticated(true);
-      } else {
-        setIsAuthenticated(false);
-      }
-    } else {
-      setIsAuthenticated(false);
-    }
-  }, []);
+ 
 
   const toggleDropdown = () => {
     setDropdownOpen(!dropdownOpen);
   };
+  useEffect(() => {
+    // Check if session is still loading
+    if (status === "loading") return; 
 
+    // If not authenticated, redirect to login page
+    if (!session) {
+      router.push('/login'); // Redirect to your login page
+    }
+  }, [session, status]);
   return (
     <header className="bg-white-600 shadow-outline">
       <div className="max-w-7xl mx-auto flex justify-between items-center p-4">
@@ -54,11 +49,11 @@ const Header: React.FC = () => {
         </Link>
         <nav>
           <ul className="flex space-x-4">
-            {isAuthenticated ? (
+            {session ? (
               <>
                 <li>
                   <Link href="/completeprofile" className="text-black hover:text-blue-300">
-                    Hello, {userName ? userName : 'User'}!
+                    Hello, {session?.user?.name || "Player"}!
                   </Link>
                 </li>
                 <li className="relative">

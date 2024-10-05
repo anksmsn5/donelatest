@@ -5,6 +5,7 @@ import Header from "../components/Header";
 import Brand from "../public/images/brand.jpg";
 import Image from "next/image";
 import DefaultPic from "../public/default.jpg";
+import { useSession } from "next-auth/react";
 
 interface FormValues {
   first_name: string;
@@ -34,7 +35,7 @@ export default function Register() {
     number: "",
     image: null,
   });
-
+  const { data: session } = useSession(); 
   const [error, setError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null); // Reference to file input
@@ -50,6 +51,12 @@ export default function Register() {
     for (const key in formValues) {
       const value = formValues[key as keyof FormValues];
       formData.append(key, value as string | Blob);
+    }
+    if (session && session.user.id) {
+      formData.append('playerID', session.user.id); // Assuming user.id is the ID
+    } else {
+      setError("User is not authenticated");
+      return;
     }
 
     try {
@@ -146,8 +153,35 @@ export default function Register() {
     </div>
   ))}
 
-  {/* Select fields */}
-  {/*... select fields unchanged */}
+
+{[
+                { label: "Grade Level", name: "grade_level", options: ["Select Grade Level", "1", "2", "3"] },
+                { label: "Gender", name: "gender", options: ["Select Gender", "Male", "Female", "Other"] },
+                { label: "Sport", name: "sport", options: ["Select Sport", "Soccer", "Basketball", "Baseball"] },
+                { label: "Position", name: "position", options: ["Select Position", "Forward", "Defender", "Goalkeeper"] },
+                { label: "Number", name: "number", options: ["Select Number", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10"] },
+              ].map(({ label, name, options }) => (
+                <div className="mb-4" key={name}>
+                  <label htmlFor={name} className="block text-gray-700 text-sm font-semibold mb-2">
+                    {label}
+                  </label>
+                  <select
+                    name={name}
+                    className="border border-gray-300 rounded-lg py-2 px-4 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    value={formValues[name as keyof FormValues]}
+                    onChange={handleChange}
+                    required
+                  >
+                    {options.map((option) => (
+                      <option key={option} value={option}>
+                        {option}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              ))}
+
+ 
 
   <button
     type="submit"

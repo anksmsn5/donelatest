@@ -45,7 +45,7 @@ export async function POST(req: NextRequest) {
 
     const token = jwt.sign({ id: insertedUser[0].id }, SECRET_KEY, { expiresIn: '1h' });
 
-    return NextResponse.json({ token: token }, { status: 200 });
+    return NextResponse.json({ id: token }, { status: 200 });
   } catch (error) {
     logError('Error registering user: %O', error);
     const err = error as any;
@@ -58,22 +58,7 @@ export async function POST(req: NextRequest) {
 
 export async function PUT(req: NextRequest) {
   const logError = debug('app:error');
-  const token = req.headers.get('authorization')?.split(' ')[1];
-  if (!token) {
-    return NextResponse.json({ message: 'No token provided.' }, { status: 401 });
-  }
-  const decoded = jwt.verify(token, SECRET_KEY); // No type assertion here initially
-
-  // Type guard to check if decoded is JwtPayload
-  if (typeof decoded === 'string') {
-    return NextResponse.json({ message: 'Invalid or expired token' }, { status: 400 });
-  }
-
-  // Safely get userId from decoded, defaulting to null if not found
-  const userId = decoded.id || null; 
   const formData = await req.formData();
-
-  // Extract form fields
   const firstName = formData.get('first_name') as string;
   const lastName = formData.get('last_name') as string;
   const gradeLevel = formData.get('grade_level') as string;
@@ -84,8 +69,7 @@ export async function PUT(req: NextRequest) {
   const team = formData.get('team') as string;
   const position = formData.get('position') as string;
   const number = formData.get('number') as string;
-
-  // Handle the image if provided (optional)
+  const playerID = formData.get('playerID') as string;
   const image = formData.get('image') as File | null;
   let imageUrl = null;
 
@@ -122,10 +106,10 @@ export async function PUT(req: NextRequest) {
       image: imageUrl,
 
     })
-    .where(eq(users.id, userId))
+    .where(eq(users.id, playerID))
 
     .execute();
-  return NextResponse.json({ message: decoded }, { status: 200 });
+  return NextResponse.json({ message:"Profile Completed" }, { status: 200 });
 }
 
 

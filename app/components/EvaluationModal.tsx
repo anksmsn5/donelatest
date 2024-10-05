@@ -77,14 +77,14 @@ const EvaluationModal: React.FC<EvaluationModalProps> = ({ isOpen,onClose, coach
         >
           ✖
         </button>
-        <h2 className="text-2xl font-bold mb-6 text-center">Submit Evaluation</h2>
+        <h2 className="text-2xl font-bold mb-3 text-center">Submit Evaluation</h2>
 
         {error && <p className="text-red-500 mb-4">{error}</p>}
 
         <form onSubmit={handleSubmit}>
           {/* Review Title */}
           <div className="mb-4">
-            <label htmlFor="reviewTitle" className="block text-gray-700 mb-2">
+            <label htmlFor="reviewTitle" className="block text-gray-700 mb-1">
               Review Title
             </label>{playerId}{coachId}
             <input
@@ -100,7 +100,7 @@ const EvaluationModal: React.FC<EvaluationModalProps> = ({ isOpen,onClose, coach
 
           {/* Primary Video URL */}
           <div className="mb-4">
-            <label htmlFor="primaryVideoUrl" className="block text-gray-700 mb-2">
+            <label htmlFor="primaryVideoUrl" className="block text-gray-700 mb-1">
               Primary Video Link/URL
             </label>
             <input
@@ -112,12 +112,12 @@ const EvaluationModal: React.FC<EvaluationModalProps> = ({ isOpen,onClose, coach
               onChange={(e) => setPrimaryVideoUrl(e.target.value)}
               required
             />
-            <span className='text-xs text-gray-400 leading-3'>If you want feedback on a Trace video, download the file from Trace, upload to Google Drive, and share that link here for the coach. For Veo, ensure the match is set to public in order to share the link.</span>
+            <span className='text-xs text-gray-400 leading-3' style={{ lineHeight: '0.75rem' }}>If you want feedback on a Trace video, download the file from Trace, upload to Google Drive, and share that link here for the coach. For Veo, ensure the match is set to public in order to share the link.</span>
           </div>
 
           {/* Video URL #2 (Optional) */}
           <div className="mb-4">
-            <label htmlFor="videoUrl2" className="block text-gray-700 mb-2">
+            <label htmlFor="videoUrl2" className="block text-gray-700 mb-1">
               Video Link/URL #2 (Optional)
             </label>
             <input
@@ -132,7 +132,7 @@ const EvaluationModal: React.FC<EvaluationModalProps> = ({ isOpen,onClose, coach
 
           {/* Video URL #3 (Optional) */}
           <div className="mb-4">
-            <label htmlFor="videoUrl3" className="block text-gray-700 mb-2">
+            <label htmlFor="videoUrl3" className="block text-gray-700 mb-1">
               Video Link/URL #3 (Optional)
             </label>
             <input
@@ -147,11 +147,11 @@ const EvaluationModal: React.FC<EvaluationModalProps> = ({ isOpen,onClose, coach
 
           {/* Video Description */}
           <div className="mb-4">
-            <label htmlFor="videoDescription" className="block text-gray-700 mb-2">
+            <label htmlFor="videoDescription" className="block text-gray-700 mb-1">
               Video Description
             </label>
             <textarea
-              rows={5}
+              rows={4}
               placeholder='Include a brief description of the video you are submitting, including any specific feedback you would like as well as specific timestamps to be aware of.'
               id="videoDescription"
               className="w-full px-3 py-2 border border-gray-300 rounded-md"

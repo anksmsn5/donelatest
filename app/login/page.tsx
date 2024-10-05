@@ -1,5 +1,6 @@
 "use client";
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { signIn, useSession  } from 'next-auth/react';
 import Brand from '../public/images/brand.jpg';
 import Image from 'next/image';
 import jwt from 'jsonwebtoken';
@@ -16,7 +17,7 @@ export default function Login() {
   const [error, setError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
-
+  const { data: session } = useSession();
   interface DecodedToken {
     name: string;
     type: string; // Add type field to match with your existing logic
@@ -29,39 +30,31 @@ export default function Login() {
     setLoading(true);
    
     try {
-      const response = await fetch('/api/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formValues),
+      const response = await signIn('credentials', {
+        redirect: false,
+        email: formValues.email,
+        password: formValues.password,
+        loginAs: formValues.loginAs,
       });
 
+      console.log(response);
+
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || 'Something went wrong!');
-      }
-
-      const data = await response.json();
-      const decoded = jwt.decode(data.token) as DecodedToken;
-
-      localStorage.setItem('token', data.token);
-      
-      if (decoded.type === 'coach') {
-        window.location.href = '/coach/dashboard';
-      } else if (decoded.name == null) {
-        window.location.href = '/completeprofile';
-      } else if (decoded.type === 'player') {
-        window.location.href = '/dashboard';
-      }
-
-    } catch (err) {
-      
-
+       
       // Show SweetAlert with the error message
       Swal.fire({
         icon: 'error',
         title: 'Login Failed',
         text: 'Email or Password is incorrect!',
       });
+      }
+
+      const data = await response.json();
+       
+
+    } catch (err) {
+      
+
     } finally {
       setLoading(false);
     }
@@ -72,6 +65,20 @@ export default function Login() {
     setFormValues({ ...formValues, [name]: value });
   };
 
+  useEffect(() => {
+    // Check session data after login
+    if (session) {
+      console.log('Session:', session);
+      // Redirect based on session type
+      if (session.user.type === 'coach') {
+        window.location.href = '/coach/dashboard';
+      } else if (session.user.type === 'player') {
+        window.location.href = '/dashboard';
+      } else if (!session.user.name) {
+        window.location.href = '/completeprofile';
+      }
+    }
+  }, [session]);
   return (
     <>
       <div className="flex flex-col md:flex-row">

@@ -6,7 +6,7 @@ import { API_URL, BASEURL, SECRET_KEY } from '../../../lib/constants';
 import Image from 'next/image';
 import LoginModal from '../../components/LoginModal'; // Import the modal
 import EvaluationModal from '@/app/components/EvaluationModal';
-import jwt from 'jsonwebtoken';
+import { useSession, signOut } from 'next-auth/react';
 import { usePathname } from 'next/navigation';
 
 interface CoachData {
@@ -38,7 +38,7 @@ const CoachProfile = ({ params }: CoachProfileProps) => {
   const [error, setError] = useState<string | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const [playerId, setPlayerId] = useState<string | null>(null);
-
+  const { data: session } = useSession();
   // Fetch coach data
   useEffect(() => {
     const payload={
@@ -68,16 +68,9 @@ const CoachProfile = ({ params }: CoachProfileProps) => {
     };
 
     fetchCoachData();
-    const token: string | null = localStorage.getItem('token');
-
-    if (token) {
-     
-      setPlayerId('9');
-      setIsAuthenticated(true);
-    } else {
-      setIsAuthenticated(false);
-    }
-  }, [slug]); // Only re-run the effect if the slug changes
+   setPlayerId(session?.user.id);
+  
+  }, [session,slug]); // Only re-run the effect if the slug changes
 
   // Handle loading and error states
   if (loading) return <div>Loading...</div>;
@@ -135,7 +128,7 @@ const CoachProfile = ({ params }: CoachProfileProps) => {
               <span>📅</span>
               <p className="ml-2">Joined {joiningDate}</p>
             </div>
-            {isAuthenticated ? (
+            {session ? (
               <div className="mt-2 flex justify-center items-center text-sm text-gray-500">
                 <span>Rate</span>
                 <p className="ml-2">  ${coachData.expectedCharge}</p>
@@ -144,7 +137,7 @@ const CoachProfile = ({ params }: CoachProfileProps) => {
               <></>
             )}
 
-            {!isAuthenticated ? (
+            {!session ? (
               <>
                 <button
                   onClick={() => setIsModalOpen(true)} // Open modal on click

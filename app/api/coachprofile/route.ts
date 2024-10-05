@@ -30,6 +30,7 @@ import { SECRET_KEY } from '@/lib/constants';
             id: coachlist[0].id,
             expectedCharge: coachlist[0].expectedCharge,
             createdAt: coachlist[0].createdAt,
+            slug: coachlist[0].slug,
             
             image:coachlist[0].image
           };

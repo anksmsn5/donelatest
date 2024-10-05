@@ -15,7 +15,7 @@ const Dashboard: React.FC = () => {
 
   useEffect(() => {
     const fetchEvaluations = async () => {
-      const playerId = 1; // Replace with actual player ID logic
+      const playerId = 9; // Replace with actual player ID logic
       const responses = await Promise.all(
         ['Requested', 'Accepted', 'Completed', 'Declined'].map(status =>
           fetch(`http://localhost:3000/api/evaluation?playerId=${playerId}&status=${status}`)
@@ -39,7 +39,7 @@ const Dashboard: React.FC = () => {
     <div className="flex h-screen">
       <Sidebar />
       <main className="flex-grow bg-gray-100 p-4">
-        <DashboardTabs evaluations={evaluations} /> {/* Pass evaluations here */}
+        {/*<DashboardTabs evaluations={evaluations} />  Pass evaluations here */}
       </main>
     </div>
   );
