@@ -18,6 +18,11 @@ const handler = NextAuth({
         loginAs: { label: 'Login As', type: 'text' }, // Either 'player' or 'coach'
       },
       async authorize(credentials) {
+        // Check if credentials exist
+        if (!credentials) {
+          return null; // No credentials provided
+        }
+
         const { email, password, loginAs } = credentials;
         
         if (loginAs === 'coach') {
