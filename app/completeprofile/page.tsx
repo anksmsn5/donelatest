@@ -168,7 +168,7 @@ export default function Register() {
                   <select
                     name={name}
                     className="border border-gray-300 rounded-lg py-2 px-4 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    value={formValues[name as keyof FormValues]}
+                    value={formValues[name as keyof FormValues] || ""}
                     onChange={handleChange}
                     required
                   >
