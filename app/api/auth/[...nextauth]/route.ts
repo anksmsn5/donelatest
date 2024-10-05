@@ -68,10 +68,19 @@ const handler = NextAuth({
     strategy: 'jwt',
   },
   jwt: {
-    secret: "JHGJHG&^*&^*&HGJHGJ657668768JHJHGJHG*&^*&^*&^",
+    secret: process.env.NEXTAUTH_SECRET, 
   },
   callbacks: {
-
+    async jwt({ token, user }) {
+      // Check if the user exists and is of the correct type
+      if (user) {
+        const extendedUser = user as ExtendedUser; // Cast the user to the extended type
+        token.id = extendedUser.id;
+        token.type = extendedUser.type; // Add user type (coach or player) to the token
+        token.image = extendedUser.image;
+      }
+      return token;
+    },
     async session({ session, token }) {
       if (session.user) {
         session.user.id = token.id as string;
