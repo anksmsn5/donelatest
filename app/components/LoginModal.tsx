@@ -36,11 +36,11 @@ const LoginModal: React.FC<LoginModalProps> = ({ onClose,coachslug }) => {
         loginAs:loginAs,
       });
 
- 
-
-      if (!response.ok) {
-        throw new Error('Login failed');
+      if (!response || !response.ok) {
+        throw new Error("Login failed");
       }
+
+    
       
       setIsAuthenticated(true);
        window.location.href = '/coach/'+coachslug;
