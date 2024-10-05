@@ -7,14 +7,16 @@ import Image from 'next/image';
 interface FormValues {
   email: string;
   password: string;
-  loginAs: "player";
+  loginAs: "player"; // Make sure this is the only value it can take
 }
 
 export default function Register() {
-  const [formValues, setFormValues] = useState<FormValues>({ email: '', password: '' });
+  // Initialize formValues with loginAs included
+  const [formValues, setFormValues] = useState<FormValues>({ email: '', password: '', loginAs: "player" });
   const [error, setError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const { data: session } = useSession();
+
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     setError(null);
@@ -31,12 +33,13 @@ export default function Register() {
         const errorData = await response.json();
         throw new Error(errorData.message || 'Something went wrong!');
       }
-console.log(formValues.email);
+      
+      console.log(formValues.email);
       const res = await signIn('credentials', {
         redirect: false,
         email: formValues.email,
         password: formValues.password,
-        loginAs: "player",
+        loginAs: formValues.loginAs, // Use loginAs from formValues
       });
 
       //window.location.href = '/completeprofile';
@@ -49,18 +52,18 @@ console.log(formValues.email);
     const { name, value } = event.target;
     setFormValues({ ...formValues, [name]: value });
   };
+
   useEffect(() => {
     // Check session data after login
     if (session) {
-     if (!session.user.name) {
+      if (!session.user.name) {
         window.location.href = '/completeprofile';
       }
     }
   }, [session]);
+
   return (
     <>
-    
-
       <div className="flex flex-col md:flex-row">
         {/* Form Section */}
         <div className="flex-1 bg-white p-4 md:p-8">
