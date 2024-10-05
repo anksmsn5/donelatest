@@ -70,11 +70,11 @@ export default function Login() {
       console.log('Session:', session);
       // Redirect based on session type
       if (session.user.type === 'coach') {
-        window.location.href = '/coach/dashboard';
+       //window.location.href = '/coach/dashboard';
       } else if (session.user.type === 'player') {
-        window.location.href = '/dashboard';
+        //window.location.href = '/dashboard';
       } else if (!session.user.name) {
-        window.location.href = '/completeprofile';
+        //window.location.href = '/completeprofile';
       }
     }
   }, [session]);
