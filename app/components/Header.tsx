@@ -32,15 +32,7 @@ const Header: React.FC = () => {
   const toggleDropdown = () => {
     setDropdownOpen(!dropdownOpen);
   };
-  useEffect(() => {
-    // Check if session is still loading
-    if (status === "loading") return; 
-
-    // If not authenticated, redirect to login page
-    if (!session) {
-      router.push('/login'); // Redirect to your login page
-    }
-  }, [session, status]);
+ 
   return (
     <header className="bg-white-600 shadow-outline">
       <div className="max-w-7xl mx-auto flex justify-between items-center p-4">
