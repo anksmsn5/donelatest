@@ -10,8 +10,8 @@ import { SECRET_KEY } from '@/lib/constants';
 
 // Define the extended user type
 interface ExtendedUser {
-  id: string;
-  type: string;
+  id: string | null;
+  type: string | null;
   name: string | null;
   email: string | null;
   image: string | null;
