@@ -27,7 +27,7 @@ const handler = NextAuth({
           } else {
             // Successful authentication for coach
             return {
-              id: coach[0].id,
+              id: coach[0].id.toString(), // Convert number to string
               name: coach[0].firstName,
               email: coach[0].email,
               type: 'coach',
@@ -41,7 +41,7 @@ const handler = NextAuth({
           } else {
             // Successful authentication for player
             return {
-              id: user[0].id,
+              id: user[0].id.toString(), // Convert number to string
               name: user[0].first_name,
               email: user[0].email,
               type: 'player',
