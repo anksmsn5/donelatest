@@ -83,9 +83,9 @@ const handler = NextAuth({
     },
     async session({ session, token }) {
       if (session.user) {
-        session.user.id = token.id as string;
-        session.user.type = token.type as string; // Add the type to the session
-        session.user.image = token.image as string | null;
+        session.user.id = token.id as string; // Assign the id to session.user
+        session.user.type = token.type as string; // Assign the type to session.user
+        session.user.image = token.image as string | null; // Assign the image to session.user
       }
       return session;
     },
