@@ -9,14 +9,10 @@ import { SessionProvider } from 'next-auth/react';
 
 const inter = Inter({ subsets: ['latin'] });
 
- 
-
 export default function RootLayout({
   children,
-  session,
 }: {
   children: React.ReactNode;
-  session: any; 
 }) {
   return (
     <html lang="en">
@@ -25,13 +21,11 @@ export default function RootLayout({
         <meta name="description" content="This is my Next.js application." />
       </Head>
       <body className={inter.className}>
-       
-        <SessionProvider session={session}>
-        <Header />
+        <SessionProvider>
+          <Header />
           {children}
           <Footer />
         </SessionProvider>
-      
       </body>
     </html>
   );
