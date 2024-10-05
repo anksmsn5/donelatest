@@ -1,8 +1,10 @@
-import NextAuth, { NextAuthOptions } from 'next-auth';
+// app/api/auth/[...nextauth]/route.ts
+
+import NextAuth from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import bcrypt from 'bcryptjs';
-import { db } from '../../../../lib/db';
-import { users, coaches } from '../../../../lib/schema';
+import { db } from '@/lib/db'; // Adjust path based on your directory
+import { users, coaches } from '@/lib/schema';
 import { eq } from 'drizzle-orm';
 import { SECRET_KEY } from '@/lib/constants';
 
@@ -80,7 +82,7 @@ const handler = NextAuth({
       return token;
     },
     async session({ session, token }) {
-      if (session.user) { // Check if session.user is defined
+      if (session.user) {
         session.user.id = token.id as string;
         session.user.type = token.type as string; // Add the type to the session
         session.user.image = token.image as string | null;
@@ -93,4 +95,5 @@ const handler = NextAuth({
   },
 });
 
+// You need to export handler as GET and POST since this is now a Route Handler in the app directory
 export { handler as GET, handler as POST };
