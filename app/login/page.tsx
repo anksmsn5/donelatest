@@ -39,7 +39,7 @@ export default function Login() {
 
       console.log(response);
 
-      if (!response.ok) {
+      if (!response || !response.ok) {
        
       // Show SweetAlert with the error message
       Swal.fire({
