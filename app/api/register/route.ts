@@ -89,7 +89,7 @@ export async function PUT(req: NextRequest) {
     imageUrl = `/uploads/${fileName}`;
   }
 
-
+  const playerIDAsNumber = parseInt(playerID, 10);
   const updatedUser = await db
     .update(users)
     .set({
@@ -106,7 +106,7 @@ export async function PUT(req: NextRequest) {
       image: imageUrl,
 
     })
-    .where(eq(users.id, playerID))
+    .where(eq(users.id, playerIDAsNumber))
 
     .execute();
   return NextResponse.json({ message:"Profile Completed" }, { status: 200 });
