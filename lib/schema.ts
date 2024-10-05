@@ -109,3 +109,10 @@ export const payments = pgTable(
     };
   }
 );
+
+export const sessions = pgTable('sessions', {
+  id: serial('id').primaryKey(),
+  sessionToken: text('session_token').notNull().unique(),
+  userId: serial('user_id').notNull(),
+  expires: timestamp('expires').notNull(),
+});

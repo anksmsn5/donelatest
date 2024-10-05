@@ -6,7 +6,7 @@ import bcrypt from 'bcryptjs';
 import { db } from '@/lib/db'; // Adjust path based on your directory
 import { users, coaches } from '@/lib/schema';
 import { eq } from 'drizzle-orm';
-import { SECRET_KEY } from '@/lib/constants';
+ 
 
 // Define the extended user type
 interface ExtendedUser {
@@ -16,7 +16,7 @@ interface ExtendedUser {
   email: string | null;
   image: string | null;
 }
-
+const SECRET_KEY="JHGJHG&^*&^*&HGJHGJ657668768JHJHGJHG*&^*&^*&^";  
 const handler = NextAuth({
   providers: [
     CredentialsProvider({
@@ -32,7 +32,7 @@ const handler = NextAuth({
         }
 
         const { email, password, loginAs } = credentials;
-
+        
         if (loginAs === 'coach') {
           const coach = await db.select().from(coaches).where(eq(coaches.email, email)).execute();
           if (coach.length === 0 || !(await bcrypt.compare(password, coach[0].password))) {
@@ -83,9 +83,9 @@ const handler = NextAuth({
     },
     async session({ session, token }) {
       if (session.user) {
-        session.user.id = token.id as string; // Assign the id to session.user
-        session.user.type = token.type as string; // Assign the type to session.user
-        session.user.image = token.image as string | null; // Assign the image to session.user
+        session.user.id = token.id as string;
+        session.user.type = token.type as string; // Add the type to the session
+        session.user.image = token.image as string | null;
       }
       return session;
     },
