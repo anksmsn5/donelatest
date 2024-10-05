@@ -35,8 +35,16 @@ export async function POST(req: NextRequest) {
   let imageUrl = null;
 
   if (image) {
-    // Create a path for the image (store it in public/uploads)
+    
     const uploadDir = path.join(process.cwd(), 'public', 'uploads');
+
+    try {
+      await fs.mkdir(uploadDir, { recursive: true });
+      await fs.chmod(uploadDir, '755'); // Optional: Set directory permissions (e.g., 755)
+    } catch (err) {
+      return NextResponse.json({ message: "Unable to provide permission to directory" }, { status: 500 });
+    }
+
     const fileName = `${Date.now()}-${image.name}`; // Give the file a unique name
     const filePath = path.join(uploadDir, fileName);
 
