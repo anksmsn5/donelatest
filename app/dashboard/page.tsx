@@ -84,18 +84,17 @@ const Dashboard: React.FC = () => {
 
   return (
     <div className="flex h-screen">
-      <Sidebar />
-      <main className="flex-grow bg-gray-100 p-4">
+    <Sidebar />
+    <main className="flex-grow bg-gray-100 p-4">
       <div className="bg-white shadow-md rounded-lg p-6">
         <div className="flex space-x-4 mb-4">
-          {[
-            { name: 'Requested', value: '0' },
+          {[{ name: 'Requested', value: '0' },
             { name: 'Accepted', value: '1' },
             { name: 'Completed', value: '2' },
             { name: 'Declined', value: '3' }
           ].map(tab => (
             <button
-              key={tab.value}
+              key={tab.value} // Added key here
               onClick={() => {
                 setSelectedTab(tab.value);
                 fetchEvaluations(tab.value);
@@ -111,9 +110,9 @@ const Dashboard: React.FC = () => {
         <table {...tableInstance.getTableProps()} className="min-w-full bg-white border border-gray-300">
           <thead>
             {tableInstance.headerGroups.map(headerGroup => (
-              <tr {...headerGroup.getHeaderGroupProps()}>
+              <tr {...headerGroup.getHeaderGroupProps()} key={headerGroup.id}> {/* Added key here */}
                 {headerGroup.headers.map(column => (
-                  <th {...column.getHeaderProps()} className="border-b-2 border-gray-200 bg-gray-100 px-4 py-2 text-left text-gray-600">
+                  <th {...column.getHeaderProps()} className="border-b-2 border-gray-200 bg-gray-100 px-4 py-2" key={column.id}> {/* Added key here */}
                     {column.render('Header')}
                   </th>
                 ))}
@@ -124,9 +123,9 @@ const Dashboard: React.FC = () => {
             {tableInstance.rows.map(row => {
               tableInstance.prepareRow(row);
               return (
-                <tr {...row.getRowProps()}>
+                <tr {...row.getRowProps()} key={row.id}> {/* Added key here */}
                   {row.cells.map(cell => (
-                    <td {...cell.getCellProps()} className="border-b border-gray-200 px-4 py-2">
+                    <td {...cell.getCellProps()} className="border-b border-gray-200 px-4 py-2" key={cell.column.id}> {/* Added key here */}
                       {cell.render('Cell')}
                     </td>
                   ))}
@@ -135,9 +134,10 @@ const Dashboard: React.FC = () => {
             })}
           </tbody>
         </table>
-        </div>
-      </main>
-    </div>
+      </div>
+    </main>
+  </div>
+
   );
 };
 
