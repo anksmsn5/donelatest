@@ -97,7 +97,7 @@ const EvaluationDataTable: React.FC<EvaluationDataTableProps> = ({ limit, defaul
                 </thead>
                 <tbody>
                     {loading ? (
-                        <tr><td colSpan={7}>Loading...</td></tr>
+                        <tr><td colSpan={6}>Loading...</td></tr>
                     ) : (
                         data.map(item => (
                             <tr key={item.id}>
@@ -108,7 +108,10 @@ const EvaluationDataTable: React.FC<EvaluationDataTableProps> = ({ limit, defaul
                                 <td><a href={item.video_link_three} target='_blank'><VisibilityIcon className="icon" /></a></td>
                                 <td>{item.video_description}</td>
                                 <td>
-                                    
+                                    {item.status === 0 && <button className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Requested</button>}
+                                    {item.status === 1 && <button className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">Accepted</button>}
+                                    {item.status === 3 && <button className="bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-600">Completed</button>}
+                                    {item.status === 4 && <button className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600">Rejected</button>}
                                 </td>
                             </tr>
                         ))
