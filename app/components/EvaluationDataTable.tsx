@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState } from 'react';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 
 interface Item {
@@ -18,7 +18,7 @@ interface EvaluationDataTableProps {
     limit: number; // Number of items per page
     defaultSort: string; // Default sorting column and order
     playerId: number;
-    status: string; // Update this to string | null
+    status: string | null; // Ensure this is string | null
 }
 
 const EvaluationDataTable: React.FC<EvaluationDataTableProps> = ({ limit, defaultSort, playerId, status }) => {
@@ -29,14 +29,10 @@ const EvaluationDataTable: React.FC<EvaluationDataTableProps> = ({ limit, defaul
     const [page, setPage] = useState<number>(1);
     const [total, setTotal] = useState<number>(0);
 
-    // Prevent fetchData from running unnecessarily
-    const firstRender = useRef(true); // Helps avoid running the effect immediately after render
-
     const fetchData = async () => {
         setLoading(true);
         try {
             const response = await fetch(`/api/evaluations?search=${search}&sort=${sort}&page=${page}&limit=${limit}&playerId=${playerId || ''}&status=${status || ''}`);
-            
             if (response.ok) {
                 const data = await response.json();
                 setData(data.data);
@@ -51,12 +47,8 @@ const EvaluationDataTable: React.FC<EvaluationDataTableProps> = ({ limit, defaul
     };
 
     useEffect(() => {
-        if (firstRender.current) {
-            firstRender.current = false; // Avoid fetching data on initial render
-            return;
-        }
         fetchData();
-    }, [search, sort, page, playerId]); // Add status only if needed
+    }, [search, sort, page, playerId, status]); // Make sure status is included if needed
 
     const handleSort = (column: string) => {
         setSort(prev => prev.startsWith(column) && prev.endsWith('asc') ? `${column},desc` : `${column},asc`);
@@ -82,7 +74,7 @@ const EvaluationDataTable: React.FC<EvaluationDataTableProps> = ({ limit, defaul
                         <th onClick={() => handleSort('video_link_two')}>Video Link 2</th>
                         <th onClick={() => handleSort('video_link_three')}>Video Link 3</th>
                         <th onClick={() => handleSort('video_description')}>Video Description</th>
-                        <th onClick={() => handleSort('evaluation_status')}>Status</th>
+                        <th onClick={() => handleSort('status')}>Status</th> {/* Ensure correct status reference */}
                     </tr>
                 </thead>
                 <tbody>
@@ -93,9 +85,9 @@ const EvaluationDataTable: React.FC<EvaluationDataTableProps> = ({ limit, defaul
                             <tr key={item.id}>
                                 <td>{item.firstName} {item.lastName}</td>
                                 <td>{item.review_title}</td>
-                                <td><a href={item.primary_video_link} target='_blank'><VisibilityIcon className="icon" /></a></td>
-                                <td><a href={item.video_link_two} target='_blank'><VisibilityIcon className="icon" /></a> </td>
-                                <td><a href={item.video_link_three} target='_blank'><VisibilityIcon className="icon" /> </a></td>
+                                <td><a href={item.primary_video_link} target='_blank' rel="noopener noreferrer"><VisibilityIcon className="icon" /></a></td>
+                                <td><a href={item.video_link_two} target='_blank' rel="noopener noreferrer"><VisibilityIcon className="icon" /></a></td>
+                                <td><a href={item.video_link_three} target='_blank' rel="noopener noreferrer"><VisibilityIcon className="icon" /></a></td>
                                 <td>{item.video_description}</td>
                                 <td> 
                                     {item.status === 0 && (
