@@ -18,11 +18,6 @@ interface EvaluationsTableProps {
 }
 
 const EvaluationsTable: React.FC<EvaluationsTableProps> = ({ data }) => {
-  // Check if data is an array
-  if (!Array.isArray(data)) {
-    return <div>No evaluations available.</div>;
-  }
-
   const columns: Column<Evaluation>[] = React.useMemo(
     () => [
       { Header: 'Review Title', accessor: 'review_title' },
@@ -46,7 +41,7 @@ const EvaluationsTable: React.FC<EvaluationsTableProps> = ({ data }) => {
     prepareRow,
   } = useTable<Evaluation>({ columns, data });
 
-  // If data is not an array, return early but after defining hooks
+  // Check if data is an array and has elements after defining hooks
   if (!Array.isArray(data) || data.length === 0) {
     return <div>No evaluations available.</div>;
   }
