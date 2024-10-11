@@ -17,8 +17,8 @@ interface Item {
 
 // Props for the EvaluationDataTable
 interface EvaluationDataTableProps {
-    limit: number;
-    defaultSort: string;
+    limit: number | null;
+    defaultSort: string | null;
     playerId: number | null; // playerId can be null
     status: string | null; // Ensure status is string | null
 }
