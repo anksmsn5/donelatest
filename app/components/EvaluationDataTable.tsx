@@ -1,5 +1,8 @@
-import { useEffect, useState, useRef, useCallback } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import VisibilityIcon from '@mui/icons-material/Visibility';
+// Import useMemo and useTable if you're using them
+// import { useMemo } from 'react';
+// import { useTable } from 'react-table';
 
 interface Item {
     id: number;
@@ -18,7 +21,7 @@ interface EvaluationDataTableProps {
     limit: number; // Number of items per page
     defaultSort: string; // Default sorting column and order
     playerId: number;
-    status: string | null; // Updated to allow null
+    status: string | null; // Changed to string | null
 }
 
 const EvaluationDataTable: React.FC<EvaluationDataTableProps> = ({ limit, defaultSort, playerId, status }) => {
@@ -28,10 +31,11 @@ const EvaluationDataTable: React.FC<EvaluationDataTableProps> = ({ limit, defaul
     const [sort, setSort] = useState<string>(defaultSort);
     const [page, setPage] = useState<number>(1);
     const [total, setTotal] = useState<number>(0);
-    const firstRender = useRef(true); // Used to prevent initial fetch
 
-    // Use useCallback to memoize the fetchData function
-    const fetchData = useCallback(async () => {
+    const firstRender = useRef(true);
+
+    // Move fetchData definition outside of useEffect
+    const fetchData = async () => {
         setLoading(true);
         try {
             const response = await fetch(`/api/evaluations?search=${search}&sort=${sort}&page=${page}&limit=${limit}&playerId=${playerId || ''}&status=${status || ''}`);
@@ -47,21 +51,21 @@ const EvaluationDataTable: React.FC<EvaluationDataTableProps> = ({ limit, defaul
             console.error('Error fetching data:', error);
         }
         setLoading(false);
-    }, [search, sort, page, playerId, status]); // Add dependencies
+    };
 
     useEffect(() => {
-        if (!firstRender.current) {
-            fetchData();
-        } else {
+        if (firstRender.current) {
             firstRender.current = false; // Avoid fetching data on initial render
+            return;
         }
-    }, [fetchData]); // Add fetchData to dependencies
+        fetchData();
+    }, [search, sort, page, playerId, status]); // Include status if needed
 
     const handleSort = (column: string) => {
         setSort(prev => prev.startsWith(column) && prev.endsWith('asc') ? `${column},desc` : `${column},asc`);
     };
 
-    const totalPages = Math.ceil(total / limit); // Calculate total pages
+    const totalPages = Math.ceil(total / limit);
 
     return (
         <div>
@@ -81,7 +85,7 @@ const EvaluationDataTable: React.FC<EvaluationDataTableProps> = ({ limit, defaul
                         <th onClick={() => handleSort('video_link_two')}>Video Link 2</th>
                         <th onClick={() => handleSort('video_link_three')}>Video Link 3</th>
                         <th onClick={() => handleSort('video_description')}>Video Description</th>
-                        <th onClick={() => handleSort('status')}>Status</th>
+                        <th onClick={() => handleSort('status')}>Status</th> {/* Adjusted this */}
                     </tr>
                 </thead>
                 <tbody>
@@ -92,9 +96,9 @@ const EvaluationDataTable: React.FC<EvaluationDataTableProps> = ({ limit, defaul
                             <tr key={item.id}>
                                 <td>{item.firstName} {item.lastName}</td>
                                 <td>{item.review_title}</td>
-                                <td><a href={item.primary_video_link} target='_blank' rel='noopener noreferrer'><VisibilityIcon className="icon" /></a></td>
-                                <td><a href={item.video_link_two} target='_blank' rel='noopener noreferrer'><VisibilityIcon className="icon" /></a></td>
-                                <td><a href={item.video_link_three} target='_blank' rel='noopener noreferrer'><VisibilityIcon className="icon" /></a></td>
+                                <td><a href={item.primary_video_link} target='_blank'><VisibilityIcon className="icon" /></a></td>
+                                <td><a href={item.video_link_two} target='_blank'><VisibilityIcon className="icon" /></a></td>
+                                <td><a href={item.video_link_three} target='_blank'><VisibilityIcon className="icon" /></a></td>
                                 <td>{item.video_description}</td>
                                 <td> 
                                     {item.status === 0 && (
