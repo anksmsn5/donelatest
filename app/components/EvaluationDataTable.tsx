@@ -1,8 +1,5 @@
 import { useEffect, useState, useRef } from 'react';
 import VisibilityIcon from '@mui/icons-material/Visibility';
-// Import useMemo and useTable if you're using them
-// import { useMemo } from 'react';
-// import { useTable } from 'react-table';
 
 interface Item {
     id: number;
@@ -21,7 +18,7 @@ interface EvaluationDataTableProps {
     limit: number; // Number of items per page
     defaultSort: string; // Default sorting column and order
     playerId: number;
-    status: string | null; // Changed to string | null
+    status: string | null; // Ensure status is string | null
 }
 
 const EvaluationDataTable: React.FC<EvaluationDataTableProps> = ({ limit, defaultSort, playerId, status }) => {
@@ -32,9 +29,9 @@ const EvaluationDataTable: React.FC<EvaluationDataTableProps> = ({ limit, defaul
     const [page, setPage] = useState<number>(1);
     const [total, setTotal] = useState<number>(0);
 
-    const firstRender = useRef(true);
+    // Prevent fetchData from running unnecessarily
+    const firstRender = useRef(true); // Helps avoid running the effect immediately after render
 
-    // Move fetchData definition outside of useEffect
     const fetchData = async () => {
         setLoading(true);
         try {
@@ -54,18 +51,18 @@ const EvaluationDataTable: React.FC<EvaluationDataTableProps> = ({ limit, defaul
     };
 
     useEffect(() => {
-        if (firstRender.current) {
+        if (!firstRender.current) {
+            fetchData();
+        } else {
             firstRender.current = false; // Avoid fetching data on initial render
-            return;
         }
-        fetchData();
-    }, [search, sort, page, playerId, status]); // Include status if needed
+    }, [search, sort, page, playerId, status]); // Make sure status is included
 
     const handleSort = (column: string) => {
         setSort(prev => prev.startsWith(column) && prev.endsWith('asc') ? `${column},desc` : `${column},asc`);
     };
 
-    const totalPages = Math.ceil(total / limit);
+    const totalPages = Math.ceil(total / limit); // Calculate total pages
 
     return (
         <div>
@@ -85,7 +82,7 @@ const EvaluationDataTable: React.FC<EvaluationDataTableProps> = ({ limit, defaul
                         <th onClick={() => handleSort('video_link_two')}>Video Link 2</th>
                         <th onClick={() => handleSort('video_link_three')}>Video Link 3</th>
                         <th onClick={() => handleSort('video_description')}>Video Description</th>
-                        <th onClick={() => handleSort('status')}>Status</th> {/* Adjusted this */}
+                        <th onClick={() => handleSort('evaluation_status')}>Status</th>
                     </tr>
                 </thead>
                 <tbody>
