@@ -159,10 +159,10 @@ const Dashboard: React.FC = () => {
                 { name: 'Declined', value: '3' },
               ].map(tab => (
                 <button
-                  key={tab.value}
-                  onClick={() => setSelectedTab(tab.value)}
-                  className={`p-2 border-b-2 ${selectedTab === tab.value ? 'border-blue-500 font-bold' : 'border-transparent'}`}
-                >
+    key={tab.value} // This is good
+    onClick={() => setSelectedTab(tab.value)}
+    className={`p-2 border-b-2 ${selectedTab === tab.value ? 'border-blue-500 font-bold' : 'border-transparent'}`}
+  >
                   {tab.name}
                 </button>
               ))}
@@ -172,7 +172,7 @@ const Dashboard: React.FC = () => {
             <table {...tableInstance.getTableProps()} className="min-w-full bg-white border border-gray-300">
             <thead>
   {tableInstance.headerGroups.map(headerGroup => (
-    <tr {...headerGroup.getHeaderGroupProps()} key={headerGroup.id}>
+    <tr {...headerGroup.getHeaderGroupProps()} key={headerGroup.id}> {/* Add key here */}
       {headerGroup.headers.map(column => (
         <th {...column.getHeaderProps()} key={column.id} className="border-b-2 border-gray-200 bg-gray-100 px-4 py-2 text-left text-gray-600">
           {column.render('Header')}
@@ -187,7 +187,7 @@ const Dashboard: React.FC = () => {
   {tableInstance.rows.map(row => {
     tableInstance.prepareRow(row);
     return (
-      <tr {...row.getRowProps()} key={row.id}>
+      <tr {...row.getRowProps()} key={row.id}> {/* Add key here */}
         {row.cells.map(cell => (
           <td {...cell.getCellProps()} className="border-b border-gray-200 px-4 py-2">
             {cell.render('Cell')}
