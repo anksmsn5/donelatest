@@ -114,9 +114,9 @@ export async function GET(req: NextRequest) {
     // Filter data based on search
     if (search) {
       filteredData = filteredData.filter(item =>
-        item.firstName.toLowerCase().includes(search.toLowerCase()) ||
-        item.lastName.toLowerCase().includes(search.toLowerCase()) ||
-        item.reviewTitle.toLowerCase().includes(search.toLowerCase())
+        (item.firstName?.toLowerCase() ?? '').includes(search.toLowerCase()) ||
+        (item.lastName?.toLowerCase() ?? '').includes(search.toLowerCase()) ||
+        (item.reviewTitle?.toLowerCase() ?? '').includes(search.toLowerCase())
       );
     }
 
