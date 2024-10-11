@@ -189,7 +189,7 @@ const Dashboard: React.FC = () => {
     return (
       <tr {...row.getRowProps()} key={row.id}> {/* Add key here */}
         {row.cells.map(cell => (
-          <td {...cell.getCellProps()} className="border-b border-gray-200 px-4 py-2">
+          <td {...cell.getCellProps()} key={row.id} className="border-b border-gray-200 px-4 py-2">
             {cell.render('Cell')}
           </td>
         ))}
