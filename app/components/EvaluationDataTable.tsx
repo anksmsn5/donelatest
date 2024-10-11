@@ -1,6 +1,7 @@
 import { useEffect, useState, useRef } from 'react';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 
+// Define the item interface
 interface Item {
     id: number;
     firstName: string;
@@ -14,13 +15,15 @@ interface Item {
     created_at: string;
 }
 
+// Props for the EvaluationDataTable
 interface EvaluationDataTableProps {
-    limit: number; // Number of items per page
-    defaultSort: string; // Default sorting column and order
-    playerId: number;
+    limit: number;
+    defaultSort: string;
+    playerId: number | null; // playerId can be null
     status: string | null; // Ensure status is string | null
 }
 
+// Main component
 const EvaluationDataTable: React.FC<EvaluationDataTableProps> = ({ limit, defaultSort, playerId, status }) => {
     const [data, setData] = useState<Item[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
@@ -29,7 +32,7 @@ const EvaluationDataTable: React.FC<EvaluationDataTableProps> = ({ limit, defaul
     const [page, setPage] = useState<number>(1);
     const [total, setTotal] = useState<number>(0);
 
-    // Using useRef to track if it's the first render
+    // Ref to track if it's the first render
     const firstRender = useRef(true);
 
     // Fetching data function
@@ -47,19 +50,21 @@ const EvaluationDataTable: React.FC<EvaluationDataTableProps> = ({ limit, defaul
             }
         } catch (error) {
             console.error('Error fetching data:', error);
+        } finally {
+            setLoading(false);
         }
-        setLoading(false);
     };
 
-    // Fetch data on search, sort, page, playerId, and status changes
+    // Effect to fetch data based on dependencies
     useEffect(() => {
         if (!firstRender.current) {
             fetchData();
         } else {
             firstRender.current = false; // Set firstRender to false after initial render
         }
-    }, [search, sort, page, playerId, status]); // status is now included
+    }, [search, sort, page, playerId, status]); // dependencies
 
+    // Sorting function
     const handleSort = (column: string) => {
         setSort(prev => {
             const [currentColumn, currentOrder] = prev.split(',');
@@ -87,7 +92,7 @@ const EvaluationDataTable: React.FC<EvaluationDataTableProps> = ({ limit, defaul
                         <th onClick={() => handleSort('video_link_two')}>Video Link 2</th>
                         <th onClick={() => handleSort('video_link_three')}>Video Link 3</th>
                         <th onClick={() => handleSort('video_description')}>Video Description</th>
-                        <th onClick={() => handleSort('evaluation_status')}>Status</th>
+                        <th onClick={() => handleSort('status')}>Status</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -102,19 +107,11 @@ const EvaluationDataTable: React.FC<EvaluationDataTableProps> = ({ limit, defaul
                                 <td><a href={item.video_link_two} target='_blank'><VisibilityIcon className="icon" /></a></td>
                                 <td><a href={item.video_link_three} target='_blank'><VisibilityIcon className="icon" /></a></td>
                                 <td>{item.video_description}</td>
-                                <td> 
-                                    {item.status === 0 && (
-                                        <button className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Requested</button>
-                                    )}
-                                    {item.status === 1 && (
-                                        <button className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">Accepted</button>
-                                    )}
-                                    {item.status === 3 && (
-                                        <button className="bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-600">Completed</button>
-                                    )}
-                                    {item.status === 4 && (
-                                        <button className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600">Rejected</button>
-                                    )}
+                                <td>
+                                    {item.status === 0 && <button className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Requested</button>}
+                                    {item.status === 1 && <button className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">Accepted</button>}
+                                    {item.status === 3 && <button className="bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-600">Completed</button>}
+                                    {item.status === 4 && <button className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600">Rejected</button>}
                                 </td>
                             </tr>
                         ))
