@@ -1,6 +1,8 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
+import { useTable } from 'react-table';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 
+// Define Item interface for data structure
 interface Item {
     id: number;
     firstName: string;
@@ -14,15 +16,15 @@ interface Item {
     created_at: string;
 }
 
+// Define props interface for EvaluationDataTable
 interface EvaluationDataTableProps {
-    limit: number;
-    defaultSort: string;
+    limit: number; // Number of items per page
+    defaultSort: string; // Default sorting column and order
     playerId: number;
-    status: string | null;
+    status: string | null; // Status can be a string or null
 }
 
 const EvaluationDataTable: React.FC<EvaluationDataTableProps> = ({ limit, defaultSort, playerId, status }) => {
-    // All hooks are declared at the top level
     const [data, setData] = useState<Item[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [search, setSearch] = useState<string>('');
@@ -30,27 +32,41 @@ const EvaluationDataTable: React.FC<EvaluationDataTableProps> = ({ limit, defaul
     const [page, setPage] = useState<number>(1);
     const [total, setTotal] = useState<number>(0);
 
-    // Fetch data when dependencies change
-    useEffect(() => {
-        const fetchData = async () => {
-            setLoading(true);
-            try {
-                const response = await fetch(`/api/evaluations?search=${search}&sort=${sort}&page=${page}&limit=${limit}&playerId=${playerId || ''}&status=${status || ''}`);
-                if (response.ok) {
-                    const data = await response.json();
-                    setData(data.data);
-                    setTotal(data.total);
-                } else {
-                    console.error('Failed to fetch data');
-                }
-            } catch (error) {
-                console.error('Error fetching data:', error);
+    // Fetch data from the API
+    const fetchData = async () => {
+        setLoading(true);
+        try {
+            const response = await fetch(`/api/evaluations?search=${search}&sort=${sort}&page=${page}&limit=${limit}&playerId=${playerId || ''}&status=${status || ''}`);
+            if (response.ok) {
+                const responseData = await response.json();
+                setData(responseData.data);
+                setTotal(responseData.total);
+            } else {
+                console.error('Failed to fetch data');
             }
-            setLoading(false);
-        };
+        } catch (error) {
+            console.error('Error fetching data:', error);
+        }
+        setLoading(false);
+    };
 
-        fetchData(); // Call fetchData unconditionally
-    }, [search, sort, page, playerId, status]); // Dependencies here must include all necessary state
+    // Fetch data whenever search, sort, page, playerId, or status changes
+    useEffect(() => {
+        fetchData();
+    }, [search, sort, page, playerId, status]);
+
+    // Define columns for the react-table
+    const columns = useMemo(() => [
+        { Header: 'Coach Name', accessor: 'firstName' },
+        { Header: 'Review Title', accessor: 'review_title' },
+        { Header: 'Video Link', accessor: 'primary_video_link' },
+        { Header: 'Video Link 2', accessor: 'video_link_two' },
+        { Header: 'Video Link 3', accessor: 'video_link_three' },
+        { Header: 'Video Description', accessor: 'video_description' },
+        { Header: 'Status', accessor: 'status' },
+    ], []);
+
+    const tableInstance = useTable({ columns, data }); // Create table instance
 
     const handleSort = (column: string) => {
         setSort(prev => prev.startsWith(column) && prev.endsWith('asc') ? `${column},desc` : `${column},asc`);
