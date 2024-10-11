@@ -121,27 +121,18 @@ export async function GET(req: NextRequest) {
 
     // Sort data
     if (sort) {
-      const [key, order] = sort.split(',') as [string, string];
+      const [key, order] = sort.split(',') as [keyof typeof evaluationsData[0], string];
 
-      // Define the valid keys for sorting
-      const validKeys: (keyof typeof filteredData[0])[] = [
-        'firstName',
-        'lastName',
-        'evaluationId',
-        'reviewTitle',
-        'evaluationStatus',
-        'createdAt'
-      ];
+      // Define a safe sort function
+      filteredData.sort((a, b) => {
+        const valA = a[key];
+        const valB = b[key];
 
-      // Check if the key is valid before sorting
-      if (validKeys.includes(key as keyof typeof filteredData[0])) {
-        filteredData.sort((a, b) => {
-          if (order === 'asc') {
-            return a[key]! > b[key]! ? 1 : -1;
-          }
-          return a[key]! < b[key]! ? 1 : -1;
-        });
-      }
+        if (order === 'asc') {
+          return valA! > valB! ? 1 : -1;
+        }
+        return valA! < valB! ? 1 : -1;
+      });
     }
 
     // Pagination
@@ -157,3 +148,4 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }
+
