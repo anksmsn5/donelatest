@@ -76,10 +76,11 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ error: 'Invalid query parameters' }, { status: 400 });
     }
 
+    // Initial query construction
     let query = db
       .select({
-        firstName: coaches.firstName,
-        lastName: coaches.lastName,
+        firstName: coaches.first_name,
+        lastName: coaches.last_name,
         evaluationId: playerEvaluation.id, // Select specific columns
         reviewTitle: playerEvaluation.review_title,
         evaluationStatus: playerEvaluation.status,
@@ -89,6 +90,7 @@ export async function GET(req: NextRequest) {
       .innerJoin(coaches, eq(playerEvaluation.coach_id, coaches.id))
       .where(eq(playerEvaluation.player_id, playerId));
 
+    // Conditionally add status filter
     if (status) {
       query = query.where(and(eq(playerEvaluation.status, status)));
     }
