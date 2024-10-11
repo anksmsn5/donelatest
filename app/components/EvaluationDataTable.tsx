@@ -29,9 +29,10 @@ const EvaluationDataTable: React.FC<EvaluationDataTableProps> = ({ limit, defaul
     const [page, setPage] = useState<number>(1);
     const [total, setTotal] = useState<number>(0);
 
-    // Prevent fetchData from running unnecessarily
-    const firstRender = useRef(true); // Helps avoid running the effect immediately after render
+    // Using useRef to track if it's the first render
+    const firstRender = useRef(true);
 
+    // Fetching data function
     const fetchData = async () => {
         setLoading(true);
         try {
@@ -50,16 +51,20 @@ const EvaluationDataTable: React.FC<EvaluationDataTableProps> = ({ limit, defaul
         setLoading(false);
     };
 
+    // Fetch data on search, sort, page, playerId, and status changes
     useEffect(() => {
         if (!firstRender.current) {
             fetchData();
         } else {
-            firstRender.current = false; // Avoid fetching data on initial render
+            firstRender.current = false; // Set firstRender to false after initial render
         }
-    }, [search, sort, page, playerId, status]); // Make sure status is included
+    }, [search, sort, page, playerId, status]); // status is now included
 
     const handleSort = (column: string) => {
-        setSort(prev => prev.startsWith(column) && prev.endsWith('asc') ? `${column},desc` : `${column},asc`);
+        setSort(prev => {
+            const [currentColumn, currentOrder] = prev.split(',');
+            return currentColumn === column && currentOrder === 'asc' ? `${column},desc` : `${column},asc`;
+        });
     };
 
     const totalPages = Math.ceil(total / limit); // Calculate total pages
