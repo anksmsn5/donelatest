@@ -17,8 +17,8 @@ interface Item {
 
 // Props for the EvaluationDataTable
 interface EvaluationDataTableProps {
-    limit: number | null;
-    defaultSort: string | null;
+    limit: number | 10;
+    defaultSort: string | 'first_name,asc';
     playerId: number | null; // playerId can be null
     status: string | null; // Ensure status is string | null
 }
@@ -26,6 +26,7 @@ interface EvaluationDataTableProps {
 // Main component
 const EvaluationDataTable: React.FC<EvaluationDataTableProps> = ({ limit, defaultSort, playerId, status }) => {
     const [data, setData] = useState<Item[]>([]);
+    
     const [loading, setLoading] = useState<boolean>(true);
     const [search, setSearch] = useState<string>('');
     const [sort, setSort] = useState<string>(defaultSort);
@@ -56,13 +57,7 @@ const EvaluationDataTable: React.FC<EvaluationDataTableProps> = ({ limit, defaul
     };
 
     // Effect to fetch data based on dependencies
-    useEffect(() => {
-        if (!firstRender.current) {
-            fetchData();
-        } else {
-            firstRender.current = false; // Set firstRender to false after initial render
-        }
-    }, [search, sort, page, playerId, status]); // dependencies
+
 
     // Sorting function
     const handleSort = (column: string) => {
@@ -71,6 +66,14 @@ const EvaluationDataTable: React.FC<EvaluationDataTableProps> = ({ limit, defaul
             return currentColumn === column && currentOrder === 'asc' ? `${column},desc` : `${column},asc`;
         });
     };
+
+    useEffect(() => {
+        if (!firstRender.current) {
+            fetchData();
+        } else {
+            firstRender.current = false; // Set firstRender to false after initial render
+        }
+    }, [search, sort, page, playerId, status]); // dependencies
 
     const totalPages = Math.ceil(total / limit); // Calculate total pages
 
