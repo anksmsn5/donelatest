@@ -62,7 +62,6 @@ export async function PUT(req: NextRequest) {
   }
 }
 
-
 export async function GET(req: NextRequest) {
   try {
     const url = req.nextUrl;
@@ -123,14 +122,24 @@ export async function GET(req: NextRequest) {
     // Sort data
     if (sort) {
       const [key, order] = sort.split(',') as [string, string];
-    
-      // Check if key is a valid key of the data structure
-      const validKeys = ['firstName', 'lastName', 'evaluationId', 'reviewTitle', 'evaluationStatus', 'createdAt'] as const;
-    
-      if (validKeys.includes(key as any)) {
+
+      // Define the valid keys for sorting
+      const validKeys: (keyof typeof filteredData[0])[] = [
+        'firstName',
+        'lastName',
+        'evaluationId',
+        'reviewTitle',
+        'evaluationStatus',
+        'createdAt'
+      ];
+
+      // Check if the key is valid before sorting
+      if (validKeys.includes(key as keyof typeof filteredData[0])) {
         filteredData.sort((a, b) => {
-          if (order === 'asc') return a[key] > b[key] ? 1 : -1;
-          return a[key] < b[key] ? 1 : -1;
+          if (order === 'asc') {
+            return a[key]! > b[key]! ? 1 : -1;
+          }
+          return a[key]! < b[key]! ? 1 : -1;
         });
       }
     }
