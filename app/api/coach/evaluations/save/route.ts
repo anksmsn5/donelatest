@@ -3,10 +3,26 @@ import { NextResponse } from 'next/server';
 import { db } from '../../../../../lib/db'; // Import your Drizzle ORM database instance
 import { evaluationResults, playerEvaluation } from '@/lib/schema';
 import { eq } from 'drizzle-orm';
-export async function POST(req: NextResponse) {
+import { NextRequest } from 'next/server'; // Import NextRequest
+
+export async function POST(req: NextRequest) {
     try {
-        const data=await req.json();
-        const { evaluationId,playerID,coachID, technicalScores, tacticalScores, physicalScores, technicalRemarks, tacticalRemarks, physicalRemarks, finalRemarks } = data;
+        // Parse the request body
+        const data = await req.json();
+        const { 
+            evaluationId, 
+            playerID, 
+            coachID, 
+            technicalScores, 
+            tacticalScores, 
+            physicalScores, 
+            technicalRemarks, 
+            tacticalRemarks, 
+            physicalRemarks, 
+            finalRemarks 
+        } = data;
+
+        // Insert evaluation results into the database
         const insertedData = await db.insert(evaluationResults).values({
             evaluationId: evaluationId,
             playerId: playerID,
@@ -21,18 +37,19 @@ export async function POST(req: NextResponse) {
             createdAt: new Date(),
         }).returning(); 
 
-
+        // Update the player evaluation status
         const updateEvaluation = await db
-        .update(playerEvaluation)
-        .set({
-          status:2 || undefined
-        })
-        .where(eq(playerEvaluation.id,evaluationId)) // Update by user ID
-        .returning();
-         
-        return NextResponse.json({ success:"success" });
+            .update(playerEvaluation)
+            .set({
+                status: 2 // Assuming 2 means "completed" or some status
+            })
+            .where(eq(playerEvaluation.id, evaluationId)) // Update by evaluation ID
+            .returning();
+
+        // Return a success response
+        return NextResponse.json({ success: "success", insertedData, updateEvaluation });
     } catch (error) {
         console.error('Error saving evaluation results:', error);
-        return NextResponse.json({ success: false }, { status: 500 });
+        return NextResponse.json({ success: false, error: error.message }, { status: 500 });
     }
 }
