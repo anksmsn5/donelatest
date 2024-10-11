@@ -62,6 +62,7 @@ export async function PUT(req: NextRequest) {
   }
 }
 
+
 export async function GET(req: NextRequest) {
   try {
     const url = req.nextUrl;
@@ -81,7 +82,12 @@ export async function GET(req: NextRequest) {
 
     // Conditionally add status filter
     if (status) {
-      conditions.push(eq(playerEvaluation.status, status));
+      const parsedStatus = parseInt(status, 10); // Convert status to a number
+      if (!isNaN(parsedStatus)) {
+        conditions.push(eq(playerEvaluation.status, parsedStatus));
+      } else {
+        return NextResponse.json({ error: 'Invalid status value' }, { status: 400 });
+      }
     }
 
     // Combine all conditions using `and()`
