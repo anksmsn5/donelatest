@@ -76,7 +76,18 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ error: 'Invalid query parameters' }, { status: 400 });
     }
 
-    // Initial query construction
+    // Define an initial condition with the playerId
+    const conditions = [eq(playerEvaluation.player_id, playerId)];
+
+    // Conditionally add status filter
+    if (status) {
+      conditions.push(eq(playerEvaluation.status, status));
+    }
+
+    // Combine all conditions using `and()`
+    const queryCondition = and(...conditions);
+
+    // Execute the query with the combined condition
     let query = db
       .select({
         firstName: coaches.firstName,
@@ -88,15 +99,10 @@ export async function GET(req: NextRequest) {
       })
       .from(playerEvaluation)
       .innerJoin(coaches, eq(playerEvaluation.coach_id, coaches.id))
-      .where(eq(playerEvaluation.player_id, playerId));
+      .where(queryCondition)
+      .limit(limit);
 
-    // Conditionally add status filter
-    if (status) {
-      query = query.where(and(eq(playerEvaluation.status, status)));
-    }
-
-    // Execute the query with a limit
-    const evaluationsData = await query.limit(limit).execute();
+    const evaluationsData = await query.execute();
     let filteredData = evaluationsData;
 
     // Filter data based on search
