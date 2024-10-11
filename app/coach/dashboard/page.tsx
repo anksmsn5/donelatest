@@ -170,31 +170,33 @@ const Dashboard: React.FC = () => {
 
             {/* Table to display evaluations */}
             <table {...tableInstance.getTableProps()} className="min-w-full bg-white border border-gray-300">
-              <thead>
-                {tableInstance.headerGroups.map(headerGroup => (
-                  <tr {...headerGroup.getHeaderGroupProps()}>
-                    {headerGroup.headers.map(column => (
-                      <th {...column.getHeaderProps()} className="border-b-2 border-gray-200 bg-gray-100 px-4 py-2 text-left text-gray-600">
-                        {column.render('Header')}
-                      </th>
-                    ))}
-                  </tr>
-                ))}
-              </thead>
-              <tbody {...tableInstance.getTableBodyProps()}>
-                {tableInstance.rows.map(row => {
-                  tableInstance.prepareRow(row);
-                  return (
-                    <tr {...row.getRowProps()}>
-                      {row.cells.map(cell => (
-                        <td {...cell.getCellProps()} className="border-b border-gray-200 px-4 py-2">
-                          {cell.render('Cell')}
-                        </td>
-                      ))}
-                    </tr>
-                  );
-                })}
-              </tbody>
+            <thead>
+  {tableInstance.headerGroups.map(headerGroup => (
+    <tr {...headerGroup.getHeaderGroupProps()} key={headerGroup.id}>
+      {headerGroup.headers.map(column => (
+        <th {...column.getHeaderProps()} key={column.id} className="border-b-2 border-gray-200 bg-gray-100 px-4 py-2 text-left text-gray-600">
+          {column.render('Header')}
+        </th>
+      ))}
+    </tr>
+  ))}
+</thead>
+
+ 
+<tbody {...tableInstance.getTableBodyProps()}>
+  {tableInstance.rows.map(row => {
+    tableInstance.prepareRow(row);
+    return (
+      <tr {...row.getRowProps()} key={row.id}>
+        {row.cells.map(cell => (
+          <td {...cell.getCellProps()} className="border-b border-gray-200 px-4 py-2">
+            {cell.render('Cell')}
+          </td>
+        ))}
+      </tr>
+    );
+  })}
+</tbody>
             </table>
           </div>
         </main>

@@ -1,3 +1,4 @@
+// components/Tabs.tsx
 import { useState } from 'react';
 
 const DashboardTabs: React.FC = () => {
@@ -15,7 +16,7 @@ const DashboardTabs: React.FC = () => {
       <div className="flex justify-center items-center space-x-4 border-b pb-2">
         {tabs.map(tab => (
           <button
-            key={tab.id} // Key is here
+            key={tab.id}
             className={`p-2 font-semibold ${activeTab === tab.id ? 'border-b-2 border-blue-500' : ''}`}
             onClick={() => setActiveTab(tab.id)}
           >
