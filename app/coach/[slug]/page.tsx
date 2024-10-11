@@ -8,6 +8,7 @@ import LoginModal from '../../components/LoginModal'; // Import the modal
 import EvaluationModal from '@/app/components/EvaluationModal';
 import { useSession, signOut } from 'next-auth/react';
 import { usePathname } from 'next/navigation';
+import Loading from '@/app/components/Loading';
 
 interface CoachData {
   id: string; // or number depending on your data structure
@@ -73,7 +74,9 @@ const CoachProfile = ({ params }: CoachProfileProps) => {
   }, [session,slug]); // Only re-run the effect if the slug changes
 
   // Handle loading and error states
-  if (loading) return <div>Loading...</div>;
+  if (loading) {
+    return <Loading/>; // Loading indicator
+  }
   if (error) return <div>{error}</div>;
   if (!coachData) return <div>Coach not found</div>;
 
@@ -90,8 +93,9 @@ const CoachProfile = ({ params }: CoachProfileProps) => {
           <div className="flex justify-center mb-6">
             {/* Profile Picture */}
             <div className="relative w-32 h-32">
+              
               <Image
-                src={BASEURL + coachData.image}
+                src={coachData.image}
                 alt="Profile Picture"
                 className="rounded-full"
                 layout="fill"
@@ -164,6 +168,7 @@ const CoachProfile = ({ params }: CoachProfileProps) => {
 
 {isevaludationModalopen && playerId && (
   <EvaluationModal
+  amount={coachData.expectedCharge}
     isOpen={isevaludationModalopen}
     coachId={coachData.id} 
     playerId={playerId} 

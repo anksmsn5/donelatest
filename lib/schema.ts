@@ -8,6 +8,7 @@ import {
   uniqueIndex,
   date,
   decimal,
+  pgEnum,
   integer // Ensure integer is imported from drizzle-orm/pg-core
 } from "drizzle-orm/pg-core";
 
@@ -66,25 +67,31 @@ export const coaches = pgTable(
 );
 
 // Player Evaluation table
+
+
+// 2. Use the defined enum type in your table schema
 export const playerEvaluation = pgTable(
   "player_evaluation",
   {
     id: serial("id").primaryKey(),
-    player_id: integer("player_id").notNull(), 
+    player_id: integer("player_id").notNull(),
     coach_id: integer("coach_id").notNull(),
     review_title: varchar("review_title").notNull(),
     primary_video_link: text("primary_video_link").notNull(),
     video_link_two: text("video_link_two"),
     video_link_three: text("video_link_three"),
     video_description: text("video_description").notNull(),
-    evaluation_status: varchar("evaluation_status").default("Requested").notNull(),
+    status: integer("status").notNull(), // Use enum type here
     payment_status: varchar("payment_status"),
     created_at: timestamp("created_at").defaultNow().notNull(),
     updated_at: timestamp("updated_at").defaultNow().notNull(),
   },
   (playerEvaluation) => {
     return {
-      uniqueIdx: uniqueIndex("player_evaluation_unique_idx").on(playerEvaluation.player_id, playerEvaluation.review_title),
+      uniqueIdx: uniqueIndex("player_evaluation_unique_idx").on(
+        playerEvaluation.player_id,
+        playerEvaluation.review_title
+      ),
     };
   }
 );
@@ -115,4 +122,18 @@ export const sessions = pgTable('sessions', {
   sessionToken: text('session_token').notNull().unique(),
   userId: serial('user_id').notNull(),
   expires: timestamp('expires').notNull(),
+});
+
+export const evaluationResults = pgTable('evaluation_results', {
+  id: serial('id').primaryKey(),
+  playerId: integer('playerId').notNull(),
+  coachId: integer('coachId').notNull(),
+  evaluationId: integer('evaluation_id').notNull(),
+  finalRemarks: text('finalRemarks'),           // Long text for final remarks
+  physicalRemarks: text('physicalRemarks'),     // Long text for physical remarks
+  tacticalRemarks: text('tacticalRemarks'),     // Long text for tactical remarks
+  technicalRemarks: text('technicalRemarks'),     // Long text for tactical remarks
+  physicalScores: text('physicalScores').notNull(), // JSON field for physical scores
+  tacticalScores: text('tacticalScores').notNull(), // JSON field for tactical scores
+  technicalScores: text('technicalScores').notNull(), // JSON field for technical scores
 });

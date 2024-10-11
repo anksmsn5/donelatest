@@ -1,59 +1,61 @@
 "use client";
 import { useEffect, useState } from 'react';
-import { signIn, useSession  } from 'next-auth/react';
+import { signIn, useSession } from 'next-auth/react';
 import Brand from '../public/images/brand.jpg';
 import Image from 'next/image';
-import jwt from 'jsonwebtoken';
-import Swal from 'sweetalert2'; // Import SweetAlert2
+import { showSuccess, showError } from '../components/Toastr';
 
 interface FormValues {
   email: string;
   password: string;
-  loginAs: 'coach' | 'player'; // Added field for login type
+  loginAs: 'coach' | 'player';
 }
 
 export default function Login() {
-  const [formValues, setFormValues] = useState<FormValues>({ email: '', password: '', loginAs: 'coach' }); // Default login type
-  const [error, setError] = useState<string | null>(null);
-  const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const [formValues, setFormValues] = useState<FormValues>({ email: '', password: '', loginAs: 'coach' });
   const [loading, setLoading] = useState<boolean>(false);
   const { data: session } = useSession();
-  interface DecodedToken {
-    name: string;
-    type: string; // Add type field to match with your existing logic
-  }
+
+  const validateEmail = (email: string) => {
+    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return re.test(email);
+  };
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-    setError(null);
-    setSuccessMessage(null);
     setLoading(true);
-   
+
+    const { email, password } = formValues;
+
+    // Validate email and password
+    if (!validateEmail(email)) {
+      showError('Invalid email format.');
+      setLoading(false);
+      return;
+    }
+
+    if (password.length < 6) {
+      showError('Password must be at least 6 characters long.');
+      setLoading(false);
+      return;
+    }
+
     try {
       const response = await signIn('credentials', {
         redirect: false,
-        email: formValues.email,
-        password: formValues.password,
+        email,
+        password,
         loginAs: formValues.loginAs,
       });
 
-      console.log(response);
-
       if (!response || !response.ok) {
-       
-      // Show SweetAlert with the error message
-      Swal.fire({
-        icon: 'error',
-        title: 'Login Failed',
-        text: 'Email or Password is incorrect!',
-      });
+        showError('Email or Password Incorrect.');
+      } else {
+        showSuccess('Logged In Successfully.');
       }
 
-       
-
     } catch (err) {
-      
-
+      showError('An error occurred. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -65,32 +67,27 @@ export default function Login() {
   };
 
   useEffect(() => {
-    // Check session data after login
     if (session) {
       console.log('Session:', session);
       // Redirect based on session type
       if (session.user.type === 'coach') {
-       window.location.href = '/coach/dashboard';
+        window.location.href = '/coach/dashboard';
       } else if (session.user.type === 'player') {
         window.location.href = '/dashboard';
       } else if (!session.user.name) {
-      window.location.href = '/completeprofile';
+        window.location.href = '/completeprofile';
       }
     }
   }, [session]);
+
   return (
     <>
       <div className="flex flex-col md:flex-row">
-        {/* Form Section */}
         <div className="flex-1 bg-white p-4 md:p-8">
           <div className="bg-white rounded-lg p-12 max-w-md mx-auto">
             <h2 className="text-2xl font-bold mb-6 text-left">Sign In</h2>
-
-           
-
             <form onSubmit={handleSubmit}>
-               {/* Radio Group for Login As */}
-               <div className="mb-4">
+              <div className="mb-4">
                 <span className="block text-gray-700 text-sm font-semibold mb-2">Login as:</span>
                 <label className="inline-flex items-center mr-4">
                   <input
@@ -127,7 +124,7 @@ export default function Login() {
                   name="email"
                   value={formValues.email}
                   onChange={handleChange}
-                  required
+                  
                   disabled={loading}
                 />
               </div>
@@ -142,7 +139,7 @@ export default function Login() {
                   value={formValues.password}
                   className="border border-gray-300 rounded-lg py-2 px-4 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
                   onChange={handleChange}
-                  required
+                  
                   disabled={loading}
                 />
               </div>
@@ -171,32 +168,12 @@ export default function Login() {
           </div>
         </div>
 
-        {/* Brand Section */}
         <div className="flex-1 bg-white">
           <Image src={Brand} alt="brand" layout="responsive" width={500} height={500} className="object-cover" />
         </div>
       </div>
 
-      {/* Loader Styles */}
-      <style jsx>{`
-        .loader {
-          border: 4px solid #f3f3f3;
-          border-top: 4px solid #3498db;
-          border-radius: 50%;
-          width: 24px;
-          height: 24px;
-          animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin {
-          0% {
-            transform: rotate(0deg);
-          }
-          100% {
-            transform: rotate(360deg);
-          }
-        }
-      `}</style>
+      
     </>
   );
 }

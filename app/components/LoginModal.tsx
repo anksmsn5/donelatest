@@ -1,6 +1,7 @@
 "use client"; // Ensure this is a client component
 import { useState } from 'react';
 import { signIn, useSession  } from 'next-auth/react';
+import { showSuccess, showError } from '../components/Toastr';
 import jwt from 'jsonwebtoken';
 interface LoginModalProps {
   isOpen: boolean;
@@ -15,18 +16,27 @@ const LoginModal: React.FC<LoginModalProps> = ({ onClose,coachslug }) => {
   const [loading, setLoading] = useState<boolean>(false);
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const { data: session } = useSession();
-
+  const validateEmail = (email: string) => {
+    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return re.test(email);
+  };
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
     setError(null);
     const loginAs="player";
-    if (!email || !password) {
-      setError('Please fill in both fields.');
+    if (!validateEmail(email)) {
+      showError('Invalid email format.');
       setLoading(false);
       return;
     }
 
+    if (password.length < 6) {
+      showError('Password must be at least 6 characters long.');
+      setLoading(false);
+      return;
+    }
+     
     // Simulating an API call
     try {
       const response = await signIn('credentials', {
@@ -37,7 +47,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ onClose,coachslug }) => {
       });
 
       if (!response || !response.ok) {
-        throw new Error("Login failed");
+        showError('Email or Password Incorrect.');
       }
 
     
@@ -69,7 +79,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ onClose,coachslug }) => {
         {error && <p className="text-red-500 mb-4">{error}</p>}
 
         <form onSubmit={handleSubmit}>
-          <div className="mb-4">{coachslug}
+          <div className="mb-4"> 
             <label htmlFor="email" className="block text-gray-700 mb-2">
               Email
             </label>

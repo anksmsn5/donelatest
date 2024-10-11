@@ -18,6 +18,11 @@ interface EvaluationsTableProps {
 }
 
 const EvaluationsTable: React.FC<EvaluationsTableProps> = ({ data }) => {
+  // Check if data is an array
+  if (!Array.isArray(data)) {
+    return <div>No evaluations available.</div>;
+  }
+
   const columns: Column<Evaluation>[] = React.useMemo(
     () => [
       { Header: 'Review Title', accessor: 'review_title' },
@@ -60,9 +65,9 @@ const EvaluationsTable: React.FC<EvaluationsTableProps> = ({ data }) => {
       <tbody {...getTableBodyProps()}>
         {rows.map(row => {
           prepareRow(row);
-          const { key, ...rowProps } = row.getRowProps(); // Destructure key
+          const { key, ...rowProps } = row.getRowProps();
           return (
-            <tr {...rowProps} key={row.id}> {/* Use row.id as key */}
+            <tr {...rowProps} key={row.id}>
               {row.cells.map((cell, index) => {
                 const { key, ...cellProps } = cell.getCellProps();
                 return (

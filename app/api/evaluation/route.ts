@@ -20,13 +20,13 @@ export async function POST(req: NextRequest) {
             video_link_three: videoUrl3,
             video_description: videoDescription,
             coach_id: coachId,
-            evaluation_status: "Requested",
+            status:0,
             payment_status: "Pending",
             created_at: new Date(),
             updated_at: new Date(),
         }).returning();
 
-        return NextResponse.json({ message: "Evaluation Request Submitted Successfully." }, { status: 200 });
+        return NextResponse.json({result}, { status: 200 });
     } catch (error) {
         console.error('Error during insertion:', error); // Log the error for debugging
         return NextResponse.json({ message:body}, { status: 500 });

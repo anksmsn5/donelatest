@@ -72,5 +72,96 @@ img.logo {
   .book-button:hover {
     background-color: #08d;
   }
-  
+
+
+
+
+
+  /* components/Loading.module.css */
+.loader {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  font-family: Arial, sans-serif;
+}
+
+.spinner {
+  border: 8px solid rgba(255, 255, 255, 0.3);
+  border-top: 8px solid #3498db;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th, td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: left;
+}
+
+th {
+  background-color: #f2f2f2;
+  cursor: pointer; /* Optional: for sorting */
+}
+
+.icon {
+  color: rgb(59 130 246 / var(--tw-bg-opacity)); /* Example for icon color */
+  cursor: pointer; /* Optional: to indicate clickable */
+}
+input.searchBar {
+  border: 1px solid #ccc;
+  padding: 5px;
+  border-radius: 0px 5px 5px 0px;
+}
+/* Pagination styles */
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+  gap: 10px;
+}
+
+.pagination button {
+  background-color: #3498db;;
+  border: none;
+  color: white;
+  padding: 8px 16px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+}
+
+.pagination button:disabled {
+  background-color: #bfbfbf;
+  cursor: not-allowed;
+}
+
+.pagination button:hover:not(:disabled) {
+  background-color: #3498db;;
+}
+
+.pagination span {
+  font-size: 16px;
+}
+
+
   

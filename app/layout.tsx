@@ -7,6 +7,8 @@ import Footer from './components/Footer';
 import Head from 'next/head';
 import { SessionProvider } from 'next-auth/react';
 
+import Toastr from './components/Toastr';
+
 const inter = Inter({ subsets: ['latin'] });
 
 export default function RootLayout({
@@ -23,6 +25,7 @@ export default function RootLayout({
       <body className={inter.className}>
         <SessionProvider>
           <Header />
+          <Toastr/>
           {children}
           <Footer />
         </SessionProvider>

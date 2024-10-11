@@ -6,6 +6,7 @@ import bcrypt from 'bcryptjs';
 import { db } from '@/lib/db'; // Adjust path based on your directory
 import { users, coaches } from '@/lib/schema';
 import { eq } from 'drizzle-orm';
+import { SECRET_KEY } from '@/lib/constants';
  
 
 // Define the extended user type
@@ -18,6 +19,7 @@ interface ExtendedUser {
 }
   
 const handler = NextAuth({
+  
   providers: [
     CredentialsProvider({
       name: 'Credentials',
@@ -38,12 +40,13 @@ const handler = NextAuth({
           if (coach.length === 0 || !(await bcrypt.compare(password, coach[0].password))) {
             return null; // Invalid credentials
           } else {
+            
             return {
               id: coach[0].id.toString(),
               name: coach[0].firstName,
               email: coach[0].email,
               type: 'coach', // Custom field indicating coach or player
-              image: coach[0].image,
+              //image: coach[0].image,
             };
           }
         } else if (loginAs === 'player') {
@@ -56,7 +59,7 @@ const handler = NextAuth({
               name: user[0].first_name,
               email: user[0].email,
               type: 'player', // Custom field indicating player
-              image: user[0].image,
+              //image: user[0].image,
             };
           }
         }
@@ -68,7 +71,8 @@ const handler = NextAuth({
     strategy: 'jwt',
   },
   jwt: {
-    secret: process.env.NEXTAUTH_SECRET, 
+    secret:SECRET_KEY,
+    //secret: process.env.NEXTAUTH_SECRET, 
   },
   callbacks: {
     async jwt({ token, user }) {

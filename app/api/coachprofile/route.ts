@@ -17,25 +17,35 @@ import { SECRET_KEY } from '@/lib/constants';
     try {
       // Using 'like' with lower case for case-insensitive search
       const coachlist = await db
-        .select()
+        .select({
+          firstName:coaches.firstName,
+          lastName:coaches.lastName,
+          id:coaches.id,
+          expectedCharge:coaches.expectedCharge,
+          createdAt:coaches.createdAt,
+          slug:coaches.slug,
+          image:coaches.image
+
+        })
         .from(coaches)
         .where(
           eq(coaches.slug,slug)
         )
         .limit(1) 
         .execute();
-        const payload = {
-            firstName: coachlist[0].firstName,
-            lastName: coachlist[0].lastName,
-            id: coachlist[0].id,
-            expectedCharge: coachlist[0].expectedCharge,
-            createdAt: coachlist[0].createdAt,
-            slug: coachlist[0].slug,
-            
-            image:coachlist[0].image
-          };
+        const payload = coachlist.map(coach => ({
+          firstName: coach.firstName,
+          lastName: coach.lastName,
+          id: coach.id,
+          expectedCharge: coach.expectedCharge,
+          createdAt: coach.createdAt, 
+          slug:coach.slug,
+          image: coach.image ? `${coach.image}` : null,
+        }));
+
+       
   
-      return NextResponse.json(payload);
+      return NextResponse.json(payload[0]);
     } catch (error) {
       const err = error as any;
       console.error('Error fetching coaches:', error);

@@ -3,13 +3,14 @@ import { useEffect, useState } from 'react';
 import ProfileCard from '../components/ProfileCard';
 import SearchFilter from '../components/SearchFilter';
 import Head from 'next/head';
+import Loading from '../components/Loading';
 
 // Define a type for the profile
 interface Profile {
   id:number;
   firstName: string;
   organization: string;
-  image: string;
+  image: string | null;
   rating: number;
   slug: string; // Add slug if it's part of the profile
   clubName: string; // Add clubName if it's part of the profile
@@ -30,6 +31,7 @@ const Home = () => {
           throw new Error('Failed to fetch profiles');
         }
         const data = await response.json();
+        console.log(data);
         setProfiles(data); // Assuming the data is an array of profiles
       } catch (err) {
         setError("Some issue occurred.");
@@ -45,7 +47,9 @@ const Home = () => {
   const filteredProfiles = profiles.filter((profile) =>
     profile.firstName.includes(searchQuery.toLowerCase()) // Check against name
   );
-
+  if (loading) {
+    return <Loading/>; // Loading indicator
+  }
   return (
     <>
       <Head>
@@ -59,12 +63,13 @@ const Home = () => {
           </div>
         </div>
 
-        {loading && <p>Loading profiles...</p>} {/* Loading state message */}
+        
         {error && <p className="text-red-500">{error}</p>} {/* Error message */}
 
         <div className="mt-4">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {filteredProfiles.map((profile, index) => (
+              
               <ProfileCard
                 key={profile.id}
                 name={profile.firstName} // Change from firstName to name

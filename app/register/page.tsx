@@ -1,27 +1,54 @@
 "use client";
 import { useEffect, useState } from 'react';
-import { signIn, useSession  } from 'next-auth/react';
+import { signIn, useSession } from 'next-auth/react';
 import Brand from '../public/images/brand.jpg';
 import Image from 'next/image';
+import { showError, showSuccess } from '../components/Toastr';
 
 interface FormValues {
   email: string;
   password: string;
-  loginAs: "player"; // Make sure this is the only value it can take
+  loginAs: "player";
 }
 
 export default function Register() {
-  // Initialize formValues with loginAs included
   const [formValues, setFormValues] = useState<FormValues>({ email: '', password: '', loginAs: "player" });
   const [error, setError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const [loading, setLoading] = useState<boolean>(false);
   const { data: session } = useSession();
+
+  const validateEmail = (email: string) => {
+    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return re.test(email);
+  };
+
+  const validatePassword = (password: string) => {
+    return password.length >= 6; // Adjust as needed for additional strength requirements
+  };
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     setError(null);
     setSuccessMessage(null);
-     
+
+    const { email, password } = formValues;
+
+    if (email=='') {
+      showError('Email Required.');
+      return;
+    }
+
+    if (!validateEmail(email)) {
+      showError('Invalid email format.');
+      return;
+    }
+
+    if (!validatePassword(password)) {
+      showError('Password must be at least 6 characters long.');
+      return;
+    }
+    setLoading(true);
     try {
       const response = await fetch('/api/register', {
         method: 'POST',
@@ -39,11 +66,12 @@ export default function Register() {
         redirect: false,
         email: formValues.email,
         password: formValues.password,
-        loginAs: formValues.loginAs, // Use loginAs from formValues
+        loginAs: formValues.loginAs,
       });
 
-      //window.location.href = '/completeprofile';
+      window.location.href = '/completeprofile';
     } catch (err) {
+      setLoading(false);
       setError(err instanceof Error ? err.message : 'Something went wrong!');
     }
   };
@@ -54,7 +82,6 @@ export default function Register() {
   };
 
   useEffect(() => {
-    // Check session data after login
     if (session) {
       if (!session.user.name) {
         window.location.href = '/completeprofile';
@@ -77,12 +104,12 @@ export default function Register() {
                   Email
                 </label>
                 <input
-                  type="email"
+                  type="text"
                   className="border border-gray-300 rounded-lg py-2 px-4 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
                   name="email"
                   value={formValues.email}
                   onChange={handleChange}
-                  required
+                  
                 />
               </div>
               <div className="mb-4">
@@ -95,14 +122,15 @@ export default function Register() {
                   value={formValues.password}
                   className="border border-gray-300 rounded-lg py-2 px-4 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
                   onChange={handleChange}
-                  required
+                  
                 />
               </div>
               <button
                 type="submit"
                 className="w-full bg-blue-500 text-white font-semibold py-2 rounded-lg hover:bg-blue-600 transition duration-200"
+                disabled={loading}
               >
-                Sign Up
+                {loading ? 'Signing Up...' : 'Sign Up'}
               </button>
             </form>
             <p className="text-center text-gray-600 text-sm mt-4">

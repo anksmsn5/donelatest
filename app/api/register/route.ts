@@ -6,8 +6,7 @@ import { db } from '../../../lib/db';
 import { users } from '../../../lib/schema'
 import debug from 'debug';
 import { eq } from 'drizzle-orm';
-import { promises as fs } from 'fs';
-import path from 'path';
+ 
 import { SECRET_KEY } from '@/lib/constants';
 
 import jwt from 'jsonwebtoken';
@@ -43,9 +42,9 @@ export async function POST(req: NextRequest) {
       createdAt: new Date(), // Store the current timestamp as createdAt
     }).returning();
 
-    const token = jwt.sign({ id: insertedUser[0].id }, SECRET_KEY, { expiresIn: '1h' });
+    
 
-    return NextResponse.json({ id: token }, { status: 200 });
+    return NextResponse.json({ id: insertedUser }, { status: 200 });
   } catch (error) {
     logError('Error registering user: %O', error);
     const err = error as any;
@@ -70,25 +69,10 @@ export async function PUT(req: NextRequest) {
   const position = formData.get('position') as string;
   const number = formData.get('number') as string;
   const playerID = formData.get('playerID') as string;
-  const image = formData.get('image') as File | null;
-  let imageUrl = null;
+ 
 
-  if (image) {
-    // Create a path for the image (store it in public/uploads)
-    const uploadDir = path.join(process.cwd(), 'public', 'uploads');
-    const fileName = `${Date.now()}-${image.name}`; // Give the file a unique name
-    const filePath = path.join(uploadDir, fileName);
-
-    // Read the image file as a buffer
-    const buffer = Buffer.from(await image.arrayBuffer());
-
-    // Write the file to the upload directory
-    await fs.writeFile(filePath, buffer);
-
-    // Set the image URL to be the relative path from the public directory
-    imageUrl = `/uploads/${fileName}`;
-  }
-
+  const imageFile = formData.get('image') as string | null;
+  
   const playerIDAsNumber = parseInt(playerID, 10);
   const updatedUser = await db
     .update(users)
@@ -103,13 +87,13 @@ export async function PUT(req: NextRequest) {
       team: team || null,
       position: position || null,
       number: number || null,
-      image: imageUrl,
+      image:imageFile
 
     })
     .where(eq(users.id, playerIDAsNumber))
 
     .execute();
-  return NextResponse.json({ message:"Profile Completed" }, { status: 200 });
+  return NextResponse.json({ message:"Profile Completed", image:imageFile }, { status: 200 });
 }
 
 

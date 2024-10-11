@@ -6,6 +6,7 @@ import SocccerField from './public/images/soccer-field.jpg';
 import Footer from './components/Footer';
 import Head from 'next/head';
 import ProfileCard from './components/ProfileCard';
+import Loading from './components/Loading';
 
 // Define the types for the coaches' data
 
@@ -49,7 +50,7 @@ export default function Home(): JSX.Element {
   }, []);
 
   if (loading) {
-    return <div>Loading...</div>; // Loading indicator
+    return <Loading/>; // Loading indicator
   }
 
   if (error) {
