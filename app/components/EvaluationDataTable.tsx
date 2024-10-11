@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef, useCallback } from 'react';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 
 interface Item {
@@ -30,7 +30,8 @@ const EvaluationDataTable: React.FC<EvaluationDataTableProps> = ({ limit, defaul
     const [total, setTotal] = useState<number>(0);
     const firstRender = useRef(true); // Used to prevent initial fetch
 
-    const fetchData = async () => {
+    // Use useCallback to memoize the fetchData function
+    const fetchData = useCallback(async () => {
         setLoading(true);
         try {
             const response = await fetch(`/api/evaluations?search=${search}&sort=${sort}&page=${page}&limit=${limit}&playerId=${playerId || ''}&status=${status || ''}`);
@@ -46,7 +47,7 @@ const EvaluationDataTable: React.FC<EvaluationDataTableProps> = ({ limit, defaul
             console.error('Error fetching data:', error);
         }
         setLoading(false);
-    };
+    }, [search, sort, page, playerId, status]); // Add dependencies
 
     useEffect(() => {
         if (!firstRender.current) {
@@ -54,7 +55,7 @@ const EvaluationDataTable: React.FC<EvaluationDataTableProps> = ({ limit, defaul
         } else {
             firstRender.current = false; // Avoid fetching data on initial render
         }
-    }, [search, sort, page, playerId, status]); // Ensure all dependencies are included
+    }, [fetchData]); // Add fetchData to dependencies
 
     const handleSort = (column: string) => {
         setSort(prev => prev.startsWith(column) && prev.endsWith('asc') ? `${column},desc` : `${column},asc`);
