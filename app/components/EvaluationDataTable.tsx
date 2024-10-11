@@ -15,13 +15,14 @@ interface Item {
 }
 
 interface EvaluationDataTableProps {
-    limit: number; // Number of items per page
-    defaultSort: string; // Default sorting column and order
+    limit: number;
+    defaultSort: string;
     playerId: number;
-    status: string | null; // Ensure this is string | null
+    status: string | null;
 }
 
 const EvaluationDataTable: React.FC<EvaluationDataTableProps> = ({ limit, defaultSort, playerId, status }) => {
+    // All hooks are declared at the top level
     const [data, setData] = useState<Item[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [search, setSearch] = useState<string>('');
@@ -29,26 +30,27 @@ const EvaluationDataTable: React.FC<EvaluationDataTableProps> = ({ limit, defaul
     const [page, setPage] = useState<number>(1);
     const [total, setTotal] = useState<number>(0);
 
-    const fetchData = async () => {
-        setLoading(true);
-        try {
-            const response = await fetch(`/api/evaluations?search=${search}&sort=${sort}&page=${page}&limit=${limit}&playerId=${playerId || ''}&status=${status || ''}`);
-            if (response.ok) {
-                const data = await response.json();
-                setData(data.data);
-                setTotal(data.total);
-            } else {
-                console.error('Failed to fetch data');
-            }
-        } catch (error) {
-            console.error('Error fetching data:', error);
-        }
-        setLoading(false);
-    };
-
+    // Fetch data when dependencies change
     useEffect(() => {
-        fetchData();
-    }, [search, sort, page, playerId, status]); // Make sure status is included if needed
+        const fetchData = async () => {
+            setLoading(true);
+            try {
+                const response = await fetch(`/api/evaluations?search=${search}&sort=${sort}&page=${page}&limit=${limit}&playerId=${playerId || ''}&status=${status || ''}`);
+                if (response.ok) {
+                    const data = await response.json();
+                    setData(data.data);
+                    setTotal(data.total);
+                } else {
+                    console.error('Failed to fetch data');
+                }
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            }
+            setLoading(false);
+        };
+
+        fetchData(); // Call fetchData unconditionally
+    }, [search, sort, page, playerId, status]); // Dependencies here must include all necessary state
 
     const handleSort = (column: string) => {
         setSort(prev => prev.startsWith(column) && prev.endsWith('asc') ? `${column},desc` : `${column},asc`);
@@ -74,7 +76,7 @@ const EvaluationDataTable: React.FC<EvaluationDataTableProps> = ({ limit, defaul
                         <th onClick={() => handleSort('video_link_two')}>Video Link 2</th>
                         <th onClick={() => handleSort('video_link_three')}>Video Link 3</th>
                         <th onClick={() => handleSort('video_description')}>Video Description</th>
-                        <th onClick={() => handleSort('status')}>Status</th> {/* Ensure correct status reference */}
+                        <th onClick={() => handleSort('status')}>Status</th>
                     </tr>
                 </thead>
                 <tbody>
