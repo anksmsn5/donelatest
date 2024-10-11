@@ -1,8 +1,6 @@
-import React, { useEffect, useState, useMemo } from 'react';
-import { useTable } from 'react-table';
+import { useEffect, useState, useRef } from 'react';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 
-// Define Item interface for data structure
 interface Item {
     id: number;
     firstName: string;
@@ -16,12 +14,11 @@ interface Item {
     created_at: string;
 }
 
-// Define props interface for EvaluationDataTable
 interface EvaluationDataTableProps {
     limit: number; // Number of items per page
     defaultSort: string; // Default sorting column and order
     playerId: number;
-    status: string | null; // Status can be a string or null
+    status: string; // Update this to string | null
 }
 
 const EvaluationDataTable: React.FC<EvaluationDataTableProps> = ({ limit, defaultSort, playerId, status }) => {
@@ -32,15 +29,18 @@ const EvaluationDataTable: React.FC<EvaluationDataTableProps> = ({ limit, defaul
     const [page, setPage] = useState<number>(1);
     const [total, setTotal] = useState<number>(0);
 
-    // Fetch data from the API
+    // Prevent fetchData from running unnecessarily
+    const firstRender = useRef(true); // Helps avoid running the effect immediately after render
+
     const fetchData = async () => {
         setLoading(true);
         try {
             const response = await fetch(`/api/evaluations?search=${search}&sort=${sort}&page=${page}&limit=${limit}&playerId=${playerId || ''}&status=${status || ''}`);
+            
             if (response.ok) {
-                const responseData = await response.json();
-                setData(responseData.data);
-                setTotal(responseData.total);
+                const data = await response.json();
+                setData(data.data);
+                setTotal(data.total);
             } else {
                 console.error('Failed to fetch data');
             }
@@ -50,38 +50,17 @@ const EvaluationDataTable: React.FC<EvaluationDataTableProps> = ({ limit, defaul
         setLoading(false);
     };
 
-    // Fetch data whenever search, sort, page, playerId, or status changes
     useEffect(() => {
+        if (firstRender.current) {
+            firstRender.current = false; // Avoid fetching data on initial render
+            return;
+        }
         fetchData();
-    }, [search, sort, page, playerId, status]);
+    }, [search, sort, page, playerId]); // Add status only if needed
 
-    // Define columns for the react-table without conditions
-    const columns = useMemo(() => [
-        { Header: 'Coach Name', accessor: 'firstName' },
-        { Header: 'Review Title', accessor: 'review_title' },
-        { Header: 'Video Link', accessor: 'primary_video_link' },
-        { Header: 'Video Link 2', accessor: 'video_link_two' },
-        { Header: 'Video Link 3', accessor: 'video_link_three' },
-        { Header: 'Video Description', accessor: 'video_description' },
-        {
-            Header: 'Status',
-            accessor: 'status',
-            Cell: ({ value }: { value: number }) => {
-                let statusLabel;
-                switch (value) {
-                    case 0: statusLabel = <button className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Requested</button>; break;
-                    case 1: statusLabel = <button className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">Accepted</button>; break;
-                    case 3: statusLabel = <button className="bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-600">Completed</button>; break;
-                    case 4: statusLabel = <button className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600">Rejected</button>; break;
-                    default: statusLabel = <span>Unknown</span>;
-                }
-                return statusLabel;
-            },
-        },
-    ], []);
-
-    // Create table instance at the top level
-    const tableInstance = useTable({ columns, data });
+    const handleSort = (column: string) => {
+        setSort(prev => prev.startsWith(column) && prev.endsWith('asc') ? `${column},desc` : `${column},asc`);
+    };
 
     const totalPages = Math.ceil(total / limit); // Calculate total pages
 
@@ -97,13 +76,13 @@ const EvaluationDataTable: React.FC<EvaluationDataTableProps> = ({ limit, defaul
             <table>
                 <thead>
                     <tr>
-                        <th onClick={() => setSort('firstName')}>Coach Name</th>
-                        <th onClick={() => setSort('review_title')}>Review Title</th>
-                        <th onClick={() => setSort('primary_video_link')}>Video Link</th>
-                        <th onClick={() => setSort('video_link_two')}>Video Link 2</th>
-                        <th onClick={() => setSort('video_link_three')}>Video Link 3</th>
-                        <th onClick={() => setSort('video_description')}>Video Description</th>
-                        <th onClick={() => setSort('status')}>Status</th>
+                        <th onClick={() => handleSort('firstName')}>Coach Name</th>
+                        <th onClick={() => handleSort('review_title')}>Review Title</th>
+                        <th onClick={() => handleSort('primary_video_link')}>Video Link</th>
+                        <th onClick={() => handleSort('video_link_two')}>Video Link 2</th>
+                        <th onClick={() => handleSort('video_link_three')}>Video Link 3</th>
+                        <th onClick={() => handleSort('video_description')}>Video Description</th>
+                        <th onClick={() => handleSort('evaluation_status')}>Status</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -114,12 +93,23 @@ const EvaluationDataTable: React.FC<EvaluationDataTableProps> = ({ limit, defaul
                             <tr key={item.id}>
                                 <td>{item.firstName} {item.lastName}</td>
                                 <td>{item.review_title}</td>
-                                <td><a href={item.primary_video_link} target='_blank' rel="noopener noreferrer"><VisibilityIcon className="icon" /></a></td>
-                                <td><a href={item.video_link_two} target='_blank' rel="noopener noreferrer"><VisibilityIcon className="icon" /></a></td>
-                                <td><a href={item.video_link_three} target='_blank' rel="noopener noreferrer"><VisibilityIcon className="icon" /></a></td>
+                                <td><a href={item.primary_video_link} target='_blank'><VisibilityIcon className="icon" /></a></td>
+                                <td><a href={item.video_link_two} target='_blank'><VisibilityIcon className="icon" /></a> </td>
+                                <td><a href={item.video_link_three} target='_blank'><VisibilityIcon className="icon" /> </a></td>
                                 <td>{item.video_description}</td>
-                                <td>
-                                    {/* Status buttons are handled in the columns definition */}
+                                <td> 
+                                    {item.status === 0 && (
+                                        <button className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Requested</button>
+                                    )}
+                                    {item.status === 1 && (
+                                        <button className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">Accepted</button>
+                                    )}
+                                    {item.status === 3 && (
+                                        <button className="bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-600">Completed</button>
+                                    )}
+                                    {item.status === 4 && (
+                                        <button className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600">Rejected</button>
+                                    )}
                                 </td>
                             </tr>
                         ))
@@ -144,6 +134,5 @@ const EvaluationDataTable: React.FC<EvaluationDataTableProps> = ({ limit, defaul
         </div>
     );
 };
-
 
 export default EvaluationDataTable;
