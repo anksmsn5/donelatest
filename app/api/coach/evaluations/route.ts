@@ -3,7 +3,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '../../../../lib/db';
 import { playerEvaluation, users, coaches } from '../../../../lib/schema';
-import { eq } from 'drizzle-orm';
+import { eq, and } from 'drizzle-orm';
 
 export async function POST(req: NextRequest) {
   try {
@@ -28,8 +28,12 @@ export async function POST(req: NextRequest) {
       .from(playerEvaluation)
       .innerJoin(users, eq(playerEvaluation.player_id, users.id)) // Assuming player_id is the foreign key in playerEvaluation
       .innerJoin(coaches, eq(playerEvaluation.coach_id, coaches.id)) // Assuming coach_id is the foreign key in playerEvaluation
-      .where(eq(playerEvaluation.coach_id, userId))
-      .where(eq(playerEvaluation.status, status))
+      .where(
+        and(
+          eq(playerEvaluation.coach_id, userId),
+          eq(playerEvaluation.status, status)
+        )
+      )
       .limit(10) // Limit the number of results to 10
       .execute();
 
@@ -86,7 +90,7 @@ export async function GET(req: NextRequest) {
       .where(eq(playerEvaluation.player_id, playerId));
 
     if (status) {
-      query = query.where(eq(playerEvaluation.status, status));
+      query = query.where(and(eq(playerEvaluation.status, status)));
     }
 
     // Execute the query with a limit
