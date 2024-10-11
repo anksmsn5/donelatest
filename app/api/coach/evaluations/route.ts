@@ -122,11 +122,17 @@ export async function GET(req: NextRequest) {
 
     // Sort data
     if (sort) {
-      const [key, order] = sort.split(',');
-      filteredData.sort((a, b) => {
-        if (order === 'asc') return a[key] > b[key] ? 1 : -1;
-        return a[key] < b[key] ? 1 : -1;
-      });
+      const [key, order] = sort.split(',') as [string, string];
+    
+      // Check if key is a valid key of the data structure
+      const validKeys = ['firstName', 'lastName', 'evaluationId', 'reviewTitle', 'evaluationStatus', 'createdAt'] as const;
+    
+      if (validKeys.includes(key as any)) {
+        filteredData.sort((a, b) => {
+          if (order === 'asc') return a[key] > b[key] ? 1 : -1;
+          return a[key] < b[key] ? 1 : -1;
+        });
+      }
     }
 
     // Pagination
