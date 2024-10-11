@@ -79,8 +79,8 @@ export async function GET(req: NextRequest) {
     // Initial query construction
     let query = db
       .select({
-        firstName: coaches.first_name,
-        lastName: coaches.last_name,
+        firstName: coaches.firstName,
+        lastName: coaches.lastName,
         evaluationId: playerEvaluation.id, // Select specific columns
         reviewTitle: playerEvaluation.review_title,
         evaluationStatus: playerEvaluation.status,
