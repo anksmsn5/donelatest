@@ -1,7 +1,6 @@
 import { useEffect, useState, useRef } from 'react';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 
-// Define the item interface
 interface Item {
     id: number;
     firstName: string;
@@ -15,28 +14,24 @@ interface Item {
     created_at: string;
 }
 
-// Props for the EvaluationDataTable
 interface EvaluationDataTableProps {
-    limit: number | 10;
-    defaultSort: string | 'first_name,asc';
-    playerId: number | null; // playerId can be null
-    status: string | null; // Ensure status is string | null
+    limit: number; // Number of items per page
+    defaultSort: string; // Default sorting column and order
+    playerId: number;
+    status: string; // Update this to string | null
 }
 
-// Main component
 const EvaluationDataTable: React.FC<EvaluationDataTableProps> = ({ limit, defaultSort, playerId, status }) => {
     const [data, setData] = useState<Item[]>([]);
-    
     const [loading, setLoading] = useState<boolean>(true);
     const [search, setSearch] = useState<string>('');
     const [sort, setSort] = useState<string>(defaultSort);
     const [page, setPage] = useState<number>(1);
     const [total, setTotal] = useState<number>(0);
 
-    // Ref to track if it's the first render
-    const firstRender = useRef(true);
+    // Prevent fetchData from running unnecessarily
+    const firstRender = useRef(true); // Helps avoid running the effect immediately after render
 
-    // Fetching data function
     const fetchData = async () => {
         setLoading(true);
         try {
@@ -51,29 +46,21 @@ const EvaluationDataTable: React.FC<EvaluationDataTableProps> = ({ limit, defaul
             }
         } catch (error) {
             console.error('Error fetching data:', error);
-        } finally {
-            setLoading(false);
         }
-    };
-
-    // Effect to fetch data based on dependencies
-
-
-    // Sorting function
-    const handleSort = (column: string) => {
-        setSort(prev => {
-            const [currentColumn, currentOrder] = prev.split(',');
-            return currentColumn === column && currentOrder === 'asc' ? `${column},desc` : `${column},asc`;
-        });
+        setLoading(false);
     };
 
     useEffect(() => {
-        if (!firstRender.current) {
-            fetchData();
-        } else {
-            firstRender.current = false; // Set firstRender to false after initial render
+        if (firstRender.current) {
+            firstRender.current = false; // Avoid fetching data on initial render
+            return;
         }
-    }, [search, sort, page, playerId, status]); // dependencies
+        fetchData();
+    }, [search, sort, page, playerId]); // Add status only if needed
+
+    const handleSort = (column: string) => {
+        setSort(prev => prev.startsWith(column) && prev.endsWith('asc') ? `${column},desc` : `${column},asc`);
+    };
 
     const totalPages = Math.ceil(total / limit); // Calculate total pages
 
@@ -95,26 +82,34 @@ const EvaluationDataTable: React.FC<EvaluationDataTableProps> = ({ limit, defaul
                         <th onClick={() => handleSort('video_link_two')}>Video Link 2</th>
                         <th onClick={() => handleSort('video_link_three')}>Video Link 3</th>
                         <th onClick={() => handleSort('video_description')}>Video Description</th>
-                        <th onClick={() => handleSort('status')}>Status</th>
+                        <th onClick={() => handleSort('evaluation_status')}>Status</th>
                     </tr>
                 </thead>
                 <tbody>
                     {loading ? (
-                        <tr><td colSpan={6}>Loading...</td></tr>
+                        <tr><td colSpan={7}>Loading...</td></tr>
                     ) : (
                         data.map(item => (
                             <tr key={item.id}>
                                 <td>{item.firstName} {item.lastName}</td>
                                 <td>{item.review_title}</td>
                                 <td><a href={item.primary_video_link} target='_blank'><VisibilityIcon className="icon" /></a></td>
-                                <td><a href={item.video_link_two} target='_blank'><VisibilityIcon className="icon" /></a></td>
-                                <td><a href={item.video_link_three} target='_blank'><VisibilityIcon className="icon" /></a></td>
+                                <td><a href={item.video_link_two} target='_blank'><VisibilityIcon className="icon" /></a> </td>
+                                <td><a href={item.video_link_three} target='_blank'><VisibilityIcon className="icon" /> </a></td>
                                 <td>{item.video_description}</td>
-                                <td>
-                                    {item.status === 0 && <button className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Requested</button>}
-                                    {item.status === 1 && <button className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">Accepted</button>}
-                                    {item.status === 3 && <button className="bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-600">Completed</button>}
-                                    {item.status === 4 && <button className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600">Rejected</button>}
+                                <td> 
+                                    {item.status === 0 && (
+                                        <button className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Requested</button>
+                                    )}
+                                    {item.status === 1 && (
+                                        <button className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">Accepted</button>
+                                    )}
+                                    {item.status === 3 && (
+                                        <button className="bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-600">Completed</button>
+                                    )}
+                                    {item.status === 4 && (
+                                        <button className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600">Rejected</button>
+                                    )}
                                 </td>
                             </tr>
                         ))

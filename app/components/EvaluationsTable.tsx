@@ -34,9 +34,10 @@ const EvaluationsTable: React.FC<EvaluationsTableProps> = ({ data }) => {
       { Header: 'Payment Status', accessor: 'payment_status' },
       { Header: 'Created At', accessor: 'created_at' },
     ],
-    []
+    [] // Empty dependency array means it will only run once on mount
   );
 
+  // Call useTable unconditionally
   const {
     getTableProps,
     getTableBodyProps,
@@ -44,6 +45,11 @@ const EvaluationsTable: React.FC<EvaluationsTableProps> = ({ data }) => {
     rows,
     prepareRow,
   } = useTable<Evaluation>({ columns, data });
+
+  // If data is not an array, return early but after defining hooks
+  if (!Array.isArray(data) || data.length === 0) {
+    return <div>No evaluations available.</div>;
+  }
 
   return (
     <table {...getTableProps()} className="min-w-full border-collapse border border-gray-300">
