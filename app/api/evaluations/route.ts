@@ -65,8 +65,8 @@ export async function GET(request: NextRequest) {
 
     let query = db
       .select({
-        firstName: coaches.first_name,
-        lastName: coaches.last_name,
+        firstName: coaches.firstName,
+        lastName: coaches.lastName,
         review_title: playerEvaluation.review_title,
         primary_video_link: playerEvaluation.primary_video_link,
         video_link_two: playerEvaluation.video_link_two,
@@ -117,6 +117,6 @@ export async function GET(request: NextRequest) {
     });
   } catch (error) {
     console.error('Error details:', error); // Log the error for debugging
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    return NextResponse.json({ error: "errror" }, { status: 500 });
   }
 }
