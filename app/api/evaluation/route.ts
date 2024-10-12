@@ -42,6 +42,9 @@ export async function GET(req: NextRequest) {
         // Ensure playerId is a number
         const numericPlayerId = playerId ? parseInt(playerId, 10) : null;
 
+        // Ensure status is a number
+        const numericStatus = status ? parseInt(status, 10) : null;
+
         // Check if playerId is valid
         if (numericPlayerId === null || isNaN(numericPlayerId)) {
             return NextResponse.json({ message: 'Invalid player ID' }, { status: 400 });
@@ -50,9 +53,9 @@ export async function GET(req: NextRequest) {
         // Create an array to hold the conditions
         const conditions = [eq(playerEvaluation.player_id, numericPlayerId)];
 
-        // Add evaluation status condition if it is defined
-        if (status) {
-            conditions.push(eq(playerEvaluation.status, status));
+        // Add evaluation status condition if it is defined and valid
+        if (numericStatus !== null && !isNaN(numericStatus)) {
+            conditions.push(eq(playerEvaluation.status, numericStatus));
         }
 
         const result = await db
@@ -61,7 +64,7 @@ export async function GET(req: NextRequest) {
             .where(and(...conditions)) // Spread the conditions array
             .execute();
 
-        return NextResponse.json({ message: result, status: status }, { status: 200 });
+        return NextResponse.json({ message: result, status: numericStatus }, { status: 200 });
     } catch (error) {
         console.error('Error during fetching evaluations:', error); // Log the error for debugging
         return NextResponse.json({ message:  'Failed to fetch data' }, { status: 500 });
