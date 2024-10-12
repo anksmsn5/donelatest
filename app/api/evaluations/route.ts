@@ -7,6 +7,7 @@ import { playerEvaluation, users, coaches } from '../../../lib/schema'
 import { like } from 'drizzle-orm';
 import { eq } from 'drizzle-orm';
 import { getServerSession } from 'next-auth';
+import { and } from 'drizzle-orm';
 import next from 'next';
 
 
@@ -32,8 +33,13 @@ export async function POST(req: NextRequest) {
       })
       .from(playerEvaluation)  // This selects from the `playerEvaluation` table
       .innerJoin(users, eq(playerEvaluation.player_id, users.id)) // Inner join with the `users` table
-      .where(eq(playerEvaluation.player_id, userId)) // Apply the first filter
-      .where(eq(playerEvaluation.status, status))    // Apply the second filter
+      .where(
+        and(
+          eq(playerEvaluation.player_id, userId),     // First condition
+          eq(playerEvaluation.status, status)   // Second condition
+        )
+      )
+       // Apply the second filter
       .execute();
 
     return NextResponse.json(evaluationsData);
