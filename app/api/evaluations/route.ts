@@ -59,7 +59,7 @@ export async function GET(request: NextRequest) {
     const url = request.nextUrl;
 
     const playerId = Number(url.searchParams.get('playerId'));
-    const status = url.searchParams.get('status');
+    const status = Number(url.searchParams.get('status'));
     const search = url.searchParams.get('search') || '';
     const page = Number(url.searchParams.get('page')) || 1;
     const limit = Number(url.searchParams.get('limit')) || 10;
