@@ -17,6 +17,10 @@ export async function POST(req: NextRequest) {
     const { userId, status } = await req.json();
 
     const evaluationsData = await db
+      .from(playerEvaluation)
+      .innerJoin(users, eq(playerEvaluation.player_id, users.id))
+      .where(eq(playerEvaluation.player_id, userId)) // Apply the first filter
+      .where(eq(playerEvaluation.status, status))    // Apply the second filter
       .select({
         first_name: users.first_name,
         last_name: users.last_name,
@@ -30,16 +34,12 @@ export async function POST(req: NextRequest) {
         created_at: playerEvaluation.created_at,
         updated_at: playerEvaluation.updated_at,
       })
-      .from(playerEvaluation)
-      .innerJoin(users, eq(playerEvaluation.player_id, users.id))
-      .where(eq(playerEvaluation.player_id, userId))  // Apply first where condition
-      .where(eq(playerEvaluation.status, status))  // Apply second where condition
       .execute();
 
     return NextResponse.json(evaluationsData);
   } catch (error) {
     return NextResponse.json(
-      { message: error.message },
+      { message: "Error in fecthing data" },
       { status: 500 }
     );
   }
