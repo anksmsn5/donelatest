@@ -46,10 +46,7 @@ export async function POST(req: NextRequest) {
 }
 
 
-import { NextRequest, NextResponse } from 'next/server';
-import { db } from '../../../lib/db';
-import { playerEvaluation, coaches } from '../../../lib/schema';
-import { eq } from 'drizzle-orm';
+ 
 
 export async function GET(request: NextRequest) {
   try {
