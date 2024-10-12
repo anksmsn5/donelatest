@@ -50,6 +50,6 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ success: "success", insertedData, updateEvaluation });
     } catch (error) {
         console.error('Error saving evaluation results:', error);
-        return NextResponse.json({ success: false, error: error.message }, { status: 500 });
+        return NextResponse.json({ success: false, error: "Error in inserting data" }, { status: 500 });
     }
 }
