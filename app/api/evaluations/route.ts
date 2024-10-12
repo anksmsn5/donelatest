@@ -93,12 +93,7 @@ export async function GET(request: NextRequest) {
         )
       );  // Always filter by `playerId`
 
-    // Conditionally add `status` filter if it exists
-    if (status) {
-      query = query.where(eq(playerEvaluation.status, status));  // Apply the second condition if available
-    }
-
-    // Execute the query with a limit
+    
     const evaluationsData = await query.limit(limit).execute();
 
     let filteredData = evaluationsData;
