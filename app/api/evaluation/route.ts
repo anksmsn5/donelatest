@@ -33,6 +33,7 @@ export async function POST(req: NextRequest) {
     }
 }
 
+
 export async function GET(req: NextRequest) {
     const url = new URL(req.url);
     const playerId = url.searchParams.get('playerId')?.trim();
@@ -59,7 +60,20 @@ export async function GET(req: NextRequest) {
         }
 
         const result = await db
-            .select()
+            .select({
+                id: playerEvaluation.id,
+                playerId: playerEvaluation.player_id,
+                reviewTitle: playerEvaluation.review_title,
+                primaryVideoLink: playerEvaluation.primary_video_link,
+                videoLinkTwo: playerEvaluation.video_link_two,
+                videoLinkThree: playerEvaluation.video_link_three,
+                videoDescription: playerEvaluation.video_description,
+                coachId: playerEvaluation.coach_id,
+                status: playerEvaluation.status,
+                paymentStatus: playerEvaluation.payment_status,
+                createdAt: playerEvaluation.created_at,
+                updatedAt: playerEvaluation.updated_at,
+            }) // Explicitly select the fields
             .from(playerEvaluation)
             .where(and(...conditions)) // Spread the conditions array
             .execute();
@@ -67,7 +81,7 @@ export async function GET(req: NextRequest) {
         return NextResponse.json({ message: result, status: numericStatus }, { status: 200 });
     } catch (error) {
         console.error('Error during fetching evaluations:', error); // Log the error for debugging
-        return NextResponse.json({ message:  'Failed to fetch data' }, { status: 500 });
+        return NextResponse.json({ message: 'Failed to fetch data' }, { status: 500 });
     }
 }
 
