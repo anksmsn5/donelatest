@@ -14,26 +14,32 @@ import next from 'next';
 
 export async function POST(req: NextRequest) {
   try {
-
     const { userId, status } = await req.json();
 
     const evaluationsData = await db
       .select({
         first_name: users.first_name,
         last_name: users.last_name,
-        ...playerEvaluation,
+        review_title: playerEvaluation.review_title,
+        primary_video_link: playerEvaluation.primary_video_link,
+        video_link_two: playerEvaluation.video_link_two,
+        video_link_three: playerEvaluation.video_link_three,
+        video_description: playerEvaluation.video_description,
+        status: playerEvaluation.status,
+        payment_status: playerEvaluation.payment_status,
+        created_at: playerEvaluation.created_at,
+        updated_at: playerEvaluation.updated_at,
       })
       .from(playerEvaluation)
-      .innerJoin(users, eq(playerEvaluation.player_id, users.id)) // Assuming user_id is the foreign key in playerEvaluation
+      .innerJoin(users, eq(playerEvaluation.player_id, users.id))
       .where(eq(playerEvaluation.player_id, userId))
       .where(eq(playerEvaluation.status, status))
       .execute();
 
     return NextResponse.json(evaluationsData);
-
   } catch (error) {
     return NextResponse.json(
-      { message: error },
+      { message: error.message },
       { status: 500 }
     );
   }
@@ -51,54 +57,59 @@ export async function GET(request: NextRequest) {
     const limit = Number(url.searchParams.get('limit')) || 10;
     const sort = url.searchParams.get('sort') || '';
 
-    if (isNaN(playerId)){
+    if (isNaN(playerId)) {
       return NextResponse.json({ error: 'Invalid query parameters' }, { status: 400 });
     }
 
     console.log('Query parameters:', { playerId, status, search, page, limit, sort });
 
-    console.log('Before executing query...');
     let query = db
       .select({
-        firstName: coaches.firstName,
-        lastName: coaches.lastName,
-        ...playerEvaluation,
+        firstName: coaches.first_name,
+        lastName: coaches.last_name,
+        review_title: playerEvaluation.review_title,
+        primary_video_link: playerEvaluation.primary_video_link,
+        video_link_two: playerEvaluation.video_link_two,
+        video_link_three: playerEvaluation.video_link_three,
+        video_description: playerEvaluation.video_description,
+        status: playerEvaluation.status,
+        payment_status: playerEvaluation.payment_status,
+        created_at: playerEvaluation.created_at,
+        updated_at: playerEvaluation.updated_at,
       })
       .from(playerEvaluation)
       .innerJoin(coaches, eq(playerEvaluation.coach_id, coaches.id))
       .where(eq(playerEvaluation.player_id, playerId));
 
-
     if (status) {
       query = query.where(eq(playerEvaluation.status, status));
     }
 
-    // Execute the query with a limit
     const evaluationsData = await query.limit(limit).execute();
-    let filteredData: Evaluation[] = evaluationsData;
+    let filteredData: any[] = evaluationsData;
 
     // Filter data based on search
     if (search) {
       filteredData = filteredData.filter(item =>
-        item.firstName.toLowerCase().includes((search as string).toLowerCase()) ||
-        item.lastName.toLowerCase().includes((search as string).toLowerCase()) ||
-        item.review_title.toLowerCase().includes((search as string).toLowerCase()) ||
-        item.video_description.toLowerCase().includes((search as string).toLowerCase())
+        item.firstName.toLowerCase().includes(search.toLowerCase()) ||
+        item.lastName.toLowerCase().includes(search.toLowerCase()) ||
+        item.review_title.toLowerCase().includes(search.toLowerCase()) ||
+        item.video_description.toLowerCase().includes(search.toLowerCase())
       );
     }
 
     // Sort data
     if (sort) {
-      const [key, order] = (sort as string).split(',');
+      const [key, order] = sort.split(',');
       filteredData.sort((a, b) => {
-        if (order === 'asc') return a[key as keyof Evaluation] > b[key as keyof Evaluation] ? 1 : -1;
-        return a[key as keyof Evaluation] < b[key as keyof Evaluation] ? 1 : -1;
+        if (order === 'asc') return a[key] > b[key] ? 1 : -1;
+        return a[key] < b[key] ? 1 : -1;
       });
     }
 
     // Pagination
-    const startIndex = (Number(page) - 1) * Number(limit);
-    const paginatedData = filteredData.slice(startIndex, startIndex + Number(limit));
+    const startIndex = (page - 1) * limit;
+    const paginatedData = filteredData.slice(startIndex, startIndex + limit);
 
     return NextResponse.json({
       data: paginatedData,
@@ -106,6 +117,6 @@ export async function GET(request: NextRequest) {
     });
   } catch (error) {
     console.error('Error details:', error); // Log the error for debugging
-    return NextResponse.json({ error: error }, { status: 500 });
+    return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }
