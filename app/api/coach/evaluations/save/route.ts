@@ -22,7 +22,8 @@ export async function POST(req: NextRequest) {
             finalRemarks 
         } = data;
 
-        // Insert evaluation results into the database
+    
+
         const insertedData = await db.insert(evaluationResults).values({
             evaluationId: evaluationId,
             playerId: playerID,
@@ -34,8 +35,7 @@ export async function POST(req: NextRequest) {
             tacticalRemarks: tacticalRemarks,
             physicalRemarks: physicalRemarks,
             finalRemarks: finalRemarks,
-            createdAt: new Date(),
-        }).returning(); 
+          }).returning();
 
         // Update the player evaluation status
         const updateEvaluation = await db
