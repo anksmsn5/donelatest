@@ -32,8 +32,8 @@ export async function POST(req: NextRequest) {
       })
       .from(playerEvaluation)
       .innerJoin(users, eq(playerEvaluation.player_id, users.id))
-      .where(eq(playerEvaluation.player_id, userId))
-      .where(eq(playerEvaluation.status, status))
+      .where(eq(playerEvaluation.player_id, userId))  // Apply first where condition
+      .where(eq(playerEvaluation.status, status))  // Apply second where condition
       .execute();
 
     return NextResponse.json(evaluationsData);
@@ -45,6 +45,11 @@ export async function POST(req: NextRequest) {
   }
 }
 
+
+import { NextRequest, NextResponse } from 'next/server';
+import { db } from '../../../lib/db';
+import { playerEvaluation, coaches } from '../../../lib/schema';
+import { eq } from 'drizzle-orm';
 
 export async function GET(request: NextRequest) {
   try {
@@ -65,8 +70,8 @@ export async function GET(request: NextRequest) {
 
     let query = db
       .select({
-        firstName: coaches.firstName,
-        lastName: coaches.lastName,
+        firstName: coaches.first_name,
+        lastName: coaches.last_name,
         review_title: playerEvaluation.review_title,
         primary_video_link: playerEvaluation.primary_video_link,
         video_link_two: playerEvaluation.video_link_two,
@@ -79,10 +84,10 @@ export async function GET(request: NextRequest) {
       })
       .from(playerEvaluation)
       .innerJoin(coaches, eq(playerEvaluation.coach_id, coaches.id))
-      .where(eq(playerEvaluation.player_id, playerId));
+      .where(eq(playerEvaluation.player_id, playerId));  // Apply the first condition
 
     if (status) {
-      query = query.where(eq(playerEvaluation.status, status));
+      query = query.where(eq(playerEvaluation.status, status));  // Apply the second condition if available
     }
 
     const evaluationsData = await query.limit(limit).execute();
