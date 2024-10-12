@@ -17,10 +17,6 @@ export async function POST(req: NextRequest) {
     const { userId, status } = await req.json();
 
     const evaluationsData = await db
-      .from(playerEvaluation)
-      .innerJoin(users, eq(playerEvaluation.player_id, users.id))
-      .where(eq(playerEvaluation.player_id, userId)) // Apply the first filter
-      .where(eq(playerEvaluation.status, status))    // Apply the second filter
       .select({
         first_name: users.first_name,
         last_name: users.last_name,
@@ -34,6 +30,10 @@ export async function POST(req: NextRequest) {
         created_at: playerEvaluation.created_at,
         updated_at: playerEvaluation.updated_at,
       })
+      .from(playerEvaluation)  // This selects from the `playerEvaluation` table
+      .innerJoin(users, eq(playerEvaluation.player_id, users.id)) // Inner join with the `users` table
+      .where(eq(playerEvaluation.player_id, userId)) // Apply the first filter
+      .where(eq(playerEvaluation.status, status))    // Apply the second filter
       .execute();
 
     return NextResponse.json(evaluationsData);
@@ -67,8 +67,8 @@ export async function GET(request: NextRequest) {
 
     let query = db
       .select({
-        firstName: coaches.first_name,
-        lastName: coaches.last_name,
+        firstName: coaches.firstName,
+        lastName: coaches.lastName,
         review_title: playerEvaluation.review_title,
         primary_video_link: playerEvaluation.primary_video_link,
         video_link_two: playerEvaluation.video_link_two,
