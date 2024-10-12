@@ -33,7 +33,6 @@ export async function POST(req: NextRequest) {
     }
 }
 
-
 export async function GET(req: NextRequest) {
     const url = new URL(req.url);
     const playerId = url.searchParams.get('playerId')?.trim();
@@ -59,6 +58,7 @@ export async function GET(req: NextRequest) {
             conditions.push(eq(playerEvaluation.status, numericStatus));
         }
 
+        // Explicitly select fields from the playerEvaluation table
         const result = await db
             .select({
                 id: playerEvaluation.id,
@@ -73,7 +73,7 @@ export async function GET(req: NextRequest) {
                 paymentStatus: playerEvaluation.payment_status,
                 createdAt: playerEvaluation.created_at,
                 updatedAt: playerEvaluation.updated_at,
-            }) // Explicitly select the fields
+            })
             .from(playerEvaluation)
             .where(and(...conditions)) // Spread the conditions array
             .execute();
