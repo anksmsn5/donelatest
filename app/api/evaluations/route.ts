@@ -86,7 +86,12 @@ export async function GET(request: NextRequest) {
       })
       .from(playerEvaluation)
       .innerJoin(coaches, eq(playerEvaluation.coach_id, coaches.id))
-      .where(eq(playerEvaluation.player_id, playerId));  // Always filter by `playerId`
+      .where(
+        and(
+          eq(playerEvaluation.player_id, playerId),
+          eq(playerEvaluation.status, status)
+        )
+      );  // Always filter by `playerId`
 
     // Conditionally add `status` filter if it exists
     if (status) {
