@@ -69,8 +69,7 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'Invalid query parameters' }, { status: 400 });
     }
 
-    console.log('Query parameters:', { playerId, status, search, page, limit, sort });
-
+    // Build the initial query
     let query = db
       .select({
         firstName: coaches.firstName,
@@ -87,44 +86,26 @@ export async function GET(request: NextRequest) {
       })
       .from(playerEvaluation)
       .innerJoin(coaches, eq(playerEvaluation.coach_id, coaches.id))
-      .where(eq(playerEvaluation.player_id, playerId));  // Apply the first condition
+      .where(eq(playerEvaluation.player_id, playerId));  // Always filter by `playerId`
 
+    // Conditionally add `status` filter if it exists
     if (status) {
       query = query.where(eq(playerEvaluation.status, status));  // Apply the second condition if available
     }
 
+    // Execute the query with a limit
     const evaluationsData = await query.limit(limit).execute();
-    let filteredData: any[] = evaluationsData;
 
-    // Filter data based on search
-    if (search) {
-      filteredData = filteredData.filter(item =>
-        item.firstName.toLowerCase().includes(search.toLowerCase()) ||
-        item.lastName.toLowerCase().includes(search.toLowerCase()) ||
-        item.review_title.toLowerCase().includes(search.toLowerCase()) ||
-        item.video_description.toLowerCase().includes(search.toLowerCase())
-      );
-    }
+    let filteredData = evaluationsData;
 
-    // Sort data
-    if (sort) {
-      const [key, order] = sort.split(',');
-      filteredData.sort((a, b) => {
-        if (order === 'asc') return a[key] > b[key] ? 1 : -1;
-        return a[key] < b[key] ? 1 : -1;
-      });
-    }
-
-    // Pagination
-    const startIndex = (page - 1) * limit;
-    const paginatedData = filteredData.slice(startIndex, startIndex + limit);
+    // Additional filtering and sorting logic can go here...
 
     return NextResponse.json({
-      data: paginatedData,
+      data: filteredData,
       total: filteredData.length,
     });
   } catch (error) {
     console.error('Error details:', error); // Log the error for debugging
-    return NextResponse.json({ error: "errror" }, { status: 500 });
+    return NextResponse.json({ error: "error" }, { status: 500 });
   }
 }
