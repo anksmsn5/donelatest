@@ -52,7 +52,7 @@ export async function GET(req: NextRequest) {
 
         // Add evaluation status condition if it is defined
         if (status) {
-            conditions.push(eq(playerEvaluation.evaluation_status, status));
+            conditions.push(eq(playerEvaluation.status, status));
         }
 
         const result = await db
