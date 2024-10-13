@@ -75,8 +75,21 @@ export default function Register() {
 
   // Validation function
   const validateForm = (): boolean => {
-    const errors: FormErrors = {};
-   
+    const errors: FormErrors = {
+      firstName: undefined,
+      lastName: undefined,
+      email: undefined,
+      phoneNumber: undefined,
+      gender: undefined,
+      location: undefined,
+      sport: undefined,
+      clubName: undefined,
+      qualifications: undefined,
+      expectedCharge: undefined,
+      password: undefined,
+      image: null, // Ensure this property is included
+    };
+  
     if (!formValues.image) {
       errors.image = 'Profile image is required';
     } 
@@ -105,10 +118,11 @@ export default function Register() {
     }
     if (!formValues.password) errors.password = 'Password is required';
     if (formValues.password.length < 8) errors.password = 'Password must be at least 8 characters long';
-
+  
     setFormErrors(errors); // Set errors once validation is done
-    return Object.keys(errors).length === 0;
+    return Object.keys(errors).every(key => errors[key as keyof FormErrors] === undefined || errors[key as keyof FormErrors] === null);
   };
+  
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
