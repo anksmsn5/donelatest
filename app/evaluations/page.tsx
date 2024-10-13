@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import EvaluationDataTable from '../components/EvaluationDataTable';
 import Sidebar from '../components/Sidebar';
@@ -12,14 +12,28 @@ interface DataType {
     status: string | null; // Replace with actual properties
 }
 
+// Component to handle evaluation data
+const EvaluationDataWrapper: React.FC<{ playerId: number; limit: number; defaultSort: string; }> = ({ playerId, limit, defaultSort }) => {
+    const searchParams = useSearchParams();
+    const status = searchParams.get('status');
+
+    return (
+        <Suspense fallback={<div>Loading Evaluation Data...</div>}>
+            <EvaluationDataTable 
+                playerId={playerId} 
+                status={status || null} 
+                limit={limit} 
+                defaultSort={defaultSort} 
+            />
+        </Suspense>
+    );
+};
+
 const Home: React.FC = () => {
     const [playerId, setPlayerId] = useState<number | null>(null);
-    const [queryStatus, setQueryStatus] = useState<string | null>(null);
     const limit = 10; // Set the number of items per page
     const defaultSort = 'name,asc';
     const { data: session } = useSession();
-    const searchParams = useSearchParams();
-    const status = searchParams.get('status'); 
 
     useEffect(() => {
         if (session && session.user) {
@@ -31,12 +45,11 @@ const Home: React.FC = () => {
     return (
         <div className="flex h-screen overflow-hidden">
             <Sidebar />
-            <main className="flex-grow bg-gray-100 p-4 overflow-auto"> {/* Add overflow-auto */}
+            <main className="flex-grow bg-gray-100 p-4 overflow-auto">
                 <div className="bg-white shadow-md rounded-lg p-6 h-auto">
                     {playerId !== null ? (
-                        <EvaluationDataTable 
+                        <EvaluationDataWrapper 
                             playerId={playerId} 
-                            status={status || null} 
                             limit={limit} 
                             defaultSort={defaultSort} 
                         />
