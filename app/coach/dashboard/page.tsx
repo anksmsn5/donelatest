@@ -1,5 +1,6 @@
 "use client";
 import { useState, useEffect } from 'react';
+import { CellProps } from 'react-table';
 import React from 'react';
 
 import '../../globals.css'; // Import CSS module
@@ -58,20 +59,28 @@ const Dashboard: React.FC = () => {
     () => [
       {
         Header: 'Sr No.',
-        Cell: ({ row }: { row: any }) => row.index + 1,
+        Cell: ({ row }: CellProps<Evaluation>) => row.index + 1, // Provide the Evaluation type here
       },
       {
         Header: 'Player Name',
         accessor: 'first_name',
-        Cell: ({ row }) => `${row.original.first_name} ${row.original.last_name}`,
+        Cell: ({ row }: CellProps<Evaluation>) => `${row.original.first_name} ${row.original.last_name}`, // Provide the correct type for row
       },
       { Header: 'Evaluation Title', accessor: 'review_title' },
-      { Header: 'Video Link', accessor: 'primary_video_link', Cell: ({ value }) => <a href={value} target="_blank" rel="noopener noreferrer">Watch</a> },
+      {
+        Header: 'Video Link',
+        accessor: 'primary_video_link',
+        Cell: ({ value }: { value: string }) => (
+          <a href={value} target="_blank" rel="noopener noreferrer">
+            Watch
+          </a>
+        ),
+      },
       { Header: 'Description', accessor: 'video_description' },
       { Header: 'Status', accessor: 'payment_status' },
       {
         Header: 'Action',
-        Cell: ({ row }: { row: any }) => {
+        Cell: ({ row }: CellProps<Evaluation>) => {
           const evaluation = row.original;
           if (selectedTab === '0') {
             return (
