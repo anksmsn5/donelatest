@@ -15,10 +15,10 @@ interface Item {
 }
 
 interface EvaluationDataTableProps {
-    limit: number; // Number of items per page
-    defaultSort: string; // Default sorting column and order
-    playerId: number;
-    status: string; // Update this to string | null
+    playerId: number | null; // Assuming this is already defined
+    status: string | null; // Update type to include null
+    limit: number;
+    defaultSort: string;// Update this to string | null
 }
 
 const EvaluationDataTable: React.FC<EvaluationDataTableProps> = ({ limit, defaultSort, playerId, status }) => {

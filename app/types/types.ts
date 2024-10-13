@@ -7,6 +7,11 @@ export interface Evaluation {
     coach_id: number;
     player_id: number;
     evaluation:string;
+    image:string;
+    number:number;
+    position:number;
+    expectedCharge:number;
+    team:string;
     last_name: string;
     video_link_two?: string;
     video_link_three?: string;

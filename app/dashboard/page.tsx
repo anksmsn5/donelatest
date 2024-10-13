@@ -1,9 +1,9 @@
-"use client";
+"use client"
 import React, { useEffect, useState } from 'react';
 import '../globals.css';
 import Sidebar from '../components/Sidebar';
 import { getSession } from 'next-auth/react'; 
-import { useTable } from 'react-table'; // Import react-table
+import { useTable, Column } from 'react-table'; // Import Column type
 import { Evaluation, EvaluationsByStatus } from '../types/types'; // Import the correct types
 
 const Dashboard: React.FC = () => {
@@ -56,19 +56,26 @@ const Dashboard: React.FC = () => {
     fetchEvaluations(selectedTab);
   }, [selectedTab]);
 
-  // Define columns for the react-table
-  const columns = React.useMemo(
+  // Define columns for the react-table with proper types
+  const columns: Column<Evaluation>[] = React.useMemo(
     () => [
       { 
         Header: 'Serial Number', 
-        Cell: ({ row }: { row: any }) => row.index + 1  // Serial Number starts from 1
+        Cell: ({ row }) => row.index + 1  // Serial Number starts from 1
       },
-      { Header: 'Player Name', accessor: 'first_name', Cell: ({ row }) => `${row.original.first_name} ${row.original.last_name}` },  // Show full name
-      { Header: 'Evaluation Title', accessor: 'review_title' },  // Use the correct accessor
-      { Header: 'Video Link', accessor: 'primary_video_link', Cell: ({ value }) => <a href={value} target="_blank" rel="noopener noreferrer">Watch</a> },
+      { 
+        Header: 'Player Name', 
+        accessor: 'first_name', 
+        Cell: ({ row }) => `${row.original.first_name} ${row.original.last_name}` // Show full name 
+      },
+      { Header: 'Evaluation Title', accessor: 'review_title' }, // Use the correct accessor
+      { 
+        Header: 'Video Link', 
+        accessor: 'primary_video_link', 
+        Cell: ({ value }) => <a href={value} target="_blank" rel="noopener noreferrer">Watch</a> 
+      },
       { Header: 'Description', accessor: 'video_description' },  
-      { Header: 'Status', accessor: 'payment_status' },            // Status column
-     
+      { Header: 'Status', accessor: 'payment_status' }, // Status column
     ],
     []
   );
@@ -84,60 +91,59 @@ const Dashboard: React.FC = () => {
 
   return (
     <div className="flex h-screen">
-    <Sidebar />
-    <main className="flex-grow bg-gray-100 p-4">
-      <div className="bg-white shadow-md rounded-lg p-6">
-        <div className="flex space-x-4 mb-4">
-          {[{ name: 'Requested', value: '0' },
-            { name: 'Accepted', value: '1' },
-            { name: 'Completed', value: '2' },
-            { name: 'Declined', value: '3' }
-          ].map(tab => (
-            <button
-              key={tab.value} // Added key here
-              onClick={() => {
-                setSelectedTab(tab.value);
-                fetchEvaluations(tab.value);
-              }}
-              className={`p-2 border-b-2 ${selectedTab === tab.value ? 'border-blue-500 font-bold' : 'border-transparent'}`}
-            >
-              {tab.name}
-            </button>
-          ))}
-        </div>
-
-        {/* Table to display evaluations */}
-        <table {...tableInstance.getTableProps()} className="min-w-full bg-white border border-gray-300">
-          <thead>
-            {tableInstance.headerGroups.map(headerGroup => (
-              <tr {...headerGroup.getHeaderGroupProps()} key={headerGroup.id}> {/* Added key here */}
-                {headerGroup.headers.map(column => (
-                  <th {...column.getHeaderProps()} className="border-b-2 border-gray-200 bg-gray-100 px-4 py-2" key={column.id}> {/* Added key here */}
-                    {column.render('Header')}
-                  </th>
-                ))}
-              </tr>
+      <Sidebar />
+      <main className="flex-grow bg-gray-100 p-4">
+        <div className="bg-white shadow-md rounded-lg p-6">
+          <div className="flex space-x-4 mb-4">
+            {[{ name: 'Requested', value: '0' },
+              { name: 'Accepted', value: '1' },
+              { name: 'Completed', value: '2' },
+              { name: 'Declined', value: '3' }
+            ].map(tab => (
+              <button
+                key={tab.value} // Added key here
+                onClick={() => {
+                  setSelectedTab(tab.value);
+                  fetchEvaluations(tab.value);
+                }}
+                className={`p-2 border-b-2 ${selectedTab === tab.value ? 'border-blue-500 font-bold' : 'border-transparent'}`}
+              >
+                {tab.name}
+              </button>
             ))}
-          </thead>
-          <tbody {...tableInstance.getTableBodyProps()}>
-            {tableInstance.rows.map(row => {
-              tableInstance.prepareRow(row);
-              return (
-                <tr {...row.getRowProps()} key={row.id}> {/* Added key here */}
-                  {row.cells.map(cell => (
-                    <td {...cell.getCellProps()} className="border-b border-gray-200 px-4 py-2" key={cell.column.id}> {/* Added key here */}
-                      {cell.render('Cell')}
-                    </td>
+          </div>
+
+          {/* Table to display evaluations */}
+          <table {...tableInstance.getTableProps()} className="min-w-full bg-white border border-gray-300">
+            <thead>
+              {tableInstance.headerGroups.map(headerGroup => (
+                <tr {...headerGroup.getHeaderGroupProps()} key={headerGroup.id}> {/* Added key here */}
+                  {headerGroup.headers.map(column => (
+                    <th {...column.getHeaderProps()} className="border-b-2 border-gray-200 bg-gray-100 px-4 py-2" key={column.id}> {/* Added key here */}
+                      {column.render('Header')}
+                    </th>
                   ))}
                 </tr>
-              );
-            })}
-          </tbody>
-        </table>
-      </div>
-    </main>
-  </div>
-
+              ))}
+            </thead>
+            <tbody {...tableInstance.getTableBodyProps()}>
+              {tableInstance.rows.map(row => {
+                tableInstance.prepareRow(row);
+                return (
+                  <tr {...row.getRowProps()} key={row.id}> {/* Added key here */}
+                    {row.cells.map(cell => (
+                      <td {...cell.getCellProps()} className="border-b border-gray-200 px-4 py-2" key={cell.column.id}> {/* Added key here */}
+                        {cell.render('Cell')}
+                      </td>
+                    ))}
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+      </main>
+    </div>
   );
 };
 

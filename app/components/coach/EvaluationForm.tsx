@@ -62,9 +62,8 @@ const EvaluationForm: React.FC<EvaluationFormProps> = ({ evaluationId,
     const [tacticalRemarks, setTacticalRemarks] = useState('');
     const [physicalRemarks, setPhysicalRemarks] = useState('');
     const [finalRemarks, setFinalRemarks] = useState('');
-    const [playerID,setPlayerID] =useState();
-    const [coachID,setCoachID] =useState();
-
+    const [playerID, setPlayerID] = useState<number | undefined>(undefined); // Allowing for undefined
+    const [coachID, setCoachID] = useState<number | undefined>(undefined);
     const [errors, setErrors] = useState<{ technicalRemarks: boolean; tacticalRemarks: boolean; physicalRemarks: boolean; finalRemarks: boolean }>({
         technicalRemarks: false,
         tacticalRemarks: false,
@@ -77,8 +76,15 @@ const EvaluationForm: React.FC<EvaluationFormProps> = ({ evaluationId,
     // Handle form submission
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        setPlayerID(evaluationData.player_id);
-        setCoachID(evaluationData.coach_id);
+        if (evaluationData) {
+            setPlayerID(evaluationData.player_id);
+            setCoachID(evaluationData.coach_id);
+        } else {
+            console.error("evaluationData is null or undefined");
+            // Handle the case where evaluationData is not available
+        }
+
+       
         const validationErrors = {
             technicalRemarks: technicalRemarks.trim() === '',
             tacticalRemarks: tacticalRemarks.trim() === '',
@@ -154,23 +160,26 @@ const EvaluationForm: React.FC<EvaluationFormProps> = ({ evaluationId,
       <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
         {/* Player Information */}
         <div className="bg-white p-6 border border-gray-300 rounded-lg">
-          <h3 className="text-lg font-semibold mb-4">{evaluationData.review_title}</h3>
+          <h3 className="text-lg font-semibold mb-4">{evaluationData?.review_title}</h3>
           <div className="flex items-center mb-4">
             <strong className="mr-2">Player:</strong> 
-            <Image
-              src={evaluationData.image}
-              alt="Player Avatar"
-              width={30}
-              height={30}
-              className="rounded-full mx-2"
-            />
-            <span className="text-gray-700">{evaluationData.first_name} {evaluationData.last_name}</span>
-            <span className="ml-2 text-gray-500">{evaluationData.position}, {evaluationData.team} #{evaluationData.number}</span>
+            {evaluationData?.image ? (
+    <Image
+        src={evaluationData.image} // image is guaranteed to be a string here
+        alt="Player Avatar"
+        width={30}
+        height={30}
+    />
+) : (
+    <div>No Image Available</div> // Placeholder or alternative content
+)}
+            <span className="text-gray-700">{evaluationData?.first_name} {evaluationData?.last_name}</span>
+            <span className="ml-2 text-gray-500">{evaluationData?.position}, {evaluationData?.team} #{evaluationData?.number}</span>
           </div>
           
 
           <div className="mb-4">
-            <strong className="mr-2">Cost:</strong> <span>${evaluationData.expectedCharge}</span>
+            <strong className="mr-2">Cost:</strong> <span>${evaluationData?.expectedCharge}</span>
           </div>
 
           <div className="mb-4">
@@ -178,19 +187,19 @@ const EvaluationForm: React.FC<EvaluationFormProps> = ({ evaluationId,
           </div>
 
           <div className="mb-4">
-            <strong className="mr-2">Primary link:</strong> <a href={evaluationData.primary_video_link} className="text-blue-500" target='_blank'>Link to video</a>
+            <strong className="mr-2">Primary link:</strong> <a href={evaluationData?.primary_video_link} className="text-blue-500" target='_blank'>Link to video</a>
           </div>
           <div className="mb-4">
-            <strong className="mr-2">Video link Two:</strong> <a href={evaluationData.video_link_two} className="text-blue-500" target='_blank'>Link to video</a>
+            <strong className="mr-2">Video link Two:</strong> <a href={evaluationData?.video_link_two} className="text-blue-500" target='_blank'>Link to video</a>
           </div>
           <div className="mb-4">
-            <strong className="mr-2">Video  link Three :</strong> <a href={evaluationData.video_link_three
+            <strong className="mr-2">Video  link Three :</strong> <a href={evaluationData?.video_link_three
 } className="text-blue-500" target='_blank'>Link to video</a>
           </div>
 
           <div className="mb-4">
             <strong className="mr-2">Video description:</strong>
-            <span className="text-gray-700">{evaluationData.video_description}</span>
+            <span className="text-gray-700">{evaluationData?.video_description}</span>
           </div>
         </div>
 
