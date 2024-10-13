@@ -15,10 +15,15 @@ const Dashboard: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isAcceptOpen, setIsAcceptOpen] = useState(false);
   const [isEvFormOpen, setIsEvFormOpen] = useState(false);
-  const [evaluationId, setEvaluationId]=useState();
-  const [evaluationData, setEvaluationData]=useState();
-  const [coachId, setCoachId]=useState();
-  const [playerId, setPlayerId]=useState();
+  const [evaluationId, setEvaluationId] = useState<number | undefined>(undefined);
+  const [coachId, setCoachId] = useState<number | undefined>(undefined);
+  const [playerId, setPlayerId] = useState<number | undefined>(undefined);
+
+
+
+  const [evaluationData, setEvaluationData] = useState();
+
+
   const [modalContent, setModalContent] = useState<JSX.Element | null>(null);
   const [evaluations, setEvaluations] = useState<EvaluationsByStatus>({
     Requested: [],
@@ -113,7 +118,7 @@ const Dashboard: React.FC = () => {
     setEvaluationId(evaluation.id);
     setCoachId(evaluation.coach_id);
     setPlayerId(evaluation.player_id);
-     
+
     setIsAcceptOpen(true);
   };
 
@@ -122,7 +127,7 @@ const Dashboard: React.FC = () => {
     console.log(evaluation);
     setEvaluationData(evaluation);
     setIsEvFormOpen(true);
-   
+
   };
 
   const tableInstance = useTable({ columns, data });
@@ -137,25 +142,25 @@ const Dashboard: React.FC = () => {
     setIsAcceptOpen(false);
   };
 
-  const   closeEvform=()=>{
+  const closeEvform = () => {
     setIsEvFormOpen(false);
   };
-  
+
   return (
     <>
       <Modal isOpen={isModalOpen} onClose={closeModal}>
         {modalContent}
       </Modal>
       <AcceptanceModal
-      
+
         evaluationId={evaluationId} // Pass the appropriate evaluation ID if needed
         isOpen={isAcceptOpen}
         onClose={closeAcceptanceModal}
       />
 
-      <EvaluationForm  evaluationId={evaluationId} evaluationData={evaluationData} coachId={coachId} playerId={playerId} isOpen={isEvFormOpen} onClose={closeEvform}/>
+      <EvaluationForm evaluationId={evaluationId} evaluationData={evaluationData} coachId={coachId} playerId={playerId} isOpen={isEvFormOpen} onClose={closeEvform} />
 
-      
+
       <div className="flex h-screen">
         <Sidebar />
         <main className="flex-grow bg-gray-100 p-4">
@@ -168,10 +173,10 @@ const Dashboard: React.FC = () => {
                 { name: 'Declined', value: '3' },
               ].map(tab => (
                 <button
-    key={tab.value} // This is good
-    onClick={() => setSelectedTab(tab.value)}
-    className={`p-2 border-b-2 ${selectedTab === tab.value ? 'border-blue-500 font-bold' : 'border-transparent'}`}
-  >
+                  key={tab.value} // This is good
+                  onClick={() => setSelectedTab(tab.value)}
+                  className={`p-2 border-b-2 ${selectedTab === tab.value ? 'border-blue-500 font-bold' : 'border-transparent'}`}
+                >
                   {tab.name}
                 </button>
               ))}
@@ -179,33 +184,33 @@ const Dashboard: React.FC = () => {
 
             {/* Table to display evaluations */}
             <table {...tableInstance.getTableProps()} className="min-w-full bg-white border border-gray-300">
-            <thead>
-  {tableInstance.headerGroups.map(headerGroup => (
-    <tr {...headerGroup.getHeaderGroupProps()} key={headerGroup.id}> {/* Add key here */}
-      {headerGroup.headers.map(column => (
-        <th {...column.getHeaderProps()} key={column.id} className="border-b-2 border-gray-200 bg-gray-100 px-4 py-2 text-left text-gray-600">
-          {column.render('Header')}
-        </th>
-      ))}
-    </tr>
-  ))}
-</thead>
+              <thead>
+                {tableInstance.headerGroups.map(headerGroup => (
+                  <tr {...headerGroup.getHeaderGroupProps()} key={headerGroup.id}> {/* Add key here */}
+                    {headerGroup.headers.map(column => (
+                      <th {...column.getHeaderProps()} key={column.id} className="border-b-2 border-gray-200 bg-gray-100 px-4 py-2 text-left text-gray-600">
+                        {column.render('Header')}
+                      </th>
+                    ))}
+                  </tr>
+                ))}
+              </thead>
 
- 
-<tbody {...tableInstance.getTableBodyProps()}>
-  {tableInstance.rows.map(row => {
-    tableInstance.prepareRow(row);
-    return (
-      <tr {...row.getRowProps()} key={row.id}> {/* Add key here */}
-        {row.cells.map(cell => (
-          <td {...cell.getCellProps()} key={row.id} className="border-b border-gray-200 px-4 py-2">
-            {cell.render('Cell')}
-          </td>
-        ))}
-      </tr>
-    );
-  })}
-</tbody>
+
+              <tbody {...tableInstance.getTableBodyProps()}>
+                {tableInstance.rows.map(row => {
+                  tableInstance.prepareRow(row);
+                  return (
+                    <tr {...row.getRowProps()} key={row.id}> {/* Add key here */}
+                      {row.cells.map(cell => (
+                        <td {...cell.getCellProps()} key={row.id} className="border-b border-gray-200 px-4 py-2">
+                          {cell.render('Cell')}
+                        </td>
+                      ))}
+                    </tr>
+                  );
+                })}
+              </tbody>
             </table>
           </div>
         </main>
