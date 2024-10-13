@@ -40,9 +40,13 @@ const DashboardTabs: React.FC = () => {
 
       const data: EvaluationsByStatus = await response.json();
       setEvaluations(data);
-    } catch (err) {
-      setError(err.message);
-    } finally {
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+          setError(err.message); // Access the message property safely
+      } else {
+          setError("An unexpected error occurred."); // Handle non-Error cases
+      }
+  } finally {
       setLoading(false); // Set loading to false after fetching
     }
   };
