@@ -162,18 +162,19 @@ const EvaluationModal: React.FC<EvaluationModalProps> = ({ isOpen, onClose, coac
               Review Title
             </label>
             <input
-              placeholder='Game against XYZ on MM/DD'
-              type="text"
-              id="reviewTitle"
-              className={`w-full px-3 py-2 border ${errors.reviewTitle ? 'border-red-500' : 'border-gray-300'} rounded-md`}
-              value={reviewTitle}
-              onChange={(e) => {
-                setReviewTitle(e.target.value);
-                if (errors.reviewTitle) {
-                  setErrors(prev => ({ ...prev, reviewTitle: undefined }));
-                }
-              }}
-            />
+  placeholder='Game against XYZ on MM/DD'
+  type="text"
+  id="reviewTitle"
+  className={`w-full px-3 py-2 border ${errors.reviewTitle ? 'border-red-500' : 'border-gray-300'} rounded-md`}
+  value={reviewTitle}
+  onChange={(e) => {
+    setReviewTitle(e.target.value);
+    if (errors.reviewTitle) {
+      const { reviewTitle, ...remainingErrors } = errors; // Remove reviewTitle from errors
+      setErrors(remainingErrors);
+    }
+  }}
+/>
             {errors.reviewTitle && <p className="text-red-500">{errors.reviewTitle}</p>}
           </div>
 
@@ -185,18 +186,20 @@ const EvaluationModal: React.FC<EvaluationModalProps> = ({ isOpen, onClose, coac
                 Primary Video Link/URL
               </label>
               <input
-                placeholder='www.exampleurl.com'
-                type="url"
-                id="primaryVideoUrl"
-                className={`w-full px-3 py-2 border ${errors.primaryVideoUrl ? 'border-red-500' : 'border-gray-300'} rounded-md`}
-                value={primaryVideoUrl}
-                onChange={(e) => {
-                  setPrimaryVideoUrl(e.target.value);
-                  if (errors.primaryVideoUrl) {
-                    setErrors(prev => ({ ...prev, primaryVideoUrl: undefined }));
-                  }
-                }}
-              />
+  placeholder='www.exampleurl.com'
+  type="url"
+  id="primaryVideoUrl"
+  className={`w-full px-3 py-2 border ${errors.primaryVideoUrl ? 'border-red-500' : 'border-gray-300'} rounded-md`}
+  value={primaryVideoUrl}
+  onChange={(e) => {
+    setPrimaryVideoUrl(e.target.value);
+    if (errors.primaryVideoUrl) {
+      const { primaryVideoUrl, ...remainingErrors } = errors; // Remove primaryVideoUrl from errors
+      setErrors(remainingErrors);
+    }
+  }}
+/>
+
               {errors.primaryVideoUrl && <p className="text-red-500">{errors.primaryVideoUrl}</p>}
             </div>
 
@@ -206,18 +209,19 @@ const EvaluationModal: React.FC<EvaluationModalProps> = ({ isOpen, onClose, coac
                 Video Link/URL #2 (Optional)
               </label>
               <input
-                placeholder='www.exampleurl.com'
-                type="url"
-                id="videoUrl2"
-                className={`w-full px-3 py-2 border ${errors.videoUrl2 ? 'border-red-500' : 'border-gray-300'} rounded-md`}
-                value={videoUrl2}
-                onChange={(e) => {
-                  setVideoUrl2(e.target.value);
-                  if (errors.videoUrl2) {
-                    setErrors(prev => ({ ...prev, videoUrl2: undefined }));
-                  }
-                }}
-              />
+  placeholder='www.exampleurl.com'
+  type="url"
+  id="videoUrl2"
+  className={`w-full px-3 py-2 border ${errors.videoUrl2 ? 'border-red-500' : 'border-gray-300'} rounded-md`}
+  value={videoUrl2}
+  onChange={(e) => {
+    setVideoUrl2(e.target.value);
+    if (errors.videoUrl2) {
+      const { videoUrl2, ...remainingErrors } = errors; // Remove videoUrl2 from errors
+      setErrors(remainingErrors);
+    }
+  }}
+/>
               {errors.videoUrl2 && <p className="text-red-500">{errors.videoUrl2}</p>}
             </div>
 
@@ -227,18 +231,19 @@ const EvaluationModal: React.FC<EvaluationModalProps> = ({ isOpen, onClose, coac
                 Video Link/URL #3 (Optional)
               </label>
               <input
-                placeholder='www.exampleurl.com'
-                type="url"
-                id="videoUrl3"
-                className={`w-full px-3 py-2 border ${errors.videoUrl3 ? 'border-red-500' : 'border-gray-300'} rounded-md`}
-                value={videoUrl3}
-                onChange={(e) => {
-                  setVideoUrl3(e.target.value);
-                  if (errors.videoUrl3) {
-                    setErrors(prev => ({ ...prev, videoUrl3: undefined }));
-                  }
-                }}
-              />
+  placeholder='www.exampleurl.com'
+  type="url"
+  id="videoUrl3"
+  className={`w-full px-3 py-2 border ${errors.videoUrl3 ? 'border-red-500' : 'border-gray-300'} rounded-md`}
+  value={videoUrl3}
+  onChange={(e) => {
+    setVideoUrl3(e.target.value);
+    if (errors.videoUrl3) {
+      const { videoUrl3, ...remainingErrors } = errors; // Remove videoUrl3 from errors
+      setErrors(remainingErrors);
+    }
+  }}
+/>
               {errors.videoUrl3 && <p className="text-red-500">{errors.videoUrl3}</p>}
             </div>
           </div>
