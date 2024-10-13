@@ -168,7 +168,7 @@ evaluationId={evaluationId ?? -1} // Pass the appropriate evaluation ID if neede
         onClose={closeAcceptanceModal}
       />
 
-      <EvaluationForm  evaluationId={evaluationId ?? null} evaluationData={evaluationData} coachId={coachId} playerId={playerId} isOpen={isEvFormOpen} onClose={closeEvform} />
+      <EvaluationForm  evaluationId={evaluationId ?? null} evaluationData={evaluationData ?? null} coachId={coachId ?? null} playerId={playerId ?? null} isOpen={isEvFormOpen} onClose={closeEvform} />
 
 
       <div className="flex h-screen">

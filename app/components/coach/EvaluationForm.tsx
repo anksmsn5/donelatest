@@ -4,10 +4,10 @@ import EvaluationProfile from '../EvaluationProfile';
 import { format } from 'date-fns';
 
 interface ModalProps {
-    evaluationId: number | null;
-    coachId:number | null;
-    playerId:number | null;
-    evaluationData:string | null;
+    evaluationId?: number | null;
+    coachId?:number | null;
+    playerId?:number | null;
+    evaluationData?:string | null;
 
     onClose: () => void;
     isOpen: boolean;
