@@ -5,6 +5,7 @@ export interface Evaluation {
     primary_video_link: string;
     first_name: string;
     coach_id: number;
+    player_id: number;
     last_name: string;
     video_link_two?: string;
     video_link_three?: string;
