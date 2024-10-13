@@ -18,7 +18,7 @@ interface FormValues {
   qualifications: string;
   expectedCharge: string;
   password: string;
-  image: File | null; 
+  image: string | null; 
 }
 
 interface FormErrors {
@@ -181,11 +181,11 @@ export default function Register() {
     if (event.target.files) {
       const file = event.target.files[0];
       const reader = new FileReader();
-
+  
       reader.onloadend = () => {
-        setFormValues({ ...formValues, image: reader.result as string });
+        setFormValues({ ...formValues, image: reader.result as string }); // Set the base64 string
       };
-
+  
       if (file) {
         reader.readAsDataURL(file); // Convert the image file to base64
       }
