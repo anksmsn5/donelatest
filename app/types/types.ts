@@ -3,6 +3,8 @@ export interface Evaluation {
     id: number;
     review_title: string;
     primary_video_link: string;
+    first_name: string;
+    last_name: string;
     video_link_two?: string;
     video_link_three?: string;
     video_description?: string;
