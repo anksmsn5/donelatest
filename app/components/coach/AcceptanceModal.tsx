@@ -1,10 +1,11 @@
 import React from 'react';
 
-interface ModalProps {
-  evaluationId: number | null;
-  onClose: () => void;
+type ModalProps = {
   isOpen: boolean;
-}
+  evaluationId: number;
+  onClose: () => void;
+  children?: React.ReactNode;  // Add this line to support children
+};
 
 
 const AcceptanceModal: React.FC<ModalProps> = ({ isOpen, onClose, evaluationId }) => {
