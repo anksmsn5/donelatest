@@ -61,29 +61,38 @@ const Dashboard: React.FC = () => {
     fetchEvaluations(selectedTab);
   }, [selectedTab]);
 
-  const columns = React.useMemo(
+  const columns = React.useMemo<Column<Evaluation>[]>(
     () => [
       {
         Header: 'Sr No.',
-        Cell: ({ row }: CellProps<Evaluation>) => row.index + 1, // Provide the Evaluation type here
+        Cell: ({ row }: CellProps<Evaluation>) => row.index + 1,
       },
       {
         Header: 'Player Name',
-        accessor: 'first_name',
-        Cell: ({ row }: CellProps<Evaluation>) => `${row.original.first_name} ${row.original.last_name}`, // Provide the correct type for row
+        accessor: 'first_name',  // Must match a key in Evaluation
+        Cell: ({ row }: CellProps<Evaluation>) => `${row.original.first_name} ${row.original.last_name}`,
       },
-      { Header: 'Evaluation Title', accessor: 'review_title' },
+      { 
+        Header: 'Evaluation Title', 
+        accessor: 'review_title'  // Must match a key in Evaluation
+      },
       {
         Header: 'Video Link',
-        accessor: 'primary_video_link',
+        accessor: 'primary_video_link',  // Must match a key in Evaluation
         Cell: ({ value }: { value: string }) => (
           <a href={value} target="_blank" rel="noopener noreferrer">
             Watch
           </a>
         ),
       },
-      { Header: 'Description', accessor: 'video_description' },
-      { Header: 'Status', accessor: 'payment_status' },
+      { 
+        Header: 'Description', 
+        accessor: 'video_description'  // Must match a key in Evaluation
+      },
+      { 
+        Header: 'Status', 
+        accessor: 'payment_status'  // Must match a key in Evaluation
+      },
       {
         Header: 'Action',
         Cell: ({ row }: CellProps<Evaluation>) => {
