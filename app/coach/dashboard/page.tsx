@@ -21,7 +21,8 @@ const Dashboard: React.FC = () => {
 
 
 
-  const [evaluationData, setEvaluationData] = useState();
+  const [evaluationData, setEvaluationData] = useState<Evaluation | undefined>(undefined);
+
 
 
   const [modalContent, setModalContent] = useState<JSX.Element | null>(null);
