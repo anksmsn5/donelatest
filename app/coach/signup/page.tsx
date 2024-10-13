@@ -52,7 +52,20 @@ export default function Register() {
     image: null,
   });
 
-  const [formErrors, setFormErrors] = useState<FormErrors>({});
+  const [formErrors, setFormErrors] = useState<FormErrors>({
+    firstName: undefined,
+    lastName: undefined,
+    email: undefined,
+    phoneNumber: undefined,
+    gender: undefined,
+    location: undefined,
+    sport: undefined,
+    clubName: undefined,
+    qualifications: undefined,
+    expectedCharge: undefined,
+    password: undefined,
+    image: null,
+  });
   const [error, setError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
