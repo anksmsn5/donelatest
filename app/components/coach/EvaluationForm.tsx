@@ -1,17 +1,19 @@
 import React, { useState } from 'react';
 import Image from 'next/image';
 import EvaluationProfile from '../EvaluationProfile';
+import { Evaluation, EvaluationsByStatus } from '../../types/types';
 import { format } from 'date-fns';
 
-interface ModalProps {
-    evaluationId?: number | null;
-    coachId?:number | null;
-    playerId?:number | null;
-    evaluationData?:string | null;
 
-    onClose: () => void;
+type EvaluationFormProps = {
+    evaluationId?: number | null; // Optional or null
+    evaluationData?: Evaluation | null; // Update to accept Evaluation or null
+    coachId?: number | null; // Optional or null
+    playerId?: number | null; // Optional or null
     isOpen: boolean;
-}
+    onClose: () => void;
+  };
+
 
 const technical = [
     { id: 1, label: 'Passing', options: ['0','1', '2', '3', '4', '5'] },
@@ -40,7 +42,12 @@ const physical = [
     { id: 4, label: 'Fitness', options: ['0','1', '2', '3', '4', '5'] },
 ];
 
-const EvaluationForm: React.FC<ModalProps> = ({ isOpen, onClose, evaluationId, coachId, playerId,evaluationData }) => {
+const EvaluationForm: React.FC<EvaluationFormProps> = ({ evaluationId,
+    evaluationData,
+    coachId,
+    playerId,
+    isOpen,
+    onClose, }) => {
 
     const [technicalScores, setTechnicalScores] = useState<{ [key: string]: string }>(() =>
         Object.fromEntries(technical.map((tech) => [tech.label, '0']))
