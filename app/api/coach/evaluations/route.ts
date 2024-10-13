@@ -7,7 +7,7 @@ import { eq, and } from 'drizzle-orm';
 
 export async function POST(req: NextRequest) {
   try {
-    const { userId, status } = await req.json();
+    const { coachId, status } = await req.json();
 
     const evaluationsData = await db
       .select({
@@ -20,8 +20,9 @@ export async function POST(req: NextRequest) {
         coachPhoto: coaches.image,
         expectedCharge: coaches.expectedCharge,
         evaluationId: playerEvaluation.id, // Select specific columns from playerEvaluation
-        reviewTitle: playerEvaluation.review_title, 
+        review_title: playerEvaluation.review_title, 
         evaluationStatus: playerEvaluation.status,
+        video_description:playerEvaluation.video_description,
         createdAt: playerEvaluation.created_at,
         updatedAt: playerEvaluation.updated_at,
       })
@@ -30,7 +31,7 @@ export async function POST(req: NextRequest) {
       .innerJoin(coaches, eq(playerEvaluation.coach_id, coaches.id)) // Assuming coach_id is the foreign key in playerEvaluation
       .where(
         and(
-          eq(playerEvaluation.coach_id, userId),
+          eq(playerEvaluation.coach_id, coachId),
           eq(playerEvaluation.status, status)
         )
       )

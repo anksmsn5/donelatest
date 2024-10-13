@@ -9,6 +9,7 @@ import { useTable,Column } from 'react-table';
 import { Evaluation, EvaluationsByStatus } from '../../types/types';
 import Modal from '../../components/Modal';
 import AcceptanceModal from '@/app/components/coach/AcceptanceModal';
+import { useSession, signOut } from 'next-auth/react';
 import EvaluationForm from '@/app/components/coach/EvaluationForm';
 
 const Dashboard: React.FC = () => {
@@ -18,6 +19,7 @@ const Dashboard: React.FC = () => {
   const [evaluationId, setEvaluationId] = useState<number | undefined>(undefined);
   const [coachId, setCoachId] = useState<number | undefined>(undefined);
   const [playerId, setPlayerId] = useState<number | undefined>(undefined);
+  const { data: session, status } = useSession();
 
 
 
@@ -35,13 +37,14 @@ const Dashboard: React.FC = () => {
   const [selectedTab, setSelectedTab] = useState<string>('0');
   const [data, setData] = useState<Evaluation[]>([]);
 
-  const fetchEvaluations = async (status: string) => {
+  const fetchEvaluations = async (status: string, coachId:number) => {
+    console.log(coachId);
     const response = await fetch('/api/coach/evaluations', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ status }),
+      body: JSON.stringify({ status, coachId }),
     });
 
     if (!response.ok) {
@@ -57,9 +60,7 @@ const Dashboard: React.FC = () => {
     setData(evaluationsData);
   };
 
-  useEffect(() => {
-    fetchEvaluations(selectedTab);
-  }, [selectedTab]);
+  
 
   const columns = React.useMemo<Column<Evaluation>[]>(
     () => [
@@ -74,7 +75,8 @@ const Dashboard: React.FC = () => {
       },
       { 
         Header: 'Evaluation Title', 
-        accessor: 'review_title'  // Accessing Evaluation's review_title property
+        accessor: 'review_title' 
+        
       },
       {
         Header: 'Video Link',
@@ -89,10 +91,7 @@ const Dashboard: React.FC = () => {
         Header: 'Description', 
         accessor: 'video_description'  // Accessing Evaluation's video_description property
       },
-      { 
-        Header: 'Status', 
-        accessor: 'payment_status'  // Accessing Evaluation's payment_status property
-      },
+     
       {
         Header: 'Action',
         Cell: ({ row }: CellProps<Evaluation>) => {
@@ -155,7 +154,20 @@ const Dashboard: React.FC = () => {
   const closeEvform = () => {
     setIsEvFormOpen(false);
   };
+  useEffect(() => {
+    if (session) {
+      const coachId = Number(session.user.id);
+      if (!isNaN(coachId)) {
+        fetchEvaluations(selectedTab, coachId);
+      } else {
+        console.error("Invalid coach ID");
+      }
+    }
+  }, [session,selectedTab]);
 
+  useEffect(() => {
+   
+  }, []);
   return (
     <>
       <Modal isOpen={isModalOpen} onClose={closeModal}>
