@@ -50,10 +50,13 @@ export default function Register() {
     // Validation
     const newErrors: Partial<FormValues> = {};
     if (!formValues.image) {
-      newErrors.image = "Profile image is required";
-    } 
-     else if (formValues.image.size > 2 * 1024 * 1024) {
-      newErrors.image = "Image size must be less than 2MB";
+        newErrors.image = "Profile image is required";
+    } else {
+        // Calculate the approximate size of the base64 string
+        const imageSizeInBytes = (formValues.image.length * 3) / 4;
+        if (imageSizeInBytes > 2 * 1024 * 1024) {
+            newErrors.image = "Image size must be less than 2MB";
+        }
     }
     if (!formValues.first_name.trim()) newErrors.first_name = "First name is required.";
     if (!formValues.last_name.trim()) newErrors.last_name = "Last name is required.";
