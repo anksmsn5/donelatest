@@ -254,17 +254,18 @@ const EvaluationModal: React.FC<EvaluationModalProps> = ({ isOpen, onClose, coac
               Video Description
             </label>
             <textarea
-              id="videoDescription"
-              placeholder='Provide a brief description of the video...'
-              className={`w-full px-3 py-2 border ${errors.videoDescription ? 'border-red-500' : 'border-gray-300'} rounded-md`}
-              value={videoDescription}
-              onChange={(e) => {
-                setVideoDescription(e.target.value);
-                if (errors.videoDescription) {
-                  setErrors(prev => ({ ...prev, videoDescription: undefined }));
-                }
-              }}
-            />
+  id="videoDescription"
+  placeholder='Provide a brief description of the video...'
+  className={`w-full px-3 py-2 border ${errors.videoDescription ? 'border-red-500' : 'border-gray-300'} rounded-md`}
+  value={videoDescription}
+  onChange={(e) => {
+    setVideoDescription(e.target.value);
+    if (errors.videoDescription) {
+      const { videoDescription, ...remainingErrors } = errors; // Remove videoDescription from errors
+      setErrors(remainingErrors);
+    }
+  }}
+/>
             {errors.videoDescription && <p className="text-red-500">{errors.videoDescription}</p>}
           </div>
 
