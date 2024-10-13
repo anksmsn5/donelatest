@@ -163,7 +163,7 @@ const Dashboard: React.FC = () => {
       </Modal>
       <AcceptanceModal
 
-        evaluationId={evaluationId} // Pass the appropriate evaluation ID if needed
+evaluationId={evaluationId ?? -1} // Pass the appropriate evaluation ID if needed
         isOpen={isAcceptOpen}
         onClose={closeAcceptanceModal}
       />

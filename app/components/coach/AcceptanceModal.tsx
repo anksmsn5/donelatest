@@ -2,7 +2,7 @@ import React from 'react';
 
 type ModalProps = {
   isOpen: boolean;
-  evaluationId: number;
+  evaluationId?: number;
   onClose: () => void;
   children?: React.ReactNode;  // Add this line to support children
 };
