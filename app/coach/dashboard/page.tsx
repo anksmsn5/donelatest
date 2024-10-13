@@ -5,7 +5,7 @@ import React from 'react';
 
 import '../../globals.css'; // Import CSS module
 import Sidebar from '../../components/coach/Sidebar';
-import { useTable } from 'react-table';
+import { useTable,Column } from 'react-table';
 import { Evaluation, EvaluationsByStatus } from '../../types/types';
 import Modal from '../../components/Modal';
 import AcceptanceModal from '@/app/components/coach/AcceptanceModal';
@@ -69,16 +69,16 @@ const Dashboard: React.FC = () => {
       },
       {
         Header: 'Player Name',
-        accessor: 'first_name',  // Must match a key in Evaluation
+        accessor: 'first_name', // Accessing Evaluation's first_name property
         Cell: ({ row }: CellProps<Evaluation>) => `${row.original.first_name} ${row.original.last_name}`,
       },
       { 
         Header: 'Evaluation Title', 
-        accessor: 'review_title'  // Must match a key in Evaluation
+        accessor: 'review_title'  // Accessing Evaluation's review_title property
       },
       {
         Header: 'Video Link',
-        accessor: 'primary_video_link',  // Must match a key in Evaluation
+        accessor: 'primary_video_link',  // Accessing Evaluation's primary_video_link property
         Cell: ({ value }: { value: string }) => (
           <a href={value} target="_blank" rel="noopener noreferrer">
             Watch
@@ -87,11 +87,11 @@ const Dashboard: React.FC = () => {
       },
       { 
         Header: 'Description', 
-        accessor: 'video_description'  // Must match a key in Evaluation
+        accessor: 'video_description'  // Accessing Evaluation's video_description property
       },
       { 
         Header: 'Status', 
-        accessor: 'payment_status'  // Must match a key in Evaluation
+        accessor: 'payment_status'  // Accessing Evaluation's payment_status property
       },
       {
         Header: 'Action',
