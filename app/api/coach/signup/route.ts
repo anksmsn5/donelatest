@@ -92,7 +92,8 @@ export async function GET(req: NextRequest) {
         firstName: coaches.firstName,
         image: coaches.image,
         clubName:coaches.clubName,
-        slug:coaches.slug
+        slug:coaches.slug,
+        rating:coaches.rating,
       })
       .from(coaches)
       .execute();
@@ -100,6 +101,7 @@ export async function GET(req: NextRequest) {
         firstName: coach.firstName,
         clubName:coach.clubName,
         slug:coach.slug,
+        rating:coach.rating,
         image: coach.image ? `${coach.image}` : null,
       }));
     // Return the coach list as a JSON response

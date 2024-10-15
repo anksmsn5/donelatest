@@ -80,9 +80,7 @@ const PaymentDonePage: NextPage<{ searchParams: { session_id?: string } }> = ({ 
           <p className="text-lg">
             <strong>Total Amount:</strong> {(paymentDetails.amount_total / 100).toFixed(2)} {paymentDetails.currency?.toUpperCase()}
           </p>
-          <p className="text-lg">
-            <strong>Customer Email:</strong> {paymentDetails.customer_email}
-          </p>
+          
           <p className="text-lg">
             <strong>Reference ID:</strong> {paymentDetails.payment_intent}
           </p>

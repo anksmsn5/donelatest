@@ -19,8 +19,9 @@ export async function POST(req: NextRequest) {
 
     const evaluationsData = await db
       .select({
-        first_name: users.first_name,
-        last_name: users.last_name,
+        evaluationId:playerEvaluation.id,
+        first_name: coaches.firstName,
+        last_name: coaches.lastName,
         review_title: playerEvaluation.review_title,
         primary_video_link: playerEvaluation.primary_video_link,
         video_link_two: playerEvaluation.video_link_two,
@@ -32,7 +33,7 @@ export async function POST(req: NextRequest) {
         updated_at: playerEvaluation.updated_at,
       })
       .from(playerEvaluation)  // This selects from the `playerEvaluation` table
-      .innerJoin(users, eq(playerEvaluation.player_id, users.id)) // Inner join with the `users` table
+      .innerJoin(coaches, eq(playerEvaluation.coach_id, coaches.id)) // Inner join with the `users` table
       .where(
         and(
           eq(playerEvaluation.player_id, userId),     // First condition

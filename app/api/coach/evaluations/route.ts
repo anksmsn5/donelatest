@@ -17,6 +17,9 @@ export async function POST(req: NextRequest) {
         number: users.number,
         image: users.image,
         team: users.team,
+        playerId: users.id, // Select specific columns from users
+        coachId: coaches.id,
+        coachName: coaches.firstName,
         coachPhoto: coaches.image,
         expectedCharge: coaches.expectedCharge,
         evaluationId: playerEvaluation.id, // Select specific columns from playerEvaluation

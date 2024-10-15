@@ -15,7 +15,7 @@ interface CoachData {
   firstName: string;
   lastName: string;
   image: string;
-  
+  rating: number;
   createdAt: string; // or Date if your API returns a Date object
   expectedCharge: number;
   slug: string; // If slug is part of the response
@@ -116,7 +116,9 @@ const CoachProfile = ({ params }: CoachProfileProps) => {
               <div className="flex justify-center items-center space-x-1">
                 {/* Stars (use icons here if you'd like) */}
                 {[...Array(5)].map((_, i) => (
-                  <span key={i} className="text-gray-400">★</span>
+                   <span key={i} className={i < coachData.rating ? 'text-yellow-500' : 'text-gray-400'}>
+                   ★
+                 </span>
                 ))}
               </div>
             </div>

@@ -77,8 +77,8 @@ const EvaluationForm: React.FC<EvaluationFormProps> = ({ evaluationId,
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         if (evaluationData) {
-            setPlayerID(evaluationData.player_id);
-            setCoachID(evaluationData.coach_id);
+            setPlayerID(evaluationData.playerId);
+            setCoachID(evaluationData.coachId);
         } else {
             console.error("evaluationData is null or undefined");
             // Handle the case where evaluationData is not available
@@ -98,8 +98,8 @@ const EvaluationForm: React.FC<EvaluationFormProps> = ({ evaluationId,
         }
         const evaluationDatas = {
             evaluationId,
-            coachID,
-            playerID,
+            coachId,
+            playerId,
             technicalScores,
             tacticalScores,
             physicalScores,
@@ -123,7 +123,7 @@ const EvaluationForm: React.FC<EvaluationFormProps> = ({ evaluationId,
             .then((data) => {
                 
                 onClose(); 
-                window.location.href = '/coach/dashboard';
+                ///window.location.href = '/coach/dashboard';
             })
             .catch((error) => {
                 console.error('Error:', error);
@@ -150,7 +150,7 @@ const EvaluationForm: React.FC<EvaluationFormProps> = ({ evaluationId,
             <h2 className="text-xl font-bold">Evaluation Form</h2>
             <div className="flex flex-col items-end">
               <span className="bg-cyan-100 text-teal-800 px-3 py-1 rounded mb-2">Accepted</span>
-              <span className="text-gray-500">-46 day(s) remaining {playerId}</span>
+              <span className="text-gray-500">-46 day(s) remaining {playerId} -{evaluationId}</span>
             </div>
           </div>
         </div>

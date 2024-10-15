@@ -56,6 +56,7 @@ export const coaches = pgTable(
     expectedCharge: decimal("expectedCharge", { precision: 10, scale: 2 }), // Decimal type with precision and scale
     image: text("image"),
     slug: text("slug"),
+    rating: integer("rating").default(0),
     password: text("password").notNull(),
     createdAt: timestamp("createdAt").defaultNow().notNull(),
   },
@@ -84,13 +85,14 @@ export const playerEvaluation = pgTable(
     status: integer("status").notNull(), // Use enum type here
     payment_status: varchar("payment_status"),
     created_at: timestamp("created_at").defaultNow().notNull(),
+    rating: integer("rating"), // New field for rating, nullable by default
+    remarks: text("remarks"),
     updated_at: timestamp("updated_at").defaultNow().notNull(),
   },
   (playerEvaluation) => {
     return {
       uniqueIdx: uniqueIndex("player_evaluation_unique_idx").on(
-        playerEvaluation.player_id,
-        playerEvaluation.review_title
+        playerEvaluation.player_id
       ),
     };
   }
@@ -101,11 +103,11 @@ export const payments = pgTable(
   "payments",
   {
     id: serial("id").primaryKey(),
-    player_id: varchar("player_id").notNull(),
-    coach_id: varchar("coach_id").notNull(),
-    evaluation_id: varchar("evaluation_id").notNull(),
+    player_id: integer("player_id").notNull(),
+    coach_id: integer("coach_id").notNull(),
+    evaluation_id: integer("evaluation_id").notNull(),
     amount: decimal("amount", { precision: 10, scale: 2 }).notNull(),
-    status: varchar("status").notNull(),
+    status: varchar("status"),
     payment_info: text("payment_info"),
     created_at: timestamp("created_at").defaultNow().notNull(),
     description: text("description"),

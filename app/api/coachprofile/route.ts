@@ -24,7 +24,8 @@ import { SECRET_KEY } from '@/lib/constants';
           expectedCharge:coaches.expectedCharge,
           createdAt:coaches.createdAt,
           slug:coaches.slug,
-          image:coaches.image
+          image:coaches.image,
+          rating:coaches.rating
 
         })
         .from(coaches)
@@ -40,6 +41,7 @@ import { SECRET_KEY } from '@/lib/constants';
           expectedCharge: coach.expectedCharge,
           createdAt: coach.createdAt, 
           slug:coach.slug,
+          rating:coach.rating,
           image: coach.image ? `${coach.image}` : null,
         }));
 

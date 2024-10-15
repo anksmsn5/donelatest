@@ -11,8 +11,8 @@ export async function POST(req: NextRequest) {
         const data = await req.json();
         const { 
             evaluationId, 
-            playerID, 
-            coachID, 
+            playerId, 
+            coachId, 
             technicalScores, 
             tacticalScores, 
             physicalScores, 
@@ -26,8 +26,8 @@ export async function POST(req: NextRequest) {
 
         const insertedData = await db.insert(evaluationResults).values({
             evaluationId: evaluationId,
-            playerId: playerID,
-            coachId: coachID,
+            playerId: playerId,
+            coachId: coachId,
             technicalScores: technicalScores,
             tacticalScores: tacticalScores,
             physicalScores: physicalScores,

@@ -11,6 +11,7 @@ import Modal from '../../components/Modal';
 import AcceptanceModal from '@/app/components/coach/AcceptanceModal';
 import { useSession, signOut } from 'next-auth/react';
 import EvaluationForm from '@/app/components/coach/EvaluationForm';
+import { FaEye } from 'react-icons/fa';
 
 const Dashboard: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -20,7 +21,7 @@ const Dashboard: React.FC = () => {
   const [coachId, setCoachId] = useState<number | undefined>(undefined);
   const [playerId, setPlayerId] = useState<number | undefined>(undefined);
   const { data: session, status } = useSession();
-
+  const [loading, setLoading] = useState<boolean>(true); 
 
 
   const [evaluationData, setEvaluationData] = useState<Evaluation | undefined>(undefined);
@@ -38,7 +39,7 @@ const Dashboard: React.FC = () => {
   const [data, setData] = useState<Evaluation[]>([]);
 
   const fetchEvaluations = async (status: string, coachId:number) => {
-    console.log(coachId);
+    setLoading(true);
     const response = await fetch('/api/coach/evaluations', {
       method: 'POST',
       headers: {
@@ -48,6 +49,7 @@ const Dashboard: React.FC = () => {
     });
 
     if (!response.ok) {
+      setLoading(false);
       throw new Error('Failed to fetch evaluations');
     }
 
@@ -58,6 +60,7 @@ const Dashboard: React.FC = () => {
     }));
 
     setData(evaluationsData);
+    setLoading(false);
   };
 
   
@@ -115,7 +118,7 @@ const Dashboard: React.FC = () => {
               </button>
             );
           } else {
-            return null;
+            return <a  onClick={() => handleEvaluationDetails(evaluation)}><FaEye></FaEye></a>;
           }
         },
       },
@@ -124,15 +127,23 @@ const Dashboard: React.FC = () => {
   );
 
   const handleRequestedAction = (evaluation: Evaluation) => {
-    setEvaluationId(evaluation.id);
-    setCoachId(evaluation.coach_id);
-    setPlayerId(evaluation.player_id);
+    console.log(evaluation);
+    setEvaluationId(evaluation.evaluationId);
+    setCoachId(evaluation.coachId);
+    setPlayerId(evaluation.playerId);
 
     setIsAcceptOpen(true);
   };
 
+  const handleEvaluationDetails=(evaluation: Evaluation)=>{
+    
+    window.open(`/evaluationdetails?evaluationId=${evaluation.evaluationId}`, '_blank');
+  }
+
   const handleAcceptedAction = (evaluation: Evaluation) => {
-    setEvaluationId(evaluation.id);
+    setEvaluationId(evaluation.evaluationId);
+    setCoachId(evaluation.coachId);
+    setPlayerId(evaluation.playerId);
     console.log(evaluation);
     setEvaluationData(evaluation);
     setIsEvFormOpen(true);
@@ -175,7 +186,7 @@ const Dashboard: React.FC = () => {
       </Modal>
       <AcceptanceModal
 
-evaluationId={evaluationId ?? -1} // Pass the appropriate evaluation ID if needed
+evaluationId={evaluationId} // Pass the appropriate evaluation ID if needed
         isOpen={isAcceptOpen}
         onClose={closeAcceptanceModal}
       />
@@ -220,19 +231,29 @@ evaluationId={evaluationId ?? -1} // Pass the appropriate evaluation ID if neede
 
 
               <tbody {...tableInstance.getTableBodyProps()}>
-                {tableInstance.rows.map(row => {
-                  tableInstance.prepareRow(row);
-                  return (
-                    <tr {...row.getRowProps()} key={row.id}> {/* Add key here */}
-                      {row.cells.map(cell => (
-                        <td {...cell.getCellProps()} key={row.id} className="border-b border-gray-200 px-4 py-2">
-                          {cell.render('Cell')}
-                        </td>
-                      ))}
-                    </tr>
-                  );
-                })}
-              </tbody>
+              {loading ? (
+                // Display loader rows when loading
+                <tr>
+                  <td colSpan={columns.length} className="text-center py-4">
+                  Loading...
+                  </td>
+                </tr>
+              ) : (
+  tableInstance.rows.map(row => {
+    tableInstance.prepareRow(row);
+    return (
+      <tr {...row.getRowProps()} key={row.id}> {/* Unique key for row */}
+        {row.cells.map(cell => (
+          <td {...cell.getCellProps()} key={`${row.id}-${cell.column.id}`} className="border-b border-gray-200 px-4 py-2">
+            {cell.render('Cell')}
+          </td>
+        ))}
+      </tr>
+    );
+  })
+)}
+</tbody>
+
             </table>
           </div>
         </main>

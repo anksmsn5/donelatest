@@ -4,13 +4,14 @@ export interface Evaluation {
     review_title: string;
     primary_video_link: string;
     first_name: string;
-    coach_id: number;
-    player_id: number;
+    coachId: number;
+    playerId: number;
     evaluation:string;
     image:string;
     number:number;
     position:number;
     expectedCharge:number;
+    evaluationId:number;
     team:string;
     last_name: string;
     video_link_two?: string;
@@ -19,6 +20,13 @@ export interface Evaluation {
     evaluation_status: string;
     payment_status: string;
     created_at: string;
+    result:string;
+    technicalRemarks:string;
+    tacticalRemarks:string;
+    physicalRemarks:string;
+    finalRemarks:string;
+    rating:number;
+    
   }
   
   export interface EvaluationsByStatus {

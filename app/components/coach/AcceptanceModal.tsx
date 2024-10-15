@@ -67,7 +67,7 @@ const AcceptanceModal: React.FC<ModalProps> = ({ isOpen, onClose, evaluationId }
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
       <div className="bg-white rounded-lg shadow-lg w-11/12 md:w-1/3">
         <div className="bg-blue-600 text-white p-4 ">
-          <h2 className="text-lg font-bold">Please take and action!</h2>
+          <h2 className="text-lg font-bold">Please take and action!{evaluationId}</h2>
         </div>
         <div className="p-6">
           <p className="text-gray-700 mb-6">You can accept and reject the requested evaluation!</p>
