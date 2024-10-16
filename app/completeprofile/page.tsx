@@ -191,7 +191,7 @@ export default function Register() {
     }
   };
 
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value } = event.target;
     setFormValues({ ...formValues, [name]: value });
     setValidationErrors({ ...validationErrors, [name]: "" }); // Clear error when input is changed
@@ -409,7 +409,7 @@ export default function Register() {
           <label htmlFor="bio" className="block text-gray-700 text-sm font-semibold mb-2">Tell us about your player’s experience/ competition level, any 
           accolades and goals.</label>
           <textarea
-            type="text"
+            
             name="bio"
             className="border border-gray-300 rounded-lg py-2 px-4 w-full"
             value={formValues.bio}
