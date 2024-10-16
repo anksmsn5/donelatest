@@ -83,11 +83,28 @@ const Header: React.FC = () => {
           <ul className="flex flex-col md:flex-row md:space-x-4 space-y-4 md:space-y-0 mt-4 md:mt-0">
             {session ? (
               <>
+              {session?.user?.type !== 'coach' && (
                 <li className='pt-[8px]'>
                   <Link href="/browse" className="text-black hover:text-black-300" onClick={closeMenu}>
                     Browse Coach
                   </Link>
                 </li>
+                )}
+                  {session?.user?.type === 'coach' && (
+                <li className='pt-[8px]'>
+                  <Link href="/coach/dashboard" className="text-black hover:text-black-300" onClick={closeMenu}>
+                  Dashboard
+                  </Link>
+                </li>
+                )}
+                  {session?.user?.type !== 'coach' && (
+                <li className='pt-[8px]'>
+                  <Link href="/dashboard" className="text-black hover:text-black-300" onClick={closeMenu}>
+                  Dashboard
+                  </Link>
+                </li>
+                )}
+                
                 <li className='pt-[8px]'>
                   <Link href="/dashboard" className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick={closeMenu}>
                     Hello, {session?.user?.name || "Player"}!

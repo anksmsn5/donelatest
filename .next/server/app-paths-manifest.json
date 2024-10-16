@@ -1,1 +1,9 @@
-{}
+{
+  "/login/page": "app/login/page.js",
+  "/dashboard/page": "app/dashboard/page.js",
+  "/coach/dashboard/page": "app/coach/dashboard/page.js",
+  "/evaluations/page": "app/evaluations/page.js",
+  "/payment-history/page": "app/payment-history/page.js",
+  "/api/auth/[...nextauth]/route": "app/api/auth/[...nextauth]/route.js",
+  "/api/payment-history/route": "app/api/payment-history/route.js"
+}

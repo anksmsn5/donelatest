@@ -47,7 +47,7 @@ export async function GET(request: NextRequest) {
       ))
       .leftJoin(playerEvaluation, eq(playerEvaluation.id,payments.evaluation_id));
        
-    const evaluationsData = await query.limit(limit).execute();
+    const evaluationsData = await query.where(eq(payments.player_id,playerId)).limit(limit).execute();
 
     let filteredData = evaluationsData;
 

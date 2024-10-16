@@ -60,7 +60,7 @@ export async function GET(request: NextRequest) {
     const url = request.nextUrl;
 
     const playerId = Number(url.searchParams.get('playerId'));
-    const status = Number(url.searchParams.get('status'));
+    const status = url.searchParams.get('status'); // status may or may not be present
     const search = url.searchParams.get('search') || '';
     const page = Number(url.searchParams.get('page')) || 1;
     const limit = Number(url.searchParams.get('limit')) || 10;
@@ -70,8 +70,16 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'Invalid query parameters' }, { status: 400 });
     }
 
-    // Build the initial query
-    let query = db
+    // Base condition: filter by playerId
+    const conditions = [eq(playerEvaluation.player_id, playerId)];
+
+    // Conditionally add the status filter if it's provided
+    if (status) {
+      conditions.push(eq(playerEvaluation.status, Number(status)));
+    }
+
+    // Build the query with conditions
+    const query = db
       .select({
         firstName: coaches.firstName,
         lastName: coaches.lastName,
@@ -87,15 +95,10 @@ export async function GET(request: NextRequest) {
       })
       .from(playerEvaluation)
       .innerJoin(coaches, eq(playerEvaluation.coach_id, coaches.id))
-      .where(
-        and(
-          eq(playerEvaluation.player_id, playerId),
-          eq(playerEvaluation.status, status)
-        )
-      );  // Always filter by `playerId`
+      .where(and(...conditions)) // Apply the conditions array
+      .limit(limit);
 
-    
-    const evaluationsData = await query.limit(limit).execute();
+    const evaluationsData = await query.execute();
 
     let filteredData = evaluationsData;
 
