@@ -26,13 +26,13 @@ const Header: React.FC = () => {
   const [helpOpen, setHelpOpen] = useState<boolean>(false); 
 
   // Refs to detect outside click
-  const dropdownRef = useRef<HTMLDivElement>(null);
-  const helpRef = useRef<HTMLDivElement>(null);
+  const dropdownRef = useRef<HTMLLIElement>(null);
+  const helpRef = useRef<HTMLLIElement>(null);
 
   const handleLogout = async () => {
     await signOut(); // Sign out using NextAuth.js
     localStorage.setItem('userImage', '');
-    window.location.href = '/login';
+    window.location.href = '/login'; 
   };
 
   const toggleDropdown = () => {
