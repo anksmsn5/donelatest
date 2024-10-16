@@ -15,7 +15,7 @@ interface EvaluationModalProps {
   amount: number | null;
 }
 
-const EvaluationModal: React.FC<EvaluationModalProps> = ({ isOpen, onClose, coachId, playerId,amount }) => {
+const EvaluationModal: React.FC<EvaluationModalProps> = ({ isOpen, onClose, coachId, playerId, amount }) => {
   const [reviewTitle, setReviewTitle] = useState<string>('');
   const [primaryVideoUrl, setPrimaryVideoUrl] = useState<string>('');
   const [videoUrl2, setVideoUrl2] = useState<string>('');
@@ -24,19 +24,18 @@ const EvaluationModal: React.FC<EvaluationModalProps> = ({ isOpen, onClose, coac
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [loading, setLoading] = useState<boolean>(false);
 
-  // Function to validate URLs
   const validateUrl = (url: string): boolean => {
     const urlPattern = new RegExp(
-      '^(https?:\\/\\/)?' + // Protocol
-      '((([a-zA-Z0-9$_.+!*\'(),;?&=-]+)@)?' + // Optional username
-      '(([a-zA-Z0-9.-]+)\\.' + // Domain name
-      '([a-zA-Z]{2,}))|' + // Extension e.g. .com, .org, etc.
-      '(\\d{1,3}\\.){3}\\d{1,3}|' + // OR IP address
-      '\\[([a-fA-F0-9:]+)\\])' + // OR IPv6 address
-      '(\\:\\d+)?' + // Optional port
-      '(\\/[-a-zA-Z0-9%_.~+@]*)*' + // Path
-      '(\\?[-a-zA-Z0-9%_.~+=]*)?' + // Query string
-      '(#[-a-zA-Z0-9%_.~+=]*)?$', // Fragment locator
+      '^(https?:\\/\\/)?' + 
+      '((([a-zA-Z0-9$_.+!*\'(),;?&=-]+)@)?' +
+      '(([a-zA-Z0-9.-]+)\\.' + 
+      '([a-zA-Z]{2,}))|' + 
+      '(\\d{1,3}\\.){3}\\d{1,3}|' + 
+      '\\[([a-fA-F0-9:]+)\\])' + 
+      '(\\:\\d+)?' + 
+      '(\\/[-a-zA-Z0-9%_.~+@]*)*' + 
+      '(\\?[-a-zA-Z0-9%_.~+=]*)?' + 
+      '(#[-a-zA-Z0-9%_.~+=]*)?$', 
       'i'
     );
     return urlPattern.test(url);
@@ -49,14 +48,11 @@ const EvaluationModal: React.FC<EvaluationModalProps> = ({ isOpen, onClose, coac
     setLoading(true);
     setErrors({}); // Reset errors
 
-    // Client-side validation
     const newErrors: { [key: string]: string } = {};
-
     if (!reviewTitle) newErrors.reviewTitle = 'Review Title is required.';
     if (!primaryVideoUrl) newErrors.primaryVideoUrl = 'Primary Video URL is required.';
     if (!videoDescription) newErrors.videoDescription = 'Video Description is required.';
 
-    // URL validation
     if (primaryVideoUrl && !validateUrl(primaryVideoUrl)) {
       newErrors.primaryVideoUrl = 'Primary Video URL is not valid. Please provide a valid URL.';
     }
@@ -73,7 +69,6 @@ const EvaluationModal: React.FC<EvaluationModalProps> = ({ isOpen, onClose, coac
       return;
     }
 
-    // Simulating an API call or form submission
     try {
       const response = await fetch('/api/evaluation', {
         method: 'POST',
@@ -95,28 +90,27 @@ const EvaluationModal: React.FC<EvaluationModalProps> = ({ isOpen, onClose, coac
         throw new Error('Submission failed');
       }
 
-      // If submission is successful, proceed to payment
       const stripe = await stripePromise;
-
       if (!stripe) {
         throw new Error('Stripe is not loaded');
       }
-      const evaluationReponse=await response.json();
-      console.log(evaluationReponse.result[0]);
+
+      const evaluationReponse = await response.json();
       const paymentResponse = await fetch('/api/payment', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ evaluationId: evaluationReponse.result[0].id, coachId:evaluationReponse.result[0].coach_id, playerId:evaluationReponse.result[0].player_id, amount:amount }), // Use the response ID from the evaluation submission
+        body: JSON.stringify({
+          evaluationId: evaluationReponse.result[0].id,
+          coachId: evaluationReponse.result[0].coach_id,
+          playerId: evaluationReponse.result[0].player_id,
+          amount: amount,
+        }),
       });
 
       const session = await paymentResponse.json();
-      console.log(session);
-      // Redirect to Stripe Checkout
-      const result = await stripe.redirectToCheckout({
-        sessionId: session.id,
-      });
+      const result = await stripe.redirectToCheckout({ sessionId: session.id });
 
       if (result.error) {
         await Swal.fire({
@@ -134,7 +128,7 @@ const EvaluationModal: React.FC<EvaluationModalProps> = ({ isOpen, onClose, coac
         confirmButtonText: 'Proceed',
       });
 
-      window.location.href = '/dashboard'; // Redirect to the dashboard after the alert is confirmed
+      window.location.href = '/dashboard';
     } catch (err: any) {
       setErrors({ general: err.message || 'An error occurred during submission.' });
     } finally {
@@ -144,7 +138,7 @@ const EvaluationModal: React.FC<EvaluationModalProps> = ({ isOpen, onClose, coac
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-      <div className="bg-white rounded-lg shadow-lg w-3/4 p-6 relative">
+      <div className="bg-white rounded-lg shadow-lg w-11/12 max-w-3xl p-6 relative">
         <button
           className="absolute top-2 right-2 text-gray-500 hover:text-gray-700"
           onClick={onClose}
@@ -162,90 +156,93 @@ const EvaluationModal: React.FC<EvaluationModalProps> = ({ isOpen, onClose, coac
               Review Title
             </label>
             <input
-  placeholder='Game against XYZ on MM/DD'
-  type="text"
-  id="reviewTitle"
-  className={`w-full px-3 py-2 border ${errors.reviewTitle ? 'border-red-500' : 'border-gray-300'} rounded-md`}
-  value={reviewTitle}
-  onChange={(e) => {
-    setReviewTitle(e.target.value);
-    if (errors.reviewTitle) {
-      const { reviewTitle, ...remainingErrors } = errors; // Remove reviewTitle from errors
-      setErrors(remainingErrors);
-    }
-  }}
-/>
+              type="text"
+              id="reviewTitle"
+              placeholder="Game against XYZ on MM/DD"
+              className={`w-full px-3 py-2 border ${errors.reviewTitle ? 'border-red-500' : 'border-gray-300'} rounded-md`}
+              value={reviewTitle}
+              onChange={(e) => {
+                setReviewTitle(e.target.value);
+                if (errors.reviewTitle) {
+                  const { reviewTitle, ...remainingErrors } = errors;
+                  setErrors(remainingErrors);
+                }
+              }}
+            />
             {errors.reviewTitle && <p className="text-red-500">{errors.reviewTitle}</p>}
           </div>
 
-          {/* Video URLs in a row */}
-          <div className="mb-4 flex space-x-4">
+          {/* Video URLs in full width */}
+          <div className="mb-4">
             {/* Primary Video URL */}
-            <div className="flex-1">
-              <label htmlFor="primaryVideoUrl" className="block text-gray-700 mb-1">
-                Primary Video Link/URL
-              </label>
-              <input
-  placeholder='www.exampleurl.com'
-  type="url"
-  id="primaryVideoUrl"
-  className={`w-full px-3 py-2 border ${errors.primaryVideoUrl ? 'border-red-500' : 'border-gray-300'} rounded-md`}
-  value={primaryVideoUrl}
-  onChange={(e) => {
-    setPrimaryVideoUrl(e.target.value);
-    if (errors.primaryVideoUrl) {
-      const { primaryVideoUrl, ...remainingErrors } = errors; // Remove primaryVideoUrl from errors
-      setErrors(remainingErrors);
-    }
-  }}
-/>
+            <label htmlFor="primaryVideoUrl" className="block text-gray-700 mb-1">
+              Primary Video Link/URL
+            </label>
+            <input
+              type="url"
+              id="primaryVideoUrl"
+              placeholder="www.exampleurl.com"
+              className={`w-full px-3 py-2 border ${errors.primaryVideoUrl ? 'border-red-500' : 'border-gray-300'} rounded-md`}
+              value={primaryVideoUrl}
+              onChange={(e) => {
+                setPrimaryVideoUrl(e.target.value);
+                if (errors.primaryVideoUrl) {
+                  const { primaryVideoUrl, ...remainingErrors } = errors;
+                  setErrors(remainingErrors);
+                }
+              }}
+            />
+            <p className="text-xs text-gray-500"> (Don’t just submit highlights as the 
+lowlights and activity without the ball are important)” 
+Update to, “If you want feedback on a Trace video, download the file from Trace, upload to Google Drive, 
+and share that link here for the coach. For Veo, ensure the match is set to public in order to share the 
+link.  If you continue to have technical difficulties, email us at <a href='mailto: team@d1notes.com' className="text-xs text-gray-900">team@d1notes.com</a> . )</p>
+            {errors.primaryVideoUrl && <p className="text-red-500">{errors.primaryVideoUrl}</p>}
+          </div>
 
-              {errors.primaryVideoUrl && <p className="text-red-500">{errors.primaryVideoUrl}</p>}
-            </div>
+          {/* Video URL #2 */}
+          <div className="mb-4">
+            <label htmlFor="videoUrl2" className="block text-gray-700 mb-1">
+              Video Link/URL #2 (Optional)
+            </label>
+            <input
+              type="url"
+              id="videoUrl2"
+              placeholder="www.exampleurl.com"
+              className={`w-full px-3 py-2 border ${errors.videoUrl2 ? 'border-red-500' : 'border-gray-300'} rounded-md`}
+              value={videoUrl2}
+              onChange={(e) => {
+                setVideoUrl2(e.target.value);
+                if (errors.videoUrl2) {
+                  const { videoUrl2, ...remainingErrors } = errors;
+                  setErrors(remainingErrors);
+                }
+              }}
+            />
 
-            {/* Video URL #2 (Optional) */}
-            <div className="flex-1">
-              <label htmlFor="videoUrl2" className="block text-gray-700 mb-1">
-                Video Link/URL #2 (Optional)
-              </label>
-              <input
-  placeholder='www.exampleurl.com'
-  type="url"
-  id="videoUrl2"
-  className={`w-full px-3 py-2 border ${errors.videoUrl2 ? 'border-red-500' : 'border-gray-300'} rounded-md`}
-  value={videoUrl2}
-  onChange={(e) => {
-    setVideoUrl2(e.target.value);
-    if (errors.videoUrl2) {
-      const { videoUrl2, ...remainingErrors } = errors; // Remove videoUrl2 from errors
-      setErrors(remainingErrors);
-    }
-  }}
-/>
-              {errors.videoUrl2 && <p className="text-red-500">{errors.videoUrl2}</p>}
-            </div>
+            {errors.videoUrl2 && <p className="text-red-500">{errors.videoUrl2}</p>}
+          </div>
 
-            {/* Video URL #3 (Optional) */}
-            <div className="flex-1">
-              <label htmlFor="videoUrl3" className="block text-gray-700 mb-1">
-                Video Link/URL #3 (Optional)
-              </label>
-              <input
-  placeholder='www.exampleurl.com'
-  type="url"
-  id="videoUrl3"
-  className={`w-full px-3 py-2 border ${errors.videoUrl3 ? 'border-red-500' : 'border-gray-300'} rounded-md`}
-  value={videoUrl3}
-  onChange={(e) => {
-    setVideoUrl3(e.target.value);
-    if (errors.videoUrl3) {
-      const { videoUrl3, ...remainingErrors } = errors; // Remove videoUrl3 from errors
-      setErrors(remainingErrors);
-    }
-  }}
-/>
-              {errors.videoUrl3 && <p className="text-red-500">{errors.videoUrl3}</p>}
-            </div>
+          {/* Video URL #3 */}
+          <div className="mb-4">
+            <label htmlFor="videoUrl3" className="block text-gray-700 mb-1">
+              Video Link/URL #3 (Optional)
+            </label>
+            <input
+              type="url"
+              id="videoUrl3"
+              placeholder="www.exampleurl.com"
+              className={`w-full px-3 py-2 border ${errors.videoUrl3 ? 'border-red-500' : 'border-gray-300'} rounded-md`}
+              value={videoUrl3}
+              onChange={(e) => {
+                setVideoUrl3(e.target.value);
+                if (errors.videoUrl3) {
+                  const { videoUrl3, ...remainingErrors } = errors;
+                  setErrors(remainingErrors);
+                }
+              }}
+            />
+            {errors.videoUrl3 && <p className="text-red-500">{errors.videoUrl3}</p>}
           </div>
 
           {/* Video Description */}
@@ -254,26 +251,29 @@ const EvaluationModal: React.FC<EvaluationModalProps> = ({ isOpen, onClose, coac
               Video Description
             </label>
             <textarea
-  id="videoDescription"
-  placeholder='Provide a brief description of the video...'
-  className={`w-full px-3 py-2 border ${errors.videoDescription ? 'border-red-500' : 'border-gray-300'} rounded-md`}
-  value={videoDescription}
-  onChange={(e) => {
-    setVideoDescription(e.target.value);
-    if (errors.videoDescription) {
-      const { videoDescription, ...remainingErrors } = errors; // Remove videoDescription from errors
-      setErrors(remainingErrors);
-    }
-  }}
-/>
+              id="videoDescription"
+              placeholder="Describe the key elements of the video..."
+              className={`w-full px-3 py-2 border ${errors.videoDescription ? 'border-red-500' : 'border-gray-300'} rounded-md`}
+              value={videoDescription}
+              onChange={(e) => {
+                setVideoDescription(e.target.value);
+                if (errors.videoDescription) {
+                  const { videoDescription, ...remainingErrors } = errors;
+                  setErrors(remainingErrors);
+                }
+              }}
+            />
+              <p className="text-xs text-gray-500">( Provide a brief description of the video you are submitting, including if you are starting the first and/ or 
+second halves, position(s) played in each half, jersey color and #, opposing team info and any other 
+specific info you would like the coach to be aware of, such as, team’s style of play, areas to focus on, 
+external factors, etc. )</p>
             {errors.videoDescription && <p className="text-red-500">{errors.videoDescription}</p>}
           </div>
 
-          {/* Submit Button */}
           <button
             type="submit"
-            className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-500 disabled:opacity-50"
             disabled={loading}
+            className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition-colors"
           >
             {loading ? 'Submitting...' : 'Submit'}
           </button>
