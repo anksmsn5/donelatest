@@ -51,10 +51,7 @@ const EvaluationDataTable: React.FC<EvaluationDataTableProps> = ({ limit, defaul
     };
 
     useEffect(() => {
-        if (firstRender.current) {
-            firstRender.current = false; // Avoid fetching data on initial render
-            return;
-        }
+      
         fetchData();
     }, [search, sort, page, playerId]); // Add status only if needed
 
