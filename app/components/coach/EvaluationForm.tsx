@@ -313,7 +313,8 @@ const EvaluationForm: React.FC<EvaluationFormProps> = ({ evaluationId,
                             id="final-remarks"
                             className="border border-gray-300 rounded-md p-2 text-gray-700 text-sm w-full mt-1"
                             rows={4}
-                            placeholder="Provide your final remarks here..."
+                            placeholder="Add overall feedback, encouragement… recommendations 
+for how to improve or social media links that demonstrate your feedback are extremely helpful."
                             onChange={(e) => setFinalRemarks(e.target.value)}
                         />
                          {errors.finalRemarks && <p className="text-red-500 text-sm">Final remarks are required.</p>}
@@ -326,6 +327,14 @@ const EvaluationForm: React.FC<EvaluationFormProps> = ({ evaluationId,
                             >
                                 Submit
                             </button>
+                            <button
+                                type="button"
+                                className="mt-2 bg-red-600 text-white font-semibold px-4 py-2 rounded hover:bg-blue-700 transition duration-200"
+                            >
+                                Save as Draft
+                            </button>
+
+
                             <button
                                 onClick={onClose}
                                 className="mt-2 bg-gray-600 text-white font-semibold px-4 py-2 rounded hover:bg-gray-700 transition duration-200"

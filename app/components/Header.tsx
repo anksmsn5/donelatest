@@ -3,7 +3,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { useSession, signOut } from 'next-auth/react';
 import Link from 'next/link';
-import '../globals.css'; 
+import '../globals.css';
 import Logo from '../public/images/logo.png';
 import Image from 'next/image';
 import jwt from 'jsonwebtoken';
@@ -23,7 +23,7 @@ const Header: React.FC = () => {
   const [menuOpen, setMenuOpen] = useState<boolean>(false); // For mobile menu
   const { data: session, status } = useSession();
   const router = useRouter();
-  const [helpOpen, setHelpOpen] = useState<boolean>(false); 
+  const [helpOpen, setHelpOpen] = useState<boolean>(false);
   const [isUserImageAvailable, setIsUserImageAvailable] = useState(false);
 
   // Refs to detect outside click
@@ -31,9 +31,18 @@ const Header: React.FC = () => {
   const helpRef = useRef<HTMLLIElement>(null);
 
   const handleLogout = async () => {
-    await signOut(); // Sign out using NextAuth.js
-    localStorage.setItem('userImage', '');
-    window.location.href = '/login'; 
+    try {
+      await signOut({
+        redirect: false, // Disable automatic redirection
+        callbackUrl: '/login', // Redirect user after sign out
+      });
+  
+      localStorage.removeItem('userImage'); // Clear any localStorage data
+  
+      window.location.href = '/login'; // Manual redirection
+    } catch (error) {
+      console.error('Error during sign-out:', error);
+    }
   };
 
   const toggleDropdown = () => {
@@ -53,10 +62,17 @@ const Header: React.FC = () => {
   };
 
   useEffect(() => {
+    
     const userImage = localStorage.getItem('userImage');
-      if (userImage) {
-        setIsUserImageAvailable(true); // Set to true if userImage is found
-      }
+    if (userImage) {
+      setIsUserImageAvailable(true);
+      console.log("imagefound");
+      fetchUserImage();
+      setProfilepic(userImage); // Use the user image from local storage
+    } else if (session?.user) {
+      console.log("imagenotfound");
+      fetchUserImage();
+    }
     const handleClickOutside = (event: MouseEvent) => {
       // Check if the click is outside of the dropdown
       if (
@@ -73,7 +89,39 @@ const Header: React.FC = () => {
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, [dropdownRef, helpRef]);
+  }, [dropdownRef, helpRef, session]);
+
+  const fetchUserImage = async () => {
+    console.log("asdasdasdasd");
+    try {
+      
+      const response = await fetch('/api/userimage', {  
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          userId: session?.user?.id, 
+          type: session?.user?.type, 
+        }),
+      });
+  
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+  
+      const data = await response.json();
+  
+      if (data.image) {
+        localStorage.setItem('userImage', data.image);
+        setProfilepic(data.image);
+        setIsUserImageAvailable(true);
+      }
+    } catch (error) {
+      console.error('Failed to fetch user image:', error);
+    }
+  };
+
 
   return (
     <header className="bg-white shadow-md">
@@ -107,7 +155,7 @@ const Header: React.FC = () => {
           <ul className="flex flex-col md:flex-row md:space-x-4 space-y-4 md:space-y-0 mt-4 md:mt-0">
             {session ? (
               <>
-                {session?.user?.type !== 'coach' &&  isUserImageAvailable &&(
+                {session?.user?.type !== 'coach' && isUserImageAvailable && (
                   <li className="pt-[8px]">
                     <Link href="/browse" className="text-black hover:text-black-300" onClick={closeMenu}>
                       Browse Coach
@@ -193,8 +241,8 @@ const Header: React.FC = () => {
               </button>
               {helpOpen && (
                 <div className="absolute right-0 mt-2 w-56 bg-white shadow-lg rounded-md p-4">
-                  <p>For technical difficulties and general site 
-                  feedback, Email us at </p>
+                  <p>For technical difficulties and general site
+                    feedback, Email us at </p>
                   <a className="font-bold" href='mailto:team@d1notes.com'>team@d1notes.com</a>
                   <button onClick={toggleHelp} className="text-blue-500 mt-2">
                     Close

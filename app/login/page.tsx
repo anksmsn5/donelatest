@@ -51,6 +51,7 @@ export default function Login() {
       if (!response || !response.ok) {
         showError('Email or Password Incorrect.');
       } else {
+        
         showSuccess('Logged In Successfully.');
       }
 
@@ -68,7 +69,7 @@ export default function Login() {
 
   useEffect(() => {
     if (session) {
-      console.log('Session:', session);
+      
       // Redirect based on session type
       if (session.user.type === 'coach') {
         window.location.href = '/coach/dashboard';
