@@ -35,7 +35,7 @@ const EvaluationDataTable: React.FC<EvaluationDataTableProps> = ({ limit, defaul
     const fetchData = async () => {
         setLoading(true);
         try {
-            const response = await fetch(`/api/evaluations?search=${search}&sort=${sort}&page=${page}&limit=${limit}&playerId=${playerId || ''}&status=${status || ''}`);
+            const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/evaluations?search=${search}&sort=${sort}&page=${page}&limit=${limit}&playerId=${playerId || ''}&status=${status || ''}`);
             
             if (response.ok) {
                 const data = await response.json();
