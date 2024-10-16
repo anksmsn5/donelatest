@@ -33,8 +33,9 @@ const PaymentDatatable: React.FC<PaymentDatatableProps> = ({ limit, defaultSort,
     const fetchData = async () => {
         setLoading(true);
         try {
-            const response = await fetch(`/api/payment-history?search=${search}&sort=${sort}&page=${page}&limit=${limit}&playerId=${playerId || ''}&status=${status || ''}`);
-            
+            ///const response = await fetch(`/api/payment-history?search=${search}&sort=${sort}&page=${page}&limit=${limit}&playerId=${playerId || ''}&status=${status || ''}`);
+            const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/payment-history?search=${search}&sort=${sort}&page=${page}&limit=${limit}&playerId=${playerId || ''}&status=${status || ''}`);
+
             if (response.ok) {
                 const data = await response.json();
                 setData(data.data);
