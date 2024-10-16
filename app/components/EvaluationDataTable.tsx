@@ -101,10 +101,10 @@ const EvaluationDataTable: React.FC<EvaluationDataTableProps> = ({ limit, defaul
                                     {item.status === 1 && (
                                         <button className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">Accepted</button>
                                     )}
-                                    {item.status === 3 && (
+                                    {item.status === 2 && (
                                         <button className="bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-600">Completed</button>
                                     )}
-                                    {item.status === 4 && (
+                                    {item.status === 3 && (
                                         <button className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600">Rejected</button>
                                     )}
                                 </td>
