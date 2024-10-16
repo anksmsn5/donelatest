@@ -192,11 +192,9 @@ const EvaluationModal: React.FC<EvaluationModalProps> = ({ isOpen, onClose, coac
                 }
               }}
             />
-            <p className="text-xs text-gray-500"> (Don’t just submit highlights as the 
-lowlights and activity without the ball are important)” 
-Update to, “If you want feedback on a Trace video, download the file from Trace, upload to Google Drive, 
+            <p className="text-xs text-gray-500"> If you want feedback on a Trace video, download the file from Trace, upload to Google Drive, 
 and share that link here for the coach. For Veo, ensure the match is set to public in order to share the 
-link.  If you continue to have technical difficulties, email us at <a href='mailto: team@d1notes.com' className="text-xs text-gray-900">team@d1notes.com</a> . )</p>
+link.  If you continue to have technical difficulties, email us at <a href='mailto: team@d1notes.com' className="text-xs text-gray-900">team@d1notes.com</a> .</p>
             {errors.primaryVideoUrl && <p className="text-red-500">{errors.primaryVideoUrl}</p>}
           </div>
 
@@ -263,10 +261,10 @@ link.  If you continue to have technical difficulties, email us at <a href='mail
                 }
               }}
             />
-              <p className="text-xs text-gray-500">( Provide a brief description of the video you are submitting, including if you are starting the first and/ or 
+              <p className="text-xs text-gray-500">Provide a brief description of the video you are submitting, including if you are starting the first and/ or 
 second halves, position(s) played in each half, jersey color and #, opposing team info and any other 
 specific info you would like the coach to be aware of, such as, team’s style of play, areas to focus on, 
-external factors, etc. )</p>
+external factors, etc.</p>
             {errors.videoDescription && <p className="text-red-500">{errors.videoDescription}</p>}
           </div>
 

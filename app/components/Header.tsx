@@ -24,6 +24,7 @@ const Header: React.FC = () => {
   const { data: session, status } = useSession();
   const router = useRouter();
   const [helpOpen, setHelpOpen] = useState<boolean>(false); 
+  const [isUserImageAvailable, setIsUserImageAvailable] = useState(false);
 
   // Refs to detect outside click
   const dropdownRef = useRef<HTMLLIElement>(null);
@@ -52,6 +53,10 @@ const Header: React.FC = () => {
   };
 
   useEffect(() => {
+    const userImage = localStorage.getItem('userImage');
+      if (userImage) {
+        setIsUserImageAvailable(true); // Set to true if userImage is found
+      }
     const handleClickOutside = (event: MouseEvent) => {
       // Check if the click is outside of the dropdown
       if (
@@ -102,7 +107,7 @@ const Header: React.FC = () => {
           <ul className="flex flex-col md:flex-row md:space-x-4 space-y-4 md:space-y-0 mt-4 md:mt-0">
             {session ? (
               <>
-                {session?.user?.type !== 'coach' && (
+                {session?.user?.type !== 'coach' &&  isUserImageAvailable &&(
                   <li className="pt-[8px]">
                     <Link href="/browse" className="text-black hover:text-black-300" onClick={closeMenu}>
                       Browse Coach
