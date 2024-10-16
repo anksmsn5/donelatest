@@ -59,6 +59,17 @@
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
       "static/chunks/app/payment-history/page.js"
+    ],
+    "/coach/[slug]/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/css/app/coach/[slug]/page.css",
+      "static/chunks/app/coach/[slug]/page.js"
+    ],
+    "/paymentDone/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/paymentDone/page.js"
     ]
   }
 }

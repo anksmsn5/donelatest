@@ -81,6 +81,7 @@ export async function GET(request: NextRequest) {
     // Build the query with conditions
     const query = db
       .select({
+        id:playerEvaluation.id,
         firstName: coaches.firstName,
         lastName: coaches.lastName,
         review_title: playerEvaluation.review_title,

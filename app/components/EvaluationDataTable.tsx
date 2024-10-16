@@ -1,5 +1,6 @@
 import { useEffect, useState, useRef } from 'react';
 import VisibilityIcon from '@mui/icons-material/Visibility';
+import { FaEye } from 'react-icons/fa';
 
 interface Item {
     id: number;
@@ -80,11 +81,12 @@ const EvaluationDataTable: React.FC<EvaluationDataTableProps> = ({ limit, defaul
                         <th onClick={() => handleSort('video_link_three')}>Video Link 3</th>
                         <th onClick={() => handleSort('video_description')}>Video Description</th>
                         <th onClick={() => handleSort('evaluation_status')}>Status</th>
+                        <th onClick={() => handleSort('evaluation_status')}>View Evaluation</th>
                     </tr>
                 </thead>
                 <tbody>
                     {loading ? (
-                        <tr><td colSpan={7}>Loading...</td></tr>
+                        <tr><td colSpan={8}>Loading...</td></tr>
                     ) : (
                         data.map(item => (
                             <tr key={item.id}>
@@ -106,6 +108,18 @@ const EvaluationDataTable: React.FC<EvaluationDataTableProps> = ({ limit, defaul
                                     )}
                                     {item.status === 3 && (
                                         <button className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600">Rejected</button>
+                                    )}
+                                </td>
+                                <td>
+                                    {item.status === 2 && (
+                                        <a href={`/evaluationdetails?evaluationId=${item.id}`} target="_blank">
+                                            <button className="bg-purple-500 text-white px-4 py-2 rounded hover:bg-purple-600">
+                                               <FaEye/>
+                                            </button>
+                                        </a>
+                                    )}
+                                     {item.status != 2 && (
+                                       "N/A"
                                     )}
                                 </td>
                             </tr>

@@ -88,13 +88,6 @@ export const playerEvaluation = pgTable(
     rating: integer("rating"), // New field for rating, nullable by default
     remarks: text("remarks"),
     updated_at: timestamp("updated_at").defaultNow().notNull(),
-  },
-  (playerEvaluation) => {
-    return {
-      uniqueIdx: uniqueIndex("player_evaluation_unique_idx").on(
-        playerEvaluation.player_id
-      ),
-    };
   }
 );
 
