@@ -1,11 +1,7 @@
 {
-  "/payment-history/page": "app/payment-history/page.js",
-  "/coach/[slug]/page": "app/coach/[slug]/page.js",
   "/paymentDone/page": "app/paymentDone/page.js",
-  "/api/auth/[...nextauth]/route": "app/api/auth/[...nextauth]/route.js",
   "/dashboard/page": "app/dashboard/page.js",
-  "/api/evaluations/route": "app/api/evaluations/route.js",
   "/evaluations/page": "app/evaluations/page.js",
-  "/evaluationdetails/page": "app/evaluationdetails/page.js",
-  "/api/evaluationdetails/route": "app/api/evaluationdetails/route.js"
+  "/payment-history/page": "app/payment-history/page.js",
+  "/evaluationdetails/page": "app/evaluationdetails/page.js"
 }

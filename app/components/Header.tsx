@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { useSession, signOut } from 'next-auth/react';
 import Link from 'next/link';
@@ -8,6 +8,7 @@ import Logo from '../public/images/logo.png';
 import Image from 'next/image';
 import jwt from 'jsonwebtoken';
 import defaultImage from '../public/default.jpg';
+import { MdHelpOutline } from 'react-icons/md';
 
 interface DecodedToken {
   name: string;
@@ -22,10 +23,15 @@ const Header: React.FC = () => {
   const [menuOpen, setMenuOpen] = useState<boolean>(false); // For mobile menu
   const { data: session, status } = useSession();
   const router = useRouter();
+  const [helpOpen, setHelpOpen] = useState<boolean>(false); 
+
+  // Refs to detect outside click
+  const dropdownRef = useRef<HTMLDivElement>(null);
+  const helpRef = useRef<HTMLDivElement>(null);
 
   const handleLogout = async () => {
     await signOut(); // Sign out using NextAuth.js
-    localStorage.setItem('userImage', '')
+    localStorage.setItem('userImage', '');
     window.location.href = '/login';
   };
 
@@ -37,21 +43,38 @@ const Header: React.FC = () => {
     setMenuOpen(!menuOpen);
   };
 
+  const toggleHelp = () => {
+    setHelpOpen(!helpOpen); // Toggles the help popup
+  };
+
   const closeMenu = () => {
     setMenuOpen(false);
   };
 
   useEffect(() => {
-    if (session) {
-      // Optional: Handle session logic
-    }
-  }, [session]);
+    const handleClickOutside = (event: MouseEvent) => {
+      // Check if the click is outside of the dropdown
+      if (
+        dropdownRef.current && !dropdownRef.current.contains(event.target as Node) &&
+        helpRef.current && !helpRef.current.contains(event.target as Node)
+      ) {
+        setDropdownOpen(false);
+        setHelpOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [dropdownRef, helpRef]);
 
   return (
     <header className="bg-white shadow-md">
       <div className="max-w-7xl mx-auto flex justify-between items-center p-4">
         <Link href="/" className="text-black text-2xl font-bold flex-shrink-0" onClick={closeMenu}>
-          <Image src={Logo} className='logo' alt="logo" />
+          <Image src={Logo} className="logo" alt="logo" />
         </Link>
         <div className="md:hidden flex items-center">
           {/* Mobile menu button */}
@@ -75,49 +98,45 @@ const Header: React.FC = () => {
             </svg>
           </button>
         </div>
-        <nav
-          className={`${
-            menuOpen ? 'block' : 'hidden'
-          } md:flex md:items-center w-full md:w-auto`}
-        >
+        <nav className={`${menuOpen ? 'block' : 'hidden'} md:flex md:items-center w-full md:w-auto`}>
           <ul className="flex flex-col md:flex-row md:space-x-4 space-y-4 md:space-y-0 mt-4 md:mt-0">
             {session ? (
               <>
-              {session?.user?.type !== 'coach' && (
-                <li className='pt-[8px]'>
-                  <Link href="/browse" className="text-black hover:text-black-300" onClick={closeMenu}>
-                    Browse Coach
-                  </Link>
-                </li>
+                {session?.user?.type !== 'coach' && (
+                  <li className="pt-[8px]">
+                    <Link href="/browse" className="text-black hover:text-black-300" onClick={closeMenu}>
+                      Browse Coach
+                    </Link>
+                  </li>
                 )}
-                  {session?.user?.type === 'coach' && (
-                <li className='pt-[8px]'>
-                  <Link href="/coach/dashboard" className="text-black hover:text-black-300" onClick={closeMenu}>
-                  Dashboard
-                  </Link>
-                </li>
+                {session?.user?.type === 'coach' && (
+                  <li className="pt-[8px]">
+                    <Link href="/coach/dashboard" className="text-black hover:text-black-300" onClick={closeMenu}>
+                      Dashboard
+                    </Link>
+                  </li>
                 )}
-                  {session?.user?.type !== 'coach' && (
-                <li className='pt-[8px]'>
-                  <Link href="/dashboard" className="text-black hover:text-black-300" onClick={closeMenu}>
-                  Dashboard
-                  </Link>
-                </li>
+                {session?.user?.type !== 'coach' && (
+                  <li className="pt-[8px]">
+                    <Link href="/dashboard" className="text-black hover:text-black-300" onClick={closeMenu}>
+                      Dashboard
+                    </Link>
+                  </li>
                 )}
-                
-                <li className='pt-[8px]'>
+
+                <li className="pt-[8px]">
                   <Link href="/dashboard" className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick={closeMenu}>
                     Hello, {session?.user?.name || "Player"}!
                   </Link>
                 </li>
-                <li className="relative">
+                <li className="relative" ref={dropdownRef}>
                   <button onClick={toggleDropdown} className="flex items-center">
-                    <Image 
+                    <Image
                       src={localStorage.getItem('userImage') || defaultImage}
                       alt="Profile"
                       width={40}
                       height={40}
-                      className="rounded-full" 
+                      className="rounded-full"
                     />
                   </button>
                   {dropdownOpen && (
@@ -162,6 +181,22 @@ const Header: React.FC = () => {
                 </li>
               </>
             )}
+
+            <li className="relative" ref={helpRef}>
+              <button onClick={toggleHelp} className="ml-4">
+                <MdHelpOutline className="text-black w-8 h-8" />
+              </button>
+              {helpOpen && (
+                <div className="absolute right-0 mt-2 w-56 bg-white shadow-lg rounded-md p-4">
+                  <p>For technical difficulties and general site 
+                  feedback, Email us at </p>
+                  <a className="font-bold" href='mailto:team@d1notes.com'>team@d1notes.com</a>
+                  <button onClick={toggleHelp} className="text-blue-500 mt-2">
+                    Close
+                  </button>
+                </div>
+              )}
+            </li>
           </ul>
         </nav>
       </div>
