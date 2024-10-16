@@ -29,7 +29,11 @@ export async function PATCH(req: NextRequest) {
       position,
       number,
       image,
-      playerID
+      playerID,
+      country,
+      bio,
+      state,
+      city
     } = body;
 
     // Update the user in the database
@@ -46,7 +50,10 @@ export async function PATCH(req: NextRequest) {
         team: team || undefined,
         position: position || undefined,
         number: number || undefined,
-        image: image || undefined
+        image: image || undefined,
+        country: country || undefined,
+        state: state || undefined,
+        city: city || undefined,
       })
       .where(eq(users.id,playerID)) // Update by user ID
       .returning();

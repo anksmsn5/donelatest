@@ -1,7 +1,9 @@
 {
-  "/paymentDone/page": "app/paymentDone/page.js",
+  "/completeprofile/page": "app/completeprofile/page.js",
+  "/register/page": "app/register/page.js",
+  "/page": "app/page.js",
   "/dashboard/page": "app/dashboard/page.js",
-  "/evaluations/page": "app/evaluations/page.js",
-  "/payment-history/page": "app/payment-history/page.js",
-  "/evaluationdetails/page": "app/evaluationdetails/page.js"
+  "/api/auth/[...nextauth]/route": "app/api/auth/[...nextauth]/route.js",
+  "/login/page": "app/login/page.js",
+  "/api/register/route": "app/api/register/route.js"
 }

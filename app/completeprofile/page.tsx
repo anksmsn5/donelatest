@@ -6,7 +6,7 @@ import Brand from "../public/images/brand.jpg";
 import Image from "next/image";
 import DefaultPic from "../public/default.jpg";
 import { useSession } from "next-auth/react";
-
+import Select from "react-select";
 interface FormValues {
   first_name: string;
   last_name: string;
@@ -18,6 +18,10 @@ interface FormValues {
   team: string;
   position: string;
   number: string;
+  bio:string;
+  country:string;
+  state:string;
+  city:string;
   image: string | null; // Updated to store Base64 string
 }
 
@@ -33,6 +37,10 @@ export default function Register() {
     team: "",
     position: "",
     number: "",
+    bio:"",
+    country:"",
+    state:"",
+    city:"",
     image: null,
   });
 
@@ -42,11 +50,75 @@ export default function Register() {
   const [validationErrors, setValidationErrors] = useState<Partial<FormValues>>({});
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [loading, setLoading] = useState<boolean>(false); 
+  const positionOptions = [
+    { value: "Goalkeeper", label: "Goalkeeper" },
+    { value: "Defender", label: "Defender" },
+    { value: "Midfielder", label: "Midfielder" },
+    { value: "Forward", label: "Forward" },
+    { value: "Striker", label: "Striker" },
+    { value: "Wingback", label: "Wingback" },
+    { value: "Center Back", label: "Center Back" },
+    // Add more positions as needed
+  ];
+  
+  const states = [
+    { name: "Alabama", abbreviation: "AL" },
+    { name: "Alaska", abbreviation: "AK" },
+    { name: "Arizona", abbreviation: "AZ" },
+    { name: "Arkansas", abbreviation: "AR" },
+    { name: "California", abbreviation: "CA" },
+    { name: "Colorado", abbreviation: "CO" },
+    { name: "Connecticut", abbreviation: "CT" },
+    { name: "Delaware", abbreviation: "DE" },
+    { name: "Florida", abbreviation: "FL" },
+    { name: "Georgia", abbreviation: "GA" },
+    { name: "Hawaii", abbreviation: "HI" },
+    { name: "Idaho", abbreviation: "ID" },
+    { name: "Illinois", abbreviation: "IL" },
+    { name: "Indiana", abbreviation: "IN" },
+    { name: "Iowa", abbreviation: "IA" },
+    { name: "Kansas", abbreviation: "KS" },
+    { name: "Kentucky", abbreviation: "KY" },
+    { name: "Louisiana", abbreviation: "LA" },
+    { name: "Maine", abbreviation: "ME" },
+    { name: "Maryland", abbreviation: "MD" },
+    { name: "Massachusetts", abbreviation: "MA" },
+    { name: "Michigan", abbreviation: "MI" },
+    { name: "Minnesota", abbreviation: "MN" },
+    { name: "Mississippi", abbreviation: "MS" },
+    { name: "Missouri", abbreviation: "MO" },
+    { name: "Montana", abbreviation: "MT" },
+    { name: "Nebraska", abbreviation: "NE" },
+    { name: "Nevada", abbreviation: "NV" },
+    { name: "New Hampshire", abbreviation: "NH" },
+    { name: "New Jersey", abbreviation: "NJ" },
+    { name: "New Mexico", abbreviation: "NM" },
+    { name: "New York", abbreviation: "NY" },
+    { name: "North Carolina", abbreviation: "NC" },
+    { name: "North Dakota", abbreviation: "ND" },
+    { name: "Ohio", abbreviation: "OH" },
+    { name: "Oklahoma", abbreviation: "OK" },
+    { name: "Oregon", abbreviation: "OR" },
+    { name: "Pennsylvania", abbreviation: "PA" },
+    { name: "Rhode Island", abbreviation: "RI" },
+    { name: "South Carolina", abbreviation: "SC" },
+    { name: "South Dakota", abbreviation: "SD" },
+    { name: "Tennessee", abbreviation: "TN" },
+    { name: "Texas", abbreviation: "TX" },
+    { name: "Utah", abbreviation: "UT" },
+    { name: "Vermont", abbreviation: "VT" },
+    { name: "Virginia", abbreviation: "VA" },
+    { name: "Washington", abbreviation: "WA" },
+    { name: "West Virginia", abbreviation: "WV" },
+    { name: "Wisconsin", abbreviation: "WI" },
+    { name: "Wyoming", abbreviation: "WY" }
+  ];
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     setError(null);
     setSuccessMessage(null);
-
+    
+    
     // Validation
     const newErrors: Partial<FormValues> = {};
     if (!formValues.image) {
@@ -68,6 +140,11 @@ export default function Register() {
     if (!formValues.team.trim()) newErrors.team = "Team is required.";
     if (!formValues.position.trim()) newErrors.position = "Position is required.";
     if (!formValues.number.trim()) newErrors.number = "Number is required.";
+
+    if (!formValues.bio.trim()) newErrors.bio = "Bio is required.";
+    if (!formValues.country.trim()) newErrors.country = "Country is required.";
+    if (!formValues.state.trim()) newErrors.state = "State is required.";
+    if (!formValues.city.trim()) newErrors.city = "city is required.";
 
     // Set validation errors if any
     if (Object.keys(newErrors).length > 0) {
@@ -141,201 +218,270 @@ export default function Register() {
     }
   };
 
+  const handlePositionChange = (selectedOptions: any) => {
+    // Convert selected options into a comma-separated string
+    const positions = selectedOptions ? selectedOptions.map((option: any) => option.value).join(", ") : "";
+    setFormValues({ ...formValues, position: positions });
+  };
+
   return (
     <>
-      <div className="flex flex-col lg:flex-row lg:space-x-6">
-        <div className="w-full lg:w-1/2 justify-center bg-white-500 p-4 ">
-          <div className="bg-white rounded-lg p-12  w-full m-auto ">
-            <h2 className="text-3xl font-bold mb-6 text-left">Add Your Personal Information</h2>
-            {error && <p style={{ color: "red" }}>{error}</p>}
-            {successMessage && <p style={{ color: "green" }}>{successMessage}</p>}
-            <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="col-span-2 mb-4">
-               
-                <div className="items-center cursor-pointer" onClick={handleImageClick}>
-                  <Image
-                    src={formValues.image ? formValues.image : DefaultPic} 
-                    alt="Profile Image"
-                    width={100}
-                    height={100}
-                    className="rounded-full m-auto"
-                  />
-                  <input
-                    type="file"
-                    accept="image/*"
-                    onChange={handleImageChange}
-                    className="hidden"
-                    ref={fileInputRef}
-                  />
-                  {validationErrors.image && <p className="text-red-500 items-center text-sm">{validationErrors.image}</p>}
-                </div>
-              </div>
-
-              {/* First Name */}
-              <div>
-                <label htmlFor="first_name" className="block text-gray-700 text-sm font-semibold mb-2">
-                  First Name
-                </label>
-                <input
-                  type="text"
-                  name="first_name"
-                  className="border border-gray-300 rounded-lg py-2 px-4 w-full"
-                  value={formValues.first_name}
-                  onChange={handleChange}
-                />
-                {validationErrors.first_name && <p className="text-red-500 text-sm">{validationErrors.first_name}</p>}
-              </div>
-
-              {/* Last Name */}
-              <div>
-                <label htmlFor="last_name" className="block text-gray-700 text-sm font-semibold mb-2">Last Name</label>
-                <input
-                  type="text"
-                  name="last_name"
-                  className="border border-gray-300 rounded-lg py-2 px-4 w-full"
-                  value={formValues.last_name}
-                  onChange={handleChange}
-                />
-                {validationErrors.last_name && <p className="text-red-500 text-sm">{validationErrors.last_name}</p>}
-              </div>
-
-              {/* Location */}
-              <div>
-                <label htmlFor="location" className="block text-gray-700 text-sm font-semibold mb-2">Location</label>
-                <input
-                  type="text"
-                  name="location"
-                  className="border border-gray-300 rounded-lg py-2 px-4 w-full"
-                  value={formValues.location}
-                  onChange={handleChange}
-                />
-                {validationErrors.location && <p className="text-red-500 text-sm">{validationErrors.location}</p>}
-              </div>
-
-              {/* Birthday */}
-              <div>
-                <label htmlFor="birthday" className="block text-gray-700 text-sm font-semibold mb-2">Birthday</label>
-                <input
-                  type="date"
-                  name="birthday"
-                  className="border border-gray-300 rounded-lg py-2 px-4 w-full"
-                  value={formValues.birthday}
-                  onChange={handleChange}
-                />
-                {validationErrors.birthday && <p className="text-red-500 text-sm">{validationErrors.birthday}</p>}
-              </div>
-
-              {/* Grade Level */}
-              <div>
-                <label htmlFor="grade_level" className="block text-gray-700 text-sm font-semibold mb-2">Grade Level</label>
-                <select
-                  name="grade_level"
-                  className="border border-gray-300 rounded-lg py-2 px-4 w-full"
-                  value={formValues.grade_level}
-                  onChange={handleChange}
-                >
-                  <option value="">Select Grade Level</option>
-                  <option value="Freshman">Freshman</option>
-                  <option value="Sophomore">Sophomore</option>
-                  <option value="Junior">Junior</option>
-                  <option value="Senior">Senior</option>
-                </select>
-                {validationErrors.grade_level && <p className="text-red-500 text-sm">{validationErrors.grade_level}</p>}
-              </div>
-
-              {/* Gender */}
-              <div>
-                <label htmlFor="gender" className="block text-gray-700 text-sm font-semibold mb-2">Gender</label>
-                <select
-                  name="gender"
-                  className="border border-gray-300 rounded-lg py-2 px-4 w-full"
-                  value={formValues.gender}
-                  onChange={handleChange}
-                >
-                  <option value="">Select Gender</option>
-                  <option value="Male">Male</option>
-                  <option value="Female">Female</option>
-                  <option value="Other">Other</option>
-                </select>
-                {validationErrors.gender && <p className="text-red-500 text-sm">{validationErrors.gender}</p>}
-              </div>
-
-              {/* Sport */}
-              <div>
-                <label htmlFor="sport" className="block text-gray-700 text-sm font-semibold mb-2">Sport</label>
-                <select
-                  name="sport"
-                  className="border border-gray-300 rounded-lg py-2 px-4 w-full"
-                  value={formValues.sport}
-                  onChange={handleChange}
-                >
-                  <option value="">Select Sport</option>
-                  <option value="Football">Football</option>
-                  <option value="Basketball">Basketball</option>
-                  <option value="Soccer">Soccer</option>
-                  <option value="Baseball">Baseball</option>
-                  <option value="Volleyball">Volleyball</option>
-                </select>
-                {validationErrors.sport && <p className="text-red-500 text-sm">{validationErrors.sport}</p>}
-              </div>
-
-              {/* Team */}
-              <div>
-                <label htmlFor="team" className="block text-gray-700 text-sm font-semibold mb-2">Team</label>
-                <input
-                  type="text"
-                  name="team"
-                  className="border border-gray-300 rounded-lg py-2 px-4 w-full"
-                  value={formValues.team}
-                  onChange={handleChange}
-                />
-                {validationErrors.team && <p className="text-red-500 text-sm">{validationErrors.team}</p>}
-              </div>
-
-              {/* Position */}
-              <div>
-                <label htmlFor="position" className="block text-gray-700 text-sm font-semibold mb-2">Position</label>
-                <input
-                  type="text"
-                  name="position"
-                  className="border border-gray-300 rounded-lg py-2 px-4 w-full"
-                  value={formValues.position}
-                  onChange={handleChange}
-                />
-                {validationErrors.position && <p className="text-red-500 text-sm">{validationErrors.position}</p>}
-              </div>
-
-              {/* Number */}
-              <div>
-                <label htmlFor="number" className="block text-gray-700 text-sm font-semibold mb-2">Number</label>
-                <input
-                  type="text"
-                  name="number"
-                  className="border border-gray-300 rounded-lg py-2 px-4 w-full"
-                  value={formValues.number}
-                  onChange={handleChange}
-                />
-                {validationErrors.number && <p className="text-red-500 text-sm">{validationErrors.number}</p>}
-              </div>
-
-              {/* Submit Button */}
-              <div className="col-span-2">
-                <button
-                  type="submit"
-                  className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded w-full"
-                  disabled={loading}
-                >
-                   {loading ? 'Completing Your profile...' : 'Submit & Complete Profile'}
-                  
-                </button>
-              </div>
-            </form>
+     <div className="container mx-auto p-4">
+  <div className="flex flex-col justify-center bg-white p-4 w-full">
+    <div className="bg-white rounded-lg p-8 w-full md:max-w-3xl lg:max-w-5xl m-auto">
+      <h2 className="text-2xl lg:text-3xl font-bold mb-2 text-left">Add Your Personal Information</h2>
+      <p className="text-red-500">( All fiels are mandatory. Please upload your photo with your face. )</p>
+      {error && <p style={{ color: "red" }}>{error}</p>}
+      {successMessage && <p style={{ color: "green" }}>{successMessage}</p>}
+      <form onSubmit={handleSubmit} >
+        
+        <div className="col-span-1 sm:col-span-2 lg:col-span-3 mb-4">
+          <div className="items-center cursor-pointer" onClick={handleImageClick}>
+            <Image
+              src={formValues.image ? formValues.image : DefaultPic}
+              alt="Profile Image"
+              width={100}
+              height={100}
+              className="rounded-full mx-auto"
+            />
+            <input
+              type="file"
+              accept="image/*"
+              onChange={handleImageChange}
+              className="hidden"
+              ref={fileInputRef}
+            />
+            {validationErrors.image && <p className="text-red-500 text-sm text-center mt-2">{validationErrors.image}</p>}
           </div>
         </div>
-        <div className="hidden md:block flex-1 bg-gray-100 relative">
-          <Image src={Brand} alt="Brand Image" layout="fill" objectFit="cover" />
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 pb-5">
+        <div>
+          <label htmlFor="first_name" className="block text-gray-700 text-sm font-semibold mb-2">
+            First Name
+          </label>
+          <input
+            type="text"
+            name="first_name"
+            className="border border-gray-300 rounded-lg py-2 px-4 w-full"
+            value={formValues.first_name}
+            onChange={handleChange}
+          />
+          {validationErrors.first_name && <p className="text-red-500 text-sm">{validationErrors.first_name}</p>}
         </div>
-      </div>
+
+        {/* Last Name */}
+        <div>
+          <label htmlFor="last_name" className="block text-gray-700 text-sm font-semibold mb-2">Last Name</label>
+          <input
+            type="text"
+            name="last_name"
+            className="border border-gray-300 rounded-lg py-2 px-4 w-full"
+            value={formValues.last_name}
+            onChange={handleChange}
+          />
+          {validationErrors.last_name && <p className="text-red-500 text-sm">{validationErrors.last_name}</p>}
+        </div>
+
+        {/* Location */}
+        <div>
+          <label htmlFor="location" className="block text-gray-700 text-sm font-semibold mb-2">Location</label>
+          <input
+            type="text"
+            name="location"
+            className="border border-gray-300 rounded-lg py-2 px-4 w-full"
+            value={formValues.location}
+            onChange={handleChange}
+          />
+          {validationErrors.location && <p className="text-red-500 text-sm">{validationErrors.location}</p>}
+        </div>
+
+        {/* Birthday */}
+        <div>
+          <label htmlFor="birthday" className="block text-gray-700 text-sm font-semibold mb-2">Birthday</label>
+          <input
+            type="date"
+            name="birthday"
+            className="border border-gray-300 rounded-lg py-2 px-4 w-full"
+            value={formValues.birthday}
+            onChange={handleChange}
+          />
+          {validationErrors.birthday && <p className="text-red-500 text-sm">{validationErrors.birthday}</p>}
+        </div>
+
+        {/* Grade Level */}
+        <div>
+          <label htmlFor="grade_level" className="block text-gray-700 text-sm font-semibold mb-2">Grade Level</label>
+          <select
+            name="grade_level"
+            className="border border-gray-300 rounded-lg py-2 px-4 w-full"
+            value={formValues.grade_level}
+            onChange={handleChange}
+          >
+            <option value="">Select Grade Level</option>
+            <option value="Freshman">Freshman</option>
+            <option value="Sophomore">Sophomore</option>
+            <option value="Junior">Junior</option>
+            <option value="Senior">Senior</option>
+          </select>
+          {validationErrors.grade_level && <p className="text-red-500 text-sm">{validationErrors.grade_level}</p>}
+        </div>
+
+        {/* Gender */}
+        <div>
+          <label htmlFor="gender" className="block text-gray-700 text-sm font-semibold mb-2">Gender</label>
+          <select
+            name="gender"
+            className="border border-gray-300 rounded-lg py-2 px-4 w-full"
+            value={formValues.gender}
+            onChange={handleChange}
+          >
+            <option value="">Select Gender</option>
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+            
+          </select>
+          {validationErrors.gender && <p className="text-red-500 text-sm">{validationErrors.gender}</p>}
+        </div>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 pb-5">
+        <div>
+          <label htmlFor="sport" className="block text-gray-700 text-sm font-semibold mb-2">Sport</label>
+          <select
+            name="sport"
+            className="border border-gray-300 rounded-lg py-2 px-4 w-full"
+            value={formValues.sport || 'Soccer'}
+            onChange={handleChange}
+          >
+            <option value="Soccer">Soccer</option>
+            <option value="Basketball">Basketball</option>
+            <option value="Baseball">Baseball</option>
+            <option value="Tennis">Tennis</option>
+            <option value="Swimming">Swimming</option>
+            <option value="Track and Field">Track and Field</option>
+          </select>
+          {validationErrors.sport && <p className="text-red-500 text-sm">{validationErrors.sport}</p>}
+        </div>
+
+        {/* Team */}
+        <div>
+          <label htmlFor="team" className="block text-gray-700 text-sm font-semibold mb-2">Team Name/ Year</label>
+          <input
+            type="text"
+            name="team"
+            className="border border-gray-300 rounded-lg py-2 px-4 w-full"
+            value={formValues.team}
+            onChange={handleChange}
+          />
+          {validationErrors.team && <p className="text-red-500 text-sm">{validationErrors.team}</p>}
+        </div>
+
+        {/* Position */}
+        <div>
+          <label htmlFor="position" className="block text-gray-700 text-sm font-semibold mb-2">Position</label>
+          <Select
+            isMulti
+            options={positionOptions}
+            className="basic-multi-select"
+            classNamePrefix="select"
+            onChange={handlePositionChange}
+            placeholder="Select Position(s)"
+          />
+          {validationErrors.position && <p className="text-red-500 text-sm">{validationErrors.position}</p>}
+        </div>
+
+        {/* Number */}
+        <div>
+          <label htmlFor="number" className="block text-gray-700 text-sm font-semibold mb-2">Number</label>
+          <input
+            type="text"
+            name="number"
+            className="border border-gray-300 rounded-lg py-2 px-4 w-full"
+            value={formValues.number}
+            onChange={handleChange}
+          />
+          {validationErrors.number && <p className="text-red-500 text-sm">{validationErrors.number}</p>}
+        </div>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-6 pb-5">
+        <div>
+          <label htmlFor="bio" className="block text-gray-700 text-sm font-semibold mb-2">Tell us about your player’s experience/ competition level, any 
+          accolades and goals.</label>
+          <textarea
+            type="text"
+            name="bio"
+            className="border border-gray-300 rounded-lg py-2 px-4 w-full"
+            value={formValues.bio}
+            onChange={handleChange}
+          ></textarea>
+          {validationErrors.bio && <p className="text-red-500 text-sm">{validationErrors.bio}</p>}
+        </div>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 pb-5">
+        <div>
+          <label htmlFor="country" className="block text-gray-700 text-sm font-semibold mb-2">Country</label>
+          <select
+            name="country"
+            className="border border-gray-300 rounded-lg py-2 px-4 w-full"
+            value={formValues.country}
+            onChange={handleChange}
+          >
+            <option value="">Select</option>
+            <option value="Freshman">United States of America</option>
+           
+          </select>
+          
+          {validationErrors.country && <p className="text-red-500 text-sm">{validationErrors.country}</p>}
+        </div>
+        <div>
+          <label htmlFor="state" className="block text-gray-700 text-sm font-semibold mb-2">State</label>
+          
+        
+          <select
+        name="state"
+        id="state"
+        value={formValues.state}
+        onChange={handleChange}
+        className="border border-gray-300 rounded-lg py-2 px-4 w-full"
+      >
+        <option value="">Select a state</option>
+        {states.map((state) => (
+          <option key={state.abbreviation} value={state.abbreviation}>
+            {state.name}
+          </option>
+        ))}
+      </select>
+          {validationErrors.state && <p className="text-red-500 text-sm">{validationErrors.state}</p>}
+        </div>
+        <div>
+          <label htmlFor="city" className="block text-gray-700 text-sm font-semibold mb-2">City</label>
+          <input
+            type="text"
+            name="city"
+            className="border border-gray-300 rounded-lg py-2 px-4 w-full"
+            value={formValues.city}
+            onChange={handleChange}
+          />
+          {validationErrors.city && <p className="text-red-500 text-sm">{validationErrors.city}</p>}
+        </div>
+
+        </div>
+        <div className="col-span-1 sm:col-span-2 lg:col-span-3">
+          <button
+            type="submit"
+            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg w-full"
+            disabled={loading}
+          >
+            {loading ? "Registering..." : "Submit"}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+
     </>
   );
 }

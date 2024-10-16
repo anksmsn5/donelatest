@@ -38,6 +38,10 @@ export async function POST(req: NextRequest) {
       number: null,
       email: email,
       image: null,
+      bio:null,
+      country:null,
+      state:null,
+      city:null,
       password: hashedPassword, // Store the hashed password
       createdAt: new Date(), // Store the current timestamp as createdAt
     }).returning();
@@ -69,6 +73,10 @@ export async function PUT(req: NextRequest) {
   const position = formData.get('position') as string;
   const number = formData.get('number') as string;
   const playerID = formData.get('playerID') as string;
+  const country = formData.get('country') as string;
+  const state = formData.get('state') as string;
+  const city = formData.get('city') as string;
+  const bio = formData.get('bio') as string;
  
 
   const imageFile = formData.get('image') as string | null;
@@ -87,6 +95,10 @@ export async function PUT(req: NextRequest) {
       team: team || null,
       position: position || null,
       number: number || null,
+      country:country || null,
+      state:state || null,
+      city:city || null,
+      bio:bio || null,
       image:imageFile
 
     })
