@@ -311,18 +311,18 @@ export default function Register() {
 
         {/* Grade Level */}
         <div>
-          <label htmlFor="grade_level" className="block text-gray-700 text-sm font-semibold mb-2">Grade Level</label>
+          <label htmlFor="grade_level" className="block text-gray-700 text-sm font-semibold mb-2"> Level</label>
           <select
             name="grade_level"
             className="border border-gray-300 rounded-lg py-2 px-4 w-full"
             value={formValues.grade_level}
             onChange={handleChange}
           >
-            <option value="">Select Grade Level</option>
-            <option value="Freshman">Freshman</option>
-            <option value="Sophomore">Sophomore</option>
-            <option value="Junior">Junior</option>
-            <option value="Senior">Senior</option>
+            <option value="">Select  Level</option>
+            <option value="Club">Club</option>
+            <option value="League">League</option>
+            <option value="Academy">Academy</option>
+            <option value="Organization">Organization</option>
           </select>
           {validationErrors.grade_level && <p className="text-red-500 text-sm">{validationErrors.grade_level}</p>}
         </div>
@@ -353,13 +353,11 @@ export default function Register() {
             value={formValues.sport || 'Soccer'}
             onChange={handleChange}
           >
+            <option value="">Select</option>
             <option value="Soccer">Soccer</option>
-            <option value="Basketball">Basketball</option>
-            <option value="Baseball">Baseball</option>
-            <option value="Tennis">Tennis</option>
-            <option value="Swimming">Swimming</option>
-            <option value="Track and Field">Track and Field</option>
+            
           </select>
+          <p className="text-xs text-gray-500">( Right now, D1 Notes is only available for soccer coaching )</p>
           {validationErrors.sport && <p className="text-red-500 text-sm">{validationErrors.sport}</p>}
         </div>
 
