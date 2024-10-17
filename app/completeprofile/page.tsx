@@ -22,6 +22,7 @@ interface FormValues {
   country:string;
   state:string;
   city:string;
+  jersey:string;
   image: string | null; // Updated to store Base64 string
 }
 
@@ -41,6 +42,7 @@ export default function Register() {
     country:"",
     state:"",
     city:"",
+    jersey:"",
     image: null,
   });
 
@@ -307,7 +309,8 @@ export default function Register() {
           {validationErrors.location && <p className="text-red-500 text-sm">{validationErrors.location}</p>}
         </div>
 
-        {/* Birthday */}
+       </div>
+       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 pb-5">
         <div>
           <label htmlFor="birthday" className="block text-gray-700 text-sm font-semibold mb-2">Birthday</label>
           <input
@@ -354,6 +357,17 @@ export default function Register() {
             
           </select>
           {validationErrors.gender && <p className="text-red-500 text-sm">{validationErrors.gender}</p>}
+        </div>
+        <div>
+          <label htmlFor="jersey" className="block text-gray-700 text-sm font-semibold mb-2">Jersey No <span className="text-xs text-gray-500">(Optional)</span></label>
+          <input
+            type="text"
+            name="jersey"
+            className="border border-gray-300 rounded-lg py-2 px-4 w-full"
+            value={formValues.jersey}
+            onChange={handleChange}
+          />
+           
         </div>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 pb-5">

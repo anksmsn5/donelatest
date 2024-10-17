@@ -25,6 +25,7 @@ export const users = pgTable(
     gender: varchar("gender"),
     sport: varchar("sport"),
     team: varchar("team"),
+    jersey:varchar("jersey"),
     position: varchar("position"),
     number: varchar("number"),
     email: varchar("email").notNull().unique(),

@@ -1,11 +1,9 @@
 {
   "/page": "app/page.js",
-  "/login/page": "app/login/page.js",
-  "/coach/dashboard/page": "app/coach/dashboard/page.js",
+  "/completeprofile/page": "app/completeprofile/page.js",
+  "/api/register/route": "app/api/register/route.js",
   "/dashboard/page": "app/dashboard/page.js",
-  "/api/auth/[...nextauth]/route": "app/api/auth/[...nextauth]/route.js",
   "/api/userimage/route": "app/api/userimage/route.js",
-  "/favicon.ico/route": "app/favicon.ico/route.js",
-  "/api/evaluations/route": "app/api/evaluations/route.js",
-  "/api/coach/evaluations/route": "app/api/coach/evaluations/route.js"
+  "/api/auth/[...nextauth]/route": "app/api/auth/[...nextauth]/route.js",
+  "/api/evaluations/route": "app/api/evaluations/route.js"
 }

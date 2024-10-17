@@ -77,6 +77,7 @@ export async function PUT(req: NextRequest) {
   const state = formData.get('state') as string;
   const city = formData.get('city') as string;
   const bio = formData.get('bio') as string;
+  const jersey = formData.get('jersey') as string;
  
 
   const imageFile = formData.get('image') as string | null;
@@ -99,6 +100,7 @@ export async function PUT(req: NextRequest) {
       state:state || null,
       city:city || null,
       bio:bio || null,
+      jersey:jersey||null,
       image:imageFile
 
     })
