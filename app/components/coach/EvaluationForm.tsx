@@ -316,7 +316,7 @@ const EvaluationForm: React.FC<EvaluationFormProps> = ({ evaluationId,
                                                     [tech.label]: e.target.value
                                                 }))}>
                                                     {tech.options.map((option, index) => (
-                                                        <option key={index} value={option}>{option}{technicalScores[tech.label]}</option>
+                                                        <option key={index} value={option}>{option}</option>
                                                     ))}
                                                 </select>
                                                 <label htmlFor={`dropdown-tech-${tech.id}`} className="text-sm font-medium">{tech.label}</label>
