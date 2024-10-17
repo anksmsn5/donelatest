@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from 'react';
 import { signIn, useSession } from 'next-auth/react';
 import DefaultPic from "../../public/default.jpg";
 import Brand from '../../public/images/brand.jpg';
+import CertificateImage from '../../public/certificate.png'
 import Image from 'next/image';
 
 interface FormValues {
@@ -19,6 +20,7 @@ interface FormValues {
   expectedCharge: string;
   password: string;
   image: string | null; 
+  certificate: string | null; 
 }
 
 interface FormErrors {
@@ -34,6 +36,7 @@ interface FormErrors {
   expectedCharge?: string;
   password?: string;
   image: string | null;
+  
 }
 
 export default function Register() {
@@ -50,6 +53,7 @@ export default function Register() {
     expectedCharge: '',
     password: '',
     image: null,
+    certificate:null
   });
 
   const [formErrors, setFormErrors] = useState<FormErrors>({
@@ -65,11 +69,13 @@ export default function Register() {
     expectedCharge: undefined,
     password: undefined,
     image: null,
+    
   });
   const [error, setError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const certificateInputRef = useRef<HTMLInputElement | null>(null);
   const { data: session } = useSession();
   const [validationErrors, setValidationErrors] = useState<Partial<FormValues>>({});
 
@@ -195,6 +201,28 @@ export default function Register() {
   const handleImageClick = () => {
     if (fileInputRef.current) {
       fileInputRef.current.click();
+    }
+  };
+
+  const handleCertificateClick = () => {
+    if (certificateInputRef.current) {
+      certificateInputRef.current.click();
+    }
+  };
+
+
+  const handleCertificateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files) {
+      const file = event.target.files[0];
+      const reader = new FileReader();
+  
+      reader.onloadend = () => {
+        setFormValues({ ...formValues, certificate: reader.result as string }); // Set the base64 string
+      };
+  
+      if (file) {
+        reader.readAsDataURL(file); // Convert the image file to base64
+      }
     }
   };
 
@@ -402,6 +430,30 @@ export default function Register() {
                 {formErrors.password && <p className="text-red-600 text-sm">{formErrors.password}</p>}
               </div>
 </div>
+<div className="mb-4">
+                <label htmlFor="image" className="block text-gray-700 text-sm font-semibold mb-2">Include any 
+coaching certifications, relevant past and current experience, team(s) and/ or coaching accolades, 
+relevant soccer affiliations, personal soccer links (eg, training business, current club), etc.</label>
+                <div className="relative items-center cursor-pointer" onClick={handleCertificateClick}>
+                  <div className="w-24 h-24   overflow-hidden border-2 border-gray-300 m-auto">
+                    <Image  
+                      src={formValues.certificate ? formValues.certificate : CertificateImage} 
+                      alt="Certificate "
+                      width={200}
+                      height={200}
+                      className="object-cover w-full h-full"
+                    />
+                  </div>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleCertificateChange}
+                    className="hidden"
+                    ref={certificateInputRef}
+                  />
+                 
+                </div>
+              </div>
               {/* Submit Button */}
               <div className="mt-6">
                 <button
@@ -415,6 +467,7 @@ export default function Register() {
             </form>
           </div>
         </div>
+        
 
         {/* Brand Image Section */}
         <div className="hidden md:block flex-1 bg-gray-100 relative">

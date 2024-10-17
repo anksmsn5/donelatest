@@ -32,6 +32,18 @@
       "static/chunks/main-app.js",
       "static/css/app/dashboard/page.css",
       "static/chunks/app/dashboard/page.js"
+    ],
+    "/login/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/css/app/login/page.css",
+      "static/chunks/app/login/page.js"
+    ],
+    "/coach/dashboard/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/css/app/coach/dashboard/page.css",
+      "static/chunks/app/coach/dashboard/page.js"
     ]
   }
 }

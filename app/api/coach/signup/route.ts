@@ -35,6 +35,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ message: 'Missing required fields' }, { status: 400 });
     }
     const imageFile = formData.get('image') as string | null;
+    const certificate = formData.get('certificate') as string | null;
 
     // Generate slug from first and last name
     const slug = `${firstName.trim().toLowerCase().replace(/\s+/g, '-')}-${lastName.trim().toLowerCase().replace(/\s+/g, '-')}`;
@@ -60,6 +61,7 @@ export async function POST(req: NextRequest) {
       slug: slug,
       password: hashedPassword,
       createdAt: new Date(),
+      certificate:certificate
     }).returning();
     
     

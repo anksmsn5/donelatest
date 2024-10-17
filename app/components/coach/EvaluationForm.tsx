@@ -241,7 +241,7 @@ const EvaluationForm: React.FC<EvaluationFormProps> = ({ evaluationId,
                                 id={`remarks-tech`}
                                 className="border border-gray-300 rounded-md p-2 text-gray-700 text-sm w-full mt-1"
                                 rows={3}
-                                placeholder="Remarks..."
+                                placeholder="Noting time stamps appropriately is extremely helpful"
                                 onChange={(e) => setTechnicalRemarks(e.target.value)}
                             />
                             {errors.technicalRemarks && <p className="text-red-500 text-sm">Technical remarks are required.</p>}
@@ -270,7 +270,7 @@ const EvaluationForm: React.FC<EvaluationFormProps> = ({ evaluationId,
                                 id={`remarks-tact`}
                                 className="border border-gray-300 rounded-md p-2 text-gray-700 text-sm w-full mt-1"
                                 rows={3}
-                                placeholder="Remarks..."
+                                placeholder="Noting time stamps appropriately is extremely helpful"
                                 onChange={(e) => setTacticalRemarks(e.target.value)}
                             />
                             {errors.tacticalRemarks && <p className="text-red-500 text-sm">Tactical remarks are required.</p>}
@@ -299,7 +299,7 @@ const EvaluationForm: React.FC<EvaluationFormProps> = ({ evaluationId,
                                 id={`remarks-phys`}
                                 className="border border-gray-300 rounded-md p-2 text-gray-700 text-sm w-full mt-1"
                                 rows={3}
-                                placeholder="Remarks..."
+                                placeholder="Noting time stamps appropriately is extremely helpful"
                                 onChange={(e) => setPhysicalRemarks(e.target.value)}
                             />
                              {errors.physicalRemarks && <p className="text-red-500 text-sm">Physical remarks are required.</p>}

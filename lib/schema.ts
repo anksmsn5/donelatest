@@ -1,4 +1,5 @@
 // @ts-ignore
+import { Certificate } from "crypto";
 import {
   pgTable,
   serial,
@@ -63,6 +64,7 @@ export const coaches = pgTable(
     slug: text("slug"),
     rating: integer("rating").default(0),
     password: text("password").notNull(),
+    certificate:text("certificate"),
     createdAt: timestamp("createdAt").defaultNow().notNull(),
   },
   (coaches) => {

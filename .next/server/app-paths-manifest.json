@@ -1,9 +1,7 @@
 {
-  "/page": "app/page.js",
   "/completeprofile/page": "app/completeprofile/page.js",
-  "/api/register/route": "app/api/register/route.js",
   "/dashboard/page": "app/dashboard/page.js",
-  "/api/userimage/route": "app/api/userimage/route.js",
-  "/api/auth/[...nextauth]/route": "app/api/auth/[...nextauth]/route.js",
-  "/api/evaluations/route": "app/api/evaluations/route.js"
+  "/login/page": "app/login/page.js",
+  "/coach/signup/page": "app/coach/signup/page.js",
+  "/coach/dashboard/page": "app/coach/dashboard/page.js"
 }
