@@ -34,5 +34,6 @@ export interface Evaluation {
     Accepted: Evaluation[];
     Completed: Evaluation[];
     Declined: Evaluation[];
+    Drafted:Evaluation[];
   }
   

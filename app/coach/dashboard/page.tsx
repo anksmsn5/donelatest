@@ -34,6 +34,7 @@ const Dashboard: React.FC = () => {
     Accepted: [],
     Completed: [],
     Declined: [],
+    Drafted:[],
   });
   const [selectedTab, setSelectedTab] = useState<string>('0');
   const [data, setData] = useState<Evaluation[]>([]);
@@ -117,7 +118,18 @@ const Dashboard: React.FC = () => {
                 Evaluate
               </button>
             );
-          } else {
+          } 
+          else if (selectedTab === '4') {
+            return (
+              <button
+                onClick={() => handleAcceptedAction(evaluation)}
+                className="bg-green-500 text-white px-4 py-2 rounded"
+              >
+                Open Draft
+              </button>
+            );
+          } 
+          else {
             return <a  onClick={() => handleEvaluationDetails(evaluation)}><FaEye></FaEye></a>;
           }
         },
@@ -204,6 +216,7 @@ evaluationId={evaluationId} // Pass the appropriate evaluation ID if needed
                 { name: 'Accepted', value: '1' },
                 { name: 'Completed', value: '2' },
                 { name: 'Declined', value: '3' },
+                { name: 'Drafted', value: '4' },
               ].map(tab => (
                 <button
                   key={tab.value} // This is good
