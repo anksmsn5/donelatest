@@ -13,6 +13,7 @@ const Dashboard: React.FC = () => {
     Accepted: [],
     Completed: [],
     Declined: [],
+    Drafted:[],
   });
 
   const [selectedTab, setSelectedTab] = useState<string>('0');

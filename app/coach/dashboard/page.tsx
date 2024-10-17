@@ -34,7 +34,7 @@ const Dashboard: React.FC = () => {
     Accepted: [],
     Completed: [],
     Declined: [],
-    Drafted:[],
+    Drafted:[]
   });
   const [selectedTab, setSelectedTab] = useState<string>('0');
   const [data, setData] = useState<Evaluation[]>([]);
