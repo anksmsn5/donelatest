@@ -37,14 +37,13 @@ export async function POST(req: NextRequest) {
     const imageFile = formData.get('image') as string | null;
     const certificate = formData.get('certificate') as string | null;
 
-    // Generate slug from first and last name
-    const slug = `${firstName.trim().toLowerCase().replace(/\s+/g, '-')}-${lastName.trim().toLowerCase().replace(/\s+/g, '-')}`;
-    logInfo('Generated slug:', slug);
+    const timestamp = new Date().toISOString(); 
+    const slug = `${firstName.trim().toLowerCase().replace(/\s+/g, '-')}-${lastName.trim().toLowerCase().replace(/\s+/g, '-')}${timestamp}`;
+    
 
     // Hash the password
     const hashedPassword = await hash(password, 10);
-    logInfo('Password hashed successfully');
-
+   
     // Insert the new coach into the database
     const insertedUser = await db.insert(coaches).values({
       firstName: firstName,
