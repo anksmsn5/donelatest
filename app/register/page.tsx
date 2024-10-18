@@ -4,50 +4,36 @@ import { signIn, useSession } from 'next-auth/react';
 import Brand from '../public/images/brand.jpg';
 import Image from 'next/image';
 import { showError, showSuccess } from '../components/Toastr';
+import { z } from 'zod';
 
-interface FormValues {
-  email: string;
-  password: string;
-  loginAs: "player";
-}
+// Zod schema for validation
+const formSchema = z.object({
+  email: z.string().email('Invalid email format.'),
+  password: z.string().min(6, 'Password must be at least 6 characters long.'),
+  loginAs: z.literal('player'), // In case loginAs should always be 'player'
+});
+
+type FormValues = z.infer<typeof formSchema>;
 
 export default function Register() {
-  const [formValues, setFormValues] = useState<FormValues>({ email: '', password: '', loginAs: "player" });
+  const [formValues, setFormValues] = useState<FormValues>({ email: '', password: '', loginAs: 'player' });
   const [error, setError] = useState<string | null>(null);
-  const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const { data: session } = useSession();
-
-  const validateEmail = (email: string) => {
-    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return re.test(email);
-  };
-
-  const validatePassword = (password: string) => {
-    return password.length >= 6; // Adjust as needed for additional strength requirements
-  };
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     setError(null);
-    setSuccessMessage(null);
 
-    const { email, password } = formValues;
+    // Validate form data using Zod
+    const validationResult = formSchema.safeParse(formValues);
 
-    if (email=='') {
-      showError('Email Required.');
+    if (!validationResult.success) {
+      const errorMessage = validationResult.error.errors[0].message;
+      showError(errorMessage); // Show the first validation error
       return;
     }
 
-    if (!validateEmail(email)) {
-      showError('Invalid email format.');
-      return;
-    }
-
-    if (!validatePassword(password)) {
-      showError('Password must be at least 6 characters long.');
-      return;
-    }
     setLoading(true);
     try {
       const response = await fetch('/api/register', {
@@ -55,13 +41,13 @@ export default function Register() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formValues),
       });
-      
+
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(errorData.message || 'Something went wrong!');
+        setError(errorData.message || 'Something went wrong!');
       }
-      
-      console.log(formValues.email);
+
       const res = await signIn('credentials', {
         redirect: false,
         email: formValues.email,
@@ -72,7 +58,8 @@ export default function Register() {
       window.location.href = '/completeprofile';
     } catch (err) {
       setLoading(false);
-      setError(err instanceof Error ? err.message : 'Something went wrong!');
+      showError(err instanceof Error ? err.message : 'Something went wrong!'); 
+  
     }
   };
 
@@ -82,10 +69,8 @@ export default function Register() {
   };
 
   useEffect(() => {
-    if (session) {
-      if (!session.user.name) {
-        window.location.href = '/completeprofile';
-      }
+    if (session && !session.user.name) {
+      window.location.href = '/completeprofile';
     }
   }, [session]);
 
@@ -96,8 +81,7 @@ export default function Register() {
         <div className="flex-1 bg-white p-4 md:p-8">
           <div className="bg-white rounded-lg p-12 max-w-md mx-auto">
             <h2 className="text-2xl font-bold mb-6 text-left">Sign Up</h2>
-            {error && <p className="text-red-600">{error}</p>}
-            {successMessage && <p className="text-green-600">{successMessage}</p>}
+
             <form onSubmit={handleSubmit}>
               <div className="mb-4">
                 <label htmlFor="email" className="block text-gray-700 text-sm font-semibold mb-2">
@@ -109,7 +93,6 @@ export default function Register() {
                   name="email"
                   value={formValues.email}
                   onChange={handleChange}
-                  
                 />
               </div>
               <div className="mb-4">
@@ -122,7 +105,6 @@ export default function Register() {
                   value={formValues.password}
                   className="border border-gray-300 rounded-lg py-2 px-4 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
                   onChange={handleChange}
-                  
                 />
               </div>
               <button
@@ -144,13 +126,13 @@ export default function Register() {
 
         {/* Brand Section */}
         <div className="flex-1 bg-white">
-          <Image 
-            src={Brand} 
-            alt="brand" 
-            layout="responsive" 
-            width={500} 
-            height={500} 
-            className="object-cover" 
+          <Image
+            src={Brand}
+            alt="brand"
+            layout="responsive"
+            width={500}
+            height={500}
+            className="object-cover"
           />
         </div>
       </div>

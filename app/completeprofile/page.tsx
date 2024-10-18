@@ -226,22 +226,12 @@ export default function Register() {
     const positions = selectedOptions ? selectedOptions.map((option: any) => option.value).join(", ") : "";
     setFormValues({ ...formValues, position: positions });
   };
-  useEffect(() => {
-    // Calculate today's date minus 18 years
-    const today = new Date();
-    const year = today.getFullYear() - 18;
-    const month = (today.getMonth() + 1).toString().padStart(2, '0'); // Months are zero-indexed, so add 1
-    const day = today.getDate().toString().padStart(2, '0');
-
-    // Format max date as YYYY-MM-DD
-    const calculatedMaxDate = `${year}-${month}-${day}`;
-    setMaxDate(calculatedMaxDate);
-  }, []);
+ 
   return (
     <>
      <div className="container mx-auto p-4">
   <div className="flex flex-col justify-center bg-white p-4 w-full">
-    <div className="bg-white rounded-lg p-8 w-full md:max-w-3xl lg:max-w-5xl m-auto">
+    <div className="bg-white rounded-lg p-0 w-full md:max-w-3xl lg:max-w-5xl m-auto">
       <h2 className="text-2xl lg:text-3xl font-bold mb-2 text-left">Add Your Personal Information</h2>
       <p className="text-red-500">( All fiels are mandatory. Please upload your photo with your face. )</p>
       {error && <p style={{ color: "red" }}>{error}</p>}
@@ -317,7 +307,7 @@ export default function Register() {
             type="date"
             name="birthday"
             className="border border-gray-300 rounded-lg py-2 px-4 w-full"
-            max={maxDate} 
+            
             value={formValues.birthday}
             onChange={handleChange}
           />
