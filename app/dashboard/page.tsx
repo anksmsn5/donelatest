@@ -119,7 +119,7 @@ const Dashboard: React.FC = () => {
   // Create table instance
   const tableInstance = useTable({ columns, data });
 
-  return (
+  return ( 
     <div className="flex h-screen">
       <Sidebar />
       <main className="flex-grow bg-gray-100 p-4 overflow-x-auto">
@@ -156,6 +156,23 @@ const Dashboard: React.FC = () => {
                   ))}
                 </ul>
               )}
+            </div>
+            <div className="hidden md:flex space-x-4 mb-4">
+              {[
+                { name: 'Requested', value: '0' },
+                { name: 'Accepted', value: '1' },
+                { name: 'Completed', value: '2' },
+                { name: 'Declined', value: '3' },
+               
+              ].map((tab) => (
+                <button
+                  key={tab.value}
+                  onClick={() => setSelectedTab(tab.value)}
+                  className={`p-2 border-b-2 ${selectedTab === tab.value ? 'border-blue-500 font-bold' : 'border-transparent'}`}
+                >
+                  {tab.name}
+                </button>
+              ))}
             </div>
 
           {/* Table to display evaluations */}

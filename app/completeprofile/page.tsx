@@ -143,6 +143,12 @@ export default function Register() {
     if (!formValues.team.trim()) newErrors.team = "Team is required.";
     if (!formValues.position.trim()) newErrors.position = "Position is required.";
     if (!formValues.number.trim()) newErrors.number = "Number is required.";
+    if (formValues.number.length < 10) newErrors.number = 'Phone Number Must be of 10 Digits Minimum';
+    if (!/^\d+$/.test(formValues.number)) {
+      newErrors.number = 'Phone Number must contain only numeric characters';
+    }
+    if (formValues.number.length > 10) newErrors.number = 'Phone Number Must be of 10 Digits Maximum';
+    
 
     if (!formValues.bio.trim()) newErrors.bio = "Bio is required.";
     if (!formValues.country.trim()) newErrors.country = "Country is required.";
@@ -406,7 +412,7 @@ export default function Register() {
 
         {/* Number */}
         <div>
-          <label htmlFor="number" className="block text-gray-700 text-sm font-semibold mb-2">Number</label>
+          <label htmlFor="number" className="block text-gray-700 text-sm font-semibold mb-2">Phone Number</label>
           <input
             type="text"
             name="number"

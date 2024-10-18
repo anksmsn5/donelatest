@@ -171,25 +171,35 @@ const Header: React.FC = () => {
                 </li>
               )}
               {session?.user?.type === 'coach' && (
+                <>
                 <li className="pt-[8px]">
                   <Link href="/coach/dashboard" className="text-black hover:text-black-300" onClick={closeMenu}>
                     Dashboard
                   </Link>
                 </li>
+                   <li className="pt-[8px]">
+                   <Link href="/coach/dashboard" className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick={closeMenu}>
+                     Hello, {session?.user?.name || "Player"}!
+                   </Link>
+                 </li>
+                 </>
               )}
               {session?.user?.type !== 'coach' && (
+                <>
                 <li className="pt-[8px]">
                   <Link href="/dashboard" className="text-black hover:text-black-300" onClick={closeMenu}>
                     Dashboard
                   </Link>
                 </li>
+                   <li className="pt-[8px]">
+                   <Link href="/dashboard" className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick={closeMenu}>
+                     Hello, {session?.user?.name || "Player"}!
+                   </Link>
+                 </li>
+                 </>
               )}
 
-              <li className="pt-[8px]">
-                <Link href="/dashboard" className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick={closeMenu}>
-                  Hello, {session?.user?.name || "Player"}!
-                </Link>
-              </li>
+           
               <li className="relative" ref={dropdownRef}>
                 <button onClick={toggleDropdown} className="flex items-center">
                   <Image
@@ -203,11 +213,7 @@ const Header: React.FC = () => {
                 {dropdownOpen && (
                   <div className="absolute right-0 mt-2 w-48 bg-white shadow-lg rounded-md">
                     <ul>
-                      <li>
-                        <Link href="/settings" className="block px-4 py-2 text-black hover:bg-blue-300" onClick={closeMenu}>
-                          My Profile
-                        </Link>
-                      </li>
+                      
                       <li>
                         <button onClick={handleLogout} className="block w-full text-left px-4 py-2 text-black hover:bg-blue-300">
                           Logout

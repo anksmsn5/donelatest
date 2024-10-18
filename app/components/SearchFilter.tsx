@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { FaSearch, FaFilter } from "react-icons/fa";
+import { useSession } from "next-auth/react";
 interface SearchFilterProps {
   searchQuery: string;
   setSearchQuery: React.Dispatch<React.SetStateAction<string>>;
@@ -24,6 +25,8 @@ const SearchFilter: React.FC<SearchFilterProps> = ({ searchQuery, setSearchQuery
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [filterOption, setFilterOption] = useState<string>("all");
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const { data: session } = useSession();
+
 
   useOutsideClick(dropdownRef, () => setIsDropdownOpen(false));
 
@@ -41,9 +44,19 @@ const SearchFilter: React.FC<SearchFilterProps> = ({ searchQuery, setSearchQuery
   return (
     <div className="flex flex-col md:flex-row items-center justify-between w-full">
       {/* Sign In Button */}
+
+      {!session && (
       <button className="mb-2 md:mb-0 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
         Sign in to book
       </button>
+       )}
+
+{session && (
+         <button className="mb-2 md:mb-0 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+        Search Your Coach
+       </button>
+      )}
+
 
       {/* Search Input and Button */}
       <div className="flex items-center w-full md:max-w-md rounded-full border border-gray-300 focus-within:ring-2 focus-within:ring-blue-500 mb-2 md:mb-0">

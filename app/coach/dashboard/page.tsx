@@ -11,6 +11,7 @@ import AcceptanceModal from '@/app/components/coach/AcceptanceModal';
 import { useSession, signOut } from 'next-auth/react';
 import EvaluationForm from '@/app/components/coach/EvaluationForm';
 import { FaEye } from 'react-icons/fa';
+import { getSession } from "next-auth/react";
 
 const Dashboard: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -35,7 +36,9 @@ const Dashboard: React.FC = () => {
   const [data, setData] = useState<Evaluation[]>([]);
   const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false);
 
-  const fetchEvaluations = async (status: string, coachId: number) => {
+  const fetchEvaluations = async (status: string) => {
+    const session = await getSession();
+    const coachId = session?.user.id;
     setLoading(true);
     const response = await fetch('/api/coach/evaluations', {
       method: 'POST',
@@ -44,21 +47,22 @@ const Dashboard: React.FC = () => {
       },
       body: JSON.stringify({ status, coachId }),
     });
-
+  
     if (!response.ok) {
       setLoading(false);
       throw new Error('Failed to fetch evaluations');
     }
-
+  
     const evaluationsData = await response.json();
     setEvaluations((prev) => ({
       ...prev,
       [status]: evaluationsData,
     }));
-
+  
     setData(evaluationsData);
     setLoading(false);
   };
+  
 
   const columns = React.useMemo<Column<Evaluation>[]>(
     () => [
@@ -163,15 +167,8 @@ const Dashboard: React.FC = () => {
   };
 
   useEffect(() => {
-    if (session) {
-      const coachId = Number(session.user.id);
-      if (!isNaN(coachId)) {
-        fetchEvaluations(selectedTab, coachId);
-      } else {
-        console.error('Invalid coach ID');
-      }
-    }
-  }, [session, selectedTab]);
+    fetchEvaluations(selectedTab);
+  }, [selectedTab]);
 
   return (
     <>

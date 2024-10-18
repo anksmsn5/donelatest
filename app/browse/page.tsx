@@ -5,6 +5,7 @@ import SearchFilter from '../components/SearchFilter';
 import Head from 'next/head';
 import Loading from '../components/Loading';
 
+
 // Define a type for the profile
 interface Profile {
   id:number;
@@ -67,7 +68,7 @@ const Home = () => {
         {error && <p className="text-red-500">{error}</p>} {/* Error message */}
 
         <div className="mt-4">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {filteredProfiles.map((profile, index) => (
               
               <ProfileCard

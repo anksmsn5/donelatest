@@ -27,6 +27,7 @@ export interface Evaluation {
     finalRemarks:string;
     rating:number;
     
+    
   }
   
   export interface EvaluationsByStatus {

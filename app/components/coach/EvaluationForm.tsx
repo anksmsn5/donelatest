@@ -244,64 +244,64 @@ const EvaluationForm: React.FC<EvaluationFormProps> = ({ evaluationId,
                             </div>
 
                             {/* Player Information and Key Information - Side by Side */}
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-                                {/* Player Information */}
-                                <div className="bg-white p-6 border border-gray-300 rounded-lg">
-                                    <h3 className="text-lg font-semibold mb-4">{evaluationData?.review_title}</h3>
-                                    <div className="flex items-center mb-4">
-                                        <strong className="mr-2">Player:</strong>
-                                        {evaluationData?.image ? (
-                                            <Image
-                                                src={evaluationData.image} // image is guaranteed to be a string here
-                                                alt="Player Avatar"
-                                                width={30}
-                                                height={30}
-                                            />
-                                        ) : (
-                                            <div>No Image Available</div> // Placeholder or alternative content
-                                        )}
-                                        <span className="text-gray-700">{evaluationData?.first_name} {evaluationData?.last_name}</span>
-                                        <span className="ml-2 text-gray-500">{evaluationData?.position}, {evaluationData?.team} #{evaluationData?.number}</span>
-                                    </div>
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
+    {/* Player Information */}
+    <div className="bg-white p-6 border border-gray-300 rounded-lg md:col-span-2">
+        <h3 className="text-lg font-semibold mb-4">{evaluationData?.review_title}</h3>
+        <div className="flex items-center mb-4">
+            <strong className="mr-2">Player:</strong>
+            {evaluationData?.image ? (
+                <Image
+                    src={evaluationData.image}
+                    alt="Player Avatar"
+                    className='w-12 h-12 mr-3 rounded-full object-cover'
+                    width={30}
+                    height={30}
+                />
+            ) : (
+                <div>No Image Available</div>
+            )}
+            <span className="text-gray-700">{evaluationData?.first_name} {evaluationData?.last_name}</span>
+            <span className="ml-2 text-gray-500">{evaluationData?.position}, {evaluationData?.team} #{evaluationData?.number}</span>
+        </div>
 
+        <div className="mb-4">
+            <strong className="mr-2">Cost:</strong> <span>${evaluationData?.expectedCharge}</span>
+        </div>
 
-                                    <div className="mb-4">
-                                        <strong className="mr-2">Cost:</strong> <span>${evaluationData?.expectedCharge}</span>
-                                    </div>
+        <div className="mb-4">
+            <strong className="mr-2">Date Requested:</strong> <span>{formattedDate}</span>
+        </div>
 
-                                    <div className="mb-4">
-                                        <strong className="mr-2">Date Requested:</strong> <span>{formattedDate}</span>
-                                    </div>
+        <div className="mb-4">
+            <strong className="mr-2">Primary link:</strong> <a href={evaluationData?.primary_video_link} className="text-blue-500" target='_blank'>Link to video</a>
+        </div>
+        <div className="mb-4">
+            <strong className="mr-2">Video link Two:</strong> <a href={evaluationData?.video_link_two} className="text-blue-500" target='_blank'>Link to video</a>
+        </div>
+        <div className="mb-4">
+            <strong className="mr-2">Video link Three:</strong> <a href={evaluationData?.video_link_three} className="text-blue-500" target='_blank'>Link to video</a>
+        </div>
 
-                                    <div className="mb-4">
-                                        <strong className="mr-2">Primary link:</strong> <a href={evaluationData?.primary_video_link} className="text-blue-500" target='_blank'>Link to video</a>
-                                    </div>
-                                    <div className="mb-4">
-                                        <strong className="mr-2">Video link Two:</strong> <a href={evaluationData?.video_link_two} className="text-blue-500" target='_blank'>Link to video</a>
-                                    </div>
-                                    <div className="mb-4">
-                                        <strong className="mr-2">Video  link Three :</strong> <a href={evaluationData?.video_link_three
-                                        } className="text-blue-500" target='_blank'>Link to video</a>
-                                    </div>
+        <div className="mb-4">
+            <strong className="mr-2">Video description:</strong>
+            <span className="text-gray-700">{evaluationData?.video_description}</span>
+        </div>
+    </div>
 
-                                    <div className="mb-4">
-                                        <strong className="mr-2">Video description:</strong>
-                                        <span className="text-gray-700">{evaluationData?.video_description}</span>
-                                    </div>
-                                </div>
+    {/* Key Information */}
+    <div className="bg-white p-6 border border-gray-300 rounded-lg md:col-span-1">
+        <h4 className="text-lg font-semibold mb-3">Key</h4>
+        <ul className="list-none space-y-2">
+            <li>[1] Needs significant improvement</li>
+            <li>[2] Needs improvement</li>
+            <li>[3] At competition level</li>
+            <li>[4] Above competition level</li>
+            <li>[5] Exceeds competition level</li>
+        </ul>
+    </div>
+</div>
 
-                                {/* Key Information */}
-                                <div className="bg-white p-6 border border-gray-300 rounded-lg">
-                                    <h4 className="text-lg font-semibold mb-3">Key</h4>
-                                    <ul className="list-none space-y-2">
-                                        <li>[1] Needs significant improvement</li>
-                                        <li>[2] Needs improvement</li>
-                                        <li>[3] At competition level</li>
-                                        <li>[4] Above competition level</li>
-                                        <li>[5] Exceeds competition level</li>
-                                    </ul>
-                                </div>
-                            </div>
                         </div>
                         <div className="p-6">
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">

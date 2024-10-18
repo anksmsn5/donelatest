@@ -1,4 +1,5 @@
 import React from 'react';
+import Swal from 'sweetalert2';
 
 type ModalProps = {
   isOpen: boolean;
@@ -30,7 +31,18 @@ const AcceptanceModal: React.FC<ModalProps> = ({ isOpen, onClose, evaluationId }
             }
         
             const result = await response.json();
-            window.location.href = '/coach/dashboard'; 
+       
+            Swal.fire({
+              title: 'You Have Accepted The Evaluation Request!',
+              text: '',
+              icon: 'success',
+              confirmButtonText: 'OK', // Custom confirm button text
+            }).then(() => {
+              // Delay the redirect by 2 seconds (2000 milliseconds)
+              setTimeout(() => {
+                window.location.href = '/coach/dashboard'; 
+              }, 1000); // Adjust the delay time as needed
+            });
           } catch (error) {
             console.error('Error:', error);
           }
@@ -54,7 +66,7 @@ const AcceptanceModal: React.FC<ModalProps> = ({ isOpen, onClose, evaluationId }
               if (!response.ok) {
                 throw new Error('Failed to accept evaluation');
               }
-          
+              Swal.fire('Your Have Rejected The Evaluation Request!', '', 'error');
               window.location.href = '/coach/dashboard'; 
             } catch (error) {
               console.error('Error:', error);
@@ -67,7 +79,7 @@ const AcceptanceModal: React.FC<ModalProps> = ({ isOpen, onClose, evaluationId }
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
       <div className="bg-white rounded-lg shadow-lg w-11/12 md:w-1/3">
         <div className="bg-blue-600 text-white p-4 ">
-          <h2 className="text-lg font-bold">Please take and action!{evaluationId}</h2>
+          <h2 className="text-lg font-bold">Please take and action!</h2>
         </div>
         <div className="p-6">
           <p className="text-gray-700 mb-6">You can accept and reject the requested evaluation!</p>

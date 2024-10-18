@@ -52,45 +52,42 @@ const EvaluationPage: React.FC<EvaluationPageProps> = ({ searchParams }) => {
             // Handle error, e.g., show an error message
         }
     }
+
+    const fetchEvaluationData = async () => {
+        const session = await getSession();
+        if (session) {
+            setUserType(session.user.type);
+            setPlayerId(Number(session.user.id)); // Assuming 'role' is stored in session
+        }
+        try {
+            const response = await fetch(`/api/evaluationdetails?evaluationId=${evaluationId}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+
+            if (!response.ok) {
+                setLoading(false);
+                throw new Error('Failed to fetch evaluation data');
+            }
+
+            const data = await response.json();
+setEvaluationData(data.result as Evaluation); // Type assertion here
+setPhysicalScores(JSON.parse(data.result.physicalScores));
+setTacticalScores(JSON.parse(data.result.tacticalScores));
+setTechnicalScores(JSON.parse(data.result.technicalScores));
+setLoading(false);
+            // Set the fetched evaluation data
+        } catch (error) {
+            console.error('Error fetching evaluation data:', error);
+            setError('Failed to fetch evaluation data'); // Set error message
+        }
+    };
     useEffect(() => {
 
-        const fetchEvaluationData = async () => {
-            const session = await getSession();
-            if (session) {
-                setUserType(session.user.type);
-                setPlayerId(Number(session.user.id)); // Assuming 'role' is stored in session
-            }
-            try {
-                const response = await fetch(`/api/evaluationdetails?evaluationId=${evaluationId}`, {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                });
-
-                if (!response.ok) {
-                    setLoading(false);
-                    throw new Error('Failed to fetch evaluation data');
-                }
-
-                const data = await response.json();
-    setEvaluationData(data.result as Evaluation); // Type assertion here
-    setPhysicalScores(JSON.parse(data.result.physicalScores));
-    setTacticalScores(JSON.parse(data.result.tacticalScores));
-    setTechnicalScores(JSON.parse(data.result.technicalScores));
-    setLoading(false);
-                // Set the fetched evaluation data
-            } catch (error) {
-                console.error('Error fetching evaluation data:', error);
-                setError('Failed to fetch evaluation data'); // Set error message
-            }
-        };
-
-        if (evaluationId) {
-            fetchEvaluationData();
-
-        }
-    }, [evaluationId, evaluationData]); // Dependency array includes evaluationId
+        fetchEvaluationData();
+    }, []); // Dependency array includes evaluationId
     if (loading) {
         return <Loading />; // Loading indicator
     }
@@ -229,7 +226,7 @@ const EvaluationPage: React.FC<EvaluationPageProps> = ({ searchParams }) => {
                 {/* Final Remarks Section */}
                 <div className="mt-6 text-black p-4 border border-gray-300 rounded-md flex flex-col">
                     <label htmlFor="final-remarks" className="text-sm font-medium">Final Remarks:</label>
-                    {evaluationData?.finalRemarks}
+                    {evaluationData?.finalRemarks}{evaluationData?.rating}
                 </div>
 
                {userType === 'player' && !isRatingSubmitted && evaluationData?.rating === null && (  
