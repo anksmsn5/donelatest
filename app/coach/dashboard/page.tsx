@@ -2,10 +2,9 @@
 import { useState, useEffect } from 'react';
 import { CellProps } from 'react-table';
 import React from 'react';
-
 import '../../globals.css'; // Import CSS module
 import Sidebar from '../../components/coach/Sidebar';
-import { useTable,Column } from 'react-table';
+import { useTable, Column } from 'react-table';
 import { Evaluation, EvaluationsByStatus } from '../../types/types';
 import Modal from '../../components/Modal';
 import AcceptanceModal from '@/app/components/coach/AcceptanceModal';
@@ -21,25 +20,22 @@ const Dashboard: React.FC = () => {
   const [coachId, setCoachId] = useState<number | undefined>(undefined);
   const [playerId, setPlayerId] = useState<number | undefined>(undefined);
   const { data: session, status } = useSession();
-  const [loading, setLoading] = useState<boolean>(true); 
-
+  const [loading, setLoading] = useState<boolean>(true);
 
   const [evaluationData, setEvaluationData] = useState<Evaluation | undefined>(undefined);
-
-
-
   const [modalContent, setModalContent] = useState<JSX.Element | null>(null);
   const [evaluations, setEvaluations] = useState<EvaluationsByStatus>({
     Requested: [],
     Accepted: [],
     Completed: [],
     Declined: [],
-    Drafted:[]
+    Drafted: [],
   });
   const [selectedTab, setSelectedTab] = useState<string>('0');
   const [data, setData] = useState<Evaluation[]>([]);
+  const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false);
 
-  const fetchEvaluations = async (status: string, coachId:number) => {
+  const fetchEvaluations = async (status: string, coachId: number) => {
     setLoading(true);
     const response = await fetch('/api/coach/evaluations', {
       method: 'POST',
@@ -55,7 +51,7 @@ const Dashboard: React.FC = () => {
     }
 
     const evaluationsData = await response.json();
-    setEvaluations(prev => ({
+    setEvaluations((prev) => ({
       ...prev,
       [status]: evaluationsData,
     }));
@@ -63,8 +59,6 @@ const Dashboard: React.FC = () => {
     setData(evaluationsData);
     setLoading(false);
   };
-
-  
 
   const columns = React.useMemo<Column<Evaluation>[]>(
     () => [
@@ -74,28 +68,26 @@ const Dashboard: React.FC = () => {
       },
       {
         Header: 'Player Name',
-        accessor: 'first_name', // Accessing Evaluation's first_name property
+        accessor: 'first_name',
         Cell: ({ row }: CellProps<Evaluation>) => `${row.original.first_name} ${row.original.last_name}`,
       },
-      { 
-        Header: 'Evaluation Title', 
-        accessor: 'review_title' 
-        
+      {
+        Header: 'Evaluation Title',
+        accessor: 'review_title',
       },
       {
         Header: 'Video Link',
-        accessor: 'primary_video_link',  // Accessing Evaluation's primary_video_link property
+        accessor: 'primary_video_link',
         Cell: ({ value }: { value: string }) => (
           <a href={value} target="_blank" rel="noopener noreferrer">
             Watch
           </a>
         ),
       },
-      { 
-        Header: 'Description', 
-        accessor: 'video_description'  // Accessing Evaluation's video_description property
+      {
+        Header: 'Description',
+        accessor: 'video_description',
       },
-     
       {
         Header: 'Action',
         Cell: ({ row }: CellProps<Evaluation>) => {
@@ -104,7 +96,7 @@ const Dashboard: React.FC = () => {
             return (
               <button
                 onClick={() => handleRequestedAction(evaluation)}
-                className="bg-blue-500 text-white px-4 py-2 rounded"
+                className="bg-blue-500 text-white px-4 py-2 rounded text-sm md:text-base"
               >
                 Action
               </button>
@@ -113,24 +105,22 @@ const Dashboard: React.FC = () => {
             return (
               <button
                 onClick={() => handleAcceptedAction(evaluation)}
-                className="bg-green-500 text-white px-4 py-2 rounded"
+                className="bg-green-500 text-white px-4 py-2 rounded text-sm md:text-base"
               >
                 Evaluate
               </button>
             );
-          } 
-          else if (selectedTab === '4') {
+          } else if (selectedTab === '4') {
             return (
               <button
                 onClick={() => handleAcceptedAction(evaluation)}
-                className="bg-green-500 text-white px-4 py-2 rounded"
+                className="bg-green-500 text-white px-4 py-2 rounded text-sm md:text-base"
               >
                 Open Draft
               </button>
             );
-          } 
-          else {
-            return <a  onClick={() => handleEvaluationDetails(evaluation)}><FaEye></FaEye></a>;
+          } else {
+            return <a onClick={() => handleEvaluationDetails(evaluation)}><FaEye /></a>;
           }
         },
       },
@@ -139,27 +129,22 @@ const Dashboard: React.FC = () => {
   );
 
   const handleRequestedAction = (evaluation: Evaluation) => {
-    console.log(evaluation);
     setEvaluationId(evaluation.evaluationId);
     setCoachId(evaluation.coachId);
     setPlayerId(evaluation.playerId);
-
     setIsAcceptOpen(true);
   };
 
-  const handleEvaluationDetails=(evaluation: Evaluation)=>{
-    
+  const handleEvaluationDetails = (evaluation: Evaluation) => {
     window.open(`/evaluationdetails?evaluationId=${evaluation.evaluationId}`, '_blank');
-  }
+  };
 
   const handleAcceptedAction = (evaluation: Evaluation) => {
     setEvaluationId(evaluation.evaluationId);
     setCoachId(evaluation.coachId);
     setPlayerId(evaluation.playerId);
-    console.log(evaluation);
     setEvaluationData(evaluation);
     setIsEvFormOpen(true);
-
   };
 
   const tableInstance = useTable({ columns, data });
@@ -170,56 +155,91 @@ const Dashboard: React.FC = () => {
   };
 
   const closeAcceptanceModal = () => {
-    console.log("Closing Acceptance Modal"); // Debugging log
     setIsAcceptOpen(false);
   };
 
   const closeEvform = () => {
     setIsEvFormOpen(false);
   };
+
   useEffect(() => {
     if (session) {
       const coachId = Number(session.user.id);
       if (!isNaN(coachId)) {
         fetchEvaluations(selectedTab, coachId);
       } else {
-        console.error("Invalid coach ID");
+        console.error('Invalid coach ID');
       }
     }
-  }, [session,selectedTab]);
+  }, [session, selectedTab]);
 
-  useEffect(() => {
-   
-  }, []);
   return (
     <>
       <Modal isOpen={isModalOpen} onClose={closeModal}>
         {modalContent}
       </Modal>
       <AcceptanceModal
-
-evaluationId={evaluationId} // Pass the appropriate evaluation ID if needed
+        evaluationId={evaluationId}
         isOpen={isAcceptOpen}
         onClose={closeAcceptanceModal}
       />
-
-      <EvaluationForm  evaluationId={evaluationId ?? null} evaluationData={evaluationData ?? null} coachId={coachId ?? null} playerId={playerId ?? null} isOpen={isEvFormOpen} onClose={closeEvform} />
-
+      <EvaluationForm
+        evaluationId={evaluationId ?? null}
+        evaluationData={evaluationData ?? null}
+        coachId={coachId ?? null}
+        playerId={playerId ?? null}
+        isOpen={isEvFormOpen}
+        onClose={closeEvform}
+      />
 
       <div className="flex h-screen">
         <Sidebar />
-        <main className="flex-grow bg-gray-100 p-4">
-          <div className="bg-white shadow-md rounded-lg p-6">
-            <div className="flex space-x-4 mb-4">
+        <main className="flex-grow bg-gray-100 p-4 overflow-x-auto">
+          <div className="bg-white shadow-md rounded-lg p-6 ">
+            {/* Dropdown for tabs on small screens */}
+            <div className="block md:hidden mb-4">
+              <button
+                onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                className="bg-gray-200 text-gray-700 px-4 py-2 rounded w-full text-left"
+              >
+                {['Requested', 'Accepted', 'Completed', 'Declined', 'Drafted'][parseInt(selectedTab)]} ▼
+              </button>
+              {isDropdownOpen && (
+                <ul className="bg-white shadow-lg rounded mt-2">
+                  {[
+                    { name: 'Requested', value: '0' },
+                    { name: 'Accepted', value: '1' },
+                    { name: 'Completed', value: '2' },
+                    { name: 'Declined', value: '3' },
+                    { name: 'Drafted', value: '4' },
+                  ].map((tab) => (
+                    <li key={tab.value}>
+                      <button
+                        onClick={() => {
+                          setSelectedTab(tab.value);
+                          setIsDropdownOpen(false);
+                        }}
+                        className="w-full text-left px-4 py-2 hover:bg-gray-100"
+                      >
+                        {tab.name}
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+
+            {/* Regular tabs for larger screens */}
+            <div className="hidden md:flex space-x-4 mb-4">
               {[
                 { name: 'Requested', value: '0' },
                 { name: 'Accepted', value: '1' },
                 { name: 'Completed', value: '2' },
                 { name: 'Declined', value: '3' },
                 { name: 'Drafted', value: '4' },
-              ].map(tab => (
+              ].map((tab) => (
                 <button
-                  key={tab.value} // This is good
+                  key={tab.value}
                   onClick={() => setSelectedTab(tab.value)}
                   className={`p-2 border-b-2 ${selectedTab === tab.value ? 'border-blue-500 font-bold' : 'border-transparent'}`}
                 >
@@ -228,46 +248,44 @@ evaluationId={evaluationId} // Pass the appropriate evaluation ID if needed
               ))}
             </div>
 
-            {/* Table to display evaluations */}
-            <table {...tableInstance.getTableProps()} className="min-w-full bg-white border border-gray-300">
-              <thead>
-                {tableInstance.headerGroups.map(headerGroup => (
-                  <tr {...headerGroup.getHeaderGroupProps()} key={headerGroup.id}> {/* Add key here */}
-                    {headerGroup.headers.map(column => (
-                      <th {...column.getHeaderProps()} key={column.id} className="border-b-2 border-gray-200 bg-gray-100 px-4 py-2 text-left text-gray-600">
-                        {column.render('Header')}
-                      </th>
-                    ))}
-                  </tr>
-                ))}
-              </thead>
-
-
-              <tbody {...tableInstance.getTableBodyProps()}>
-              {loading ? (
-                // Display loader rows when loading
-                <tr>
-                  <td colSpan={columns.length} className="text-center py-4">
-                  Loading...
-                  </td>
-                </tr>
-              ) : (
-  tableInstance.rows.map(row => {
-    tableInstance.prepareRow(row);
-    return (
-      <tr {...row.getRowProps()} key={row.id}> {/* Unique key for row */}
-        {row.cells.map(cell => (
-          <td {...cell.getCellProps()} key={`${row.id}-${cell.column.id}`} className="border-b border-gray-200 px-4 py-2">
-            {cell.render('Cell')}
-          </td>
-        ))}
-      </tr>
-    );
-  })
-)}
-</tbody>
-
-            </table>
+            {/* Responsive Table */}
+            <div className="overflow-x-auto">
+              <table {...tableInstance.getTableProps()} className="min-w-full bg-white border border-gray-300">
+                <thead>
+                  {tableInstance.headerGroups.map((headerGroup) => (
+                    <tr {...headerGroup.getHeaderGroupProps()} key={headerGroup.id}>
+                      {headerGroup.headers.map((column) => (
+                        <th {...column.getHeaderProps()} key={column.id} className="border-b-2 border-gray-200 bg-gray-100 px-4 py-2 text-left text-gray-600">
+                          {column.render('Header')}
+                        </th>
+                      ))}
+                    </tr>
+                  ))}
+                </thead>
+                <tbody {...tableInstance.getTableBodyProps()}>
+                  {loading ? (
+                    <tr>
+                      <td colSpan={columns.length} className="text-center py-4">
+                        Loading...
+                      </td>
+                    </tr>
+                  ) : (
+                    tableInstance.rows.map((row) => {
+                      tableInstance.prepareRow(row);
+                      return (
+                        <tr {...row.getRowProps()} key={row.id}>
+                          {row.cells.map((cell) => (
+                            <td {...cell.getCellProps()} key={`${row.id}-${cell.column.id}`} className="border-b border-gray-200 px-4 py-2">
+                              {cell.render('Cell')}
+                            </td>
+                          ))}
+                        </tr>
+                      );
+                    })
+                  )}
+                </tbody>
+              </table>
+            </div>
           </div>
         </main>
       </div>

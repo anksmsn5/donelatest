@@ -125,135 +125,145 @@ const Header: React.FC = () => {
 
   return (
     <header className="bg-white shadow-md">
-      <div className="max-w-7xl mx-auto flex justify-between items-center p-4">
-        <Link href="/" className="text-black text-2xl font-bold flex-shrink-0" onClick={closeMenu}>
-          <Image src={Logo} className="logo" alt="logo" />
-        </Link>
-        <div className="md:hidden flex items-center">
-          {/* Mobile menu button */}
-          <button
-            onClick={toggleMenu}
-            className="text-gray-500 focus:outline-none focus:text-gray-900"
-          >
-            <svg
-              className="w-6 h-6"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d={menuOpen ? "M6 18L18 6M6 6l12 12" : "M4 6h16M4 12h16m-7 6h7"}
-              ></path>
-            </svg>
-          </button>
-        </div>
-        <nav className={`${menuOpen ? 'block' : 'hidden'} md:flex md:items-center w-full md:w-auto`}>
-          <ul className="flex flex-col md:flex-row md:space-x-4 space-y-4 md:space-y-0 mt-4 md:mt-0">
-            {session ? (
-              <>
-                {session?.user?.type !== 'coach' && isUserImageAvailable && (
-                  <li className="pt-[8px]">
-                    <Link href="/browse" className="text-black hover:text-black-300" onClick={closeMenu}>
-                      Browse Coach
-                    </Link>
-                  </li>
-                )}
-                {session?.user?.type === 'coach' && (
-                  <li className="pt-[8px]">
-                    <Link href="/coach/dashboard" className="text-black hover:text-black-300" onClick={closeMenu}>
-                      Dashboard
-                    </Link>
-                  </li>
-                )}
-                {session?.user?.type !== 'coach' && (
-                  <li className="pt-[8px]">
-                    <Link href="/dashboard" className="text-black hover:text-black-300" onClick={closeMenu}>
-                      Dashboard
-                    </Link>
-                  </li>
-                )}
+  <div className="max-w-7xl mx-auto flex flex-wrap md:flex-nowrap justify-between items-center p-4">
+    
+    {/* Logo section - 25% width on medium and larger screens */}
+    <div className="w-full md:w-1/4 flex justify-between md:justify-start">
+      <Link href="/" className="text-black text-2xl font-bold flex-shrink-0 " onClick={closeMenu}>
+        <Image src={Logo} className="logo ml-16 md:ml-0" alt="logo" />
+      </Link>
 
+      {/* Mobile menu button (visible only on small screens) */}
+      <div className="md:hidden flex items-center">
+        <button
+          onClick={toggleMenu}
+          className="text-gray-500 focus:outline-none focus:text-gray-900"
+        >
+          <svg
+            className="w-6 h-6"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              d={menuOpen ? "M6 18L18 6M6 6l12 12" : "M4 6h16M4 12h16m-7 6h7"}
+            ></path>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    {/* Menu section - 75% width on medium and larger screens */}
+    <div className={`w-full md:w-3/4 ${menuOpen ? 'block' : 'hidden'} md:block `}>
+      <nav className="md:flex md:items-center w-full md:w-auto ml-auto flex-row-reverse">
+        <ul className="flex flex-col md:flex-row md:space-x-4 space-y-4 md:space-y-0 mt-4 md:mt-0">
+          {session ? (
+            <>
+              {session?.user?.type !== 'coach' && isUserImageAvailable && (
                 <li className="pt-[8px]">
-                  <Link href="/dashboard" className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick={closeMenu}>
-                    Hello, {session?.user?.name || "Player"}!
-                  </Link>
-                </li>
-                <li className="relative" ref={dropdownRef}>
-                  <button onClick={toggleDropdown} className="flex items-center">
-                    <Image
-                      src={localStorage.getItem('userImage') || defaultImage}
-                      alt="Profile"
-                      width={40}
-                      height={40}
-                      className="rounded-full"
-                    />
-                  </button>
-                  {dropdownOpen && (
-                    <div className="absolute right-0 mt-2 w-48 bg-white shadow-lg rounded-md">
-                      <ul>
-                        <li>
-                          <Link href="/settings" className="block px-4 py-2 text-black hover:bg-blue-300" onClick={closeMenu}>
-                            My Profile
-                          </Link>
-                        </li>
-                        <li>
-                          <button onClick={handleLogout} className="block w-full text-left px-4 py-2 text-black hover:bg-blue-300">
-                            Logout
-                          </button>
-                        </li>
-                      </ul>
-                    </div>
-                  )}
-                </li>
-              </>
-            ) : (
-              <>
-                <li>
                   <Link href="/browse" className="text-black hover:text-black-300" onClick={closeMenu}>
                     Browse Coach
                   </Link>
                 </li>
-                <li>
-                  <Link href="/coach/signup" className="text-black hover:text-black-300" onClick={closeMenu}>
-                    Coach Sign Up
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/register" className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick={closeMenu}>
-                    Player Sign Up
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/login" className="text-black hover:text-blue-300" onClick={closeMenu}>
-                    Login
-                  </Link>
-                </li>
-              </>
-            )}
-
-            <li className="relative" ref={helpRef}>
-              <button onClick={toggleHelp} className="ml-4">
-                <MdHelpOutline className="text-black w-8 h-8" />
-              </button>
-              {helpOpen && (
-                <div className="absolute right-0 mt-2 w-56 bg-white shadow-lg rounded-md p-4">
-                  <p>For technical difficulties and general site
-                    feedback, Email us at </p>
-                  <a className="font-bold" href='mailto:team@d1notes.com'>team@d1notes.com</a>
-                  <button onClick={toggleHelp} className="text-blue-500 mt-2">
-                    Close
-                  </button>
-                </div>
               )}
-            </li>
-          </ul>
-        </nav>
-      </div>
-    </header>
+              {session?.user?.type === 'coach' && (
+                <li className="pt-[8px]">
+                  <Link href="/coach/dashboard" className="text-black hover:text-black-300" onClick={closeMenu}>
+                    Dashboard
+                  </Link>
+                </li>
+              )}
+              {session?.user?.type !== 'coach' && (
+                <li className="pt-[8px]">
+                  <Link href="/dashboard" className="text-black hover:text-black-300" onClick={closeMenu}>
+                    Dashboard
+                  </Link>
+                </li>
+              )}
+
+              <li className="pt-[8px]">
+                <Link href="/dashboard" className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick={closeMenu}>
+                  Hello, {session?.user?.name || "Player"}!
+                </Link>
+              </li>
+              <li className="relative" ref={dropdownRef}>
+                <button onClick={toggleDropdown} className="flex items-center">
+                  <Image
+                    src={localStorage.getItem('userImage') || defaultImage}
+                    alt="Profile"
+                    width={40}
+                    height={40}
+                    className="rounded-full"
+                  />
+                </button>
+                {dropdownOpen && (
+                  <div className="absolute right-0 mt-2 w-48 bg-white shadow-lg rounded-md">
+                    <ul>
+                      <li>
+                        <Link href="/settings" className="block px-4 py-2 text-black hover:bg-blue-300" onClick={closeMenu}>
+                          My Profile
+                        </Link>
+                      </li>
+                      <li>
+                        <button onClick={handleLogout} className="block w-full text-left px-4 py-2 text-black hover:bg-blue-300">
+                          Logout
+                        </button>
+                      </li>
+                    </ul>
+                  </div>
+                )}
+              </li>
+            </>
+          ) : (
+            <>
+              <li>
+                <Link href="/browse" className="text-black hover:text-black-300" onClick={closeMenu}>
+                  Browse Coach
+                </Link>
+              </li>
+              <li>
+                <Link href="/coach/signup" className="text-black hover:text-black-300" onClick={closeMenu}>
+                  Coach Sign Up
+                </Link>
+              </li>
+              <li>
+                <Link href="/register" className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick={closeMenu}>
+                  Player Sign Up
+                </Link>
+              </li>
+              <li>
+                <Link href="/login" className="text-black hover:text-blue-300" onClick={closeMenu}>
+                  Login
+                </Link>
+              </li>
+            </>
+          )}
+
+          <li className="relative" ref={helpRef}>
+            <button onClick={toggleHelp} className="ml-4">
+              <MdHelpOutline className="text-black w-8 h-8" />
+            </button>
+            {helpOpen && (
+              <div className="absolute right-0 mt-2 w-56 bg-white shadow-lg rounded-md p-4">
+                <p>For technical difficulties and general site
+                  feedback, Email us at </p>
+                <a className="font-bold" href='mailto:team@d1notes.com'>team@d1notes.com</a>
+                <button onClick={toggleHelp} className="text-blue-500 mt-2">
+                  Close
+                </button>
+              </div>
+            )}
+          </li>
+        </ul>
+      </nav>
+    </div>
+  </div>
+</header>
+
   );
 };
 
