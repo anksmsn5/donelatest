@@ -1,11 +1,11 @@
 "use client";
-import React, { useEffect, useState } from 'react';
-import '../globals.css';
-import Sidebar from '../components/Sidebar';
-import { getSession } from 'next-auth/react';
-import { useTable, Column, CellProps } from 'react-table'; // Import Column type
-import { Evaluation, EvaluationsByStatus } from '../types/types'; // Import the correct types
-import { FaEye } from 'react-icons/fa';
+import React, { useEffect, useState } from "react";
+import "../globals.css";
+import Sidebar from "../components/Sidebar";
+import { getSession } from "next-auth/react";
+import { useTable, Column, CellProps } from "react-table"; // Import Column type
+import { Evaluation, EvaluationsByStatus } from "../types/types"; // Import the correct types
+import { FaEye } from "react-icons/fa";
 
 const Dashboard: React.FC = () => {
   const [evaluations, setEvaluations] = useState<EvaluationsByStatus>({
@@ -13,13 +13,13 @@ const Dashboard: React.FC = () => {
     Accepted: [],
     Completed: [],
     Declined: [],
-    Drafted:[],
+    Drafted: [],
   });
 
-  const [selectedTab, setSelectedTab] = useState<string>('0');
+  const [selectedTab, setSelectedTab] = useState<string>("0");
   const [data, setData] = useState<Evaluation[]>([]); // State to hold the data for the table
   const [loading, setLoading] = useState<boolean>(true); // Add loading state
-
+  const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false);
   // Fetch evaluations when the selected tab changes
   const fetchEvaluations = async (status: string) => {
     setLoading(true); // Set loading to true before fetching data
@@ -28,13 +28,13 @@ const Dashboard: React.FC = () => {
     console.log(userId);
 
     if (!userId) {
-      throw new Error('User not authenticated');
+      throw new Error("User not authenticated");
     }
 
-    const response = await fetch('/api/evaluations', {
-      method: 'POST',
+    const response = await fetch("/api/evaluations", {
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
       body: JSON.stringify({
         userId,
@@ -44,7 +44,7 @@ const Dashboard: React.FC = () => {
 
     if (!response.ok) {
       setLoading(false);
-      throw new Error('Failed to fetch evaluations');
+      throw new Error("Failed to fetch evaluations");
     }
 
     const evaluationsData = await response.json();
@@ -66,30 +66,31 @@ const Dashboard: React.FC = () => {
   const columns: Column<Evaluation>[] = React.useMemo(
     () => [
       {
-        Header: 'Sr No',
+        Header: "Sr No",
         Cell: ({ row }) => row.index + 1, // Serial Number starts from 1
       },
       {
-        Header: 'Coach Name',
-        accessor: 'first_name',
-        Cell: ({ row }) => `${row.original.first_name} ${row.original.last_name}`, // Show full name
+        Header: "Coach Name",
+        accessor: "first_name",
+        Cell: ({ row }) =>
+          `${row.original.first_name} ${row.original.last_name}`, // Show full name
       },
-      { Header: 'Evaluation Title', accessor: 'review_title' }, // Use the correct accessor
+      { Header: "Evaluation Title", accessor: "review_title" }, // Use the correct accessor
       {
-        Header: 'Video Link',
-        accessor: 'primary_video_link',
+        Header: "Video Link",
+        accessor: "primary_video_link",
         Cell: ({ value }) => (
           <a href={value} target="_blank" rel="noopener noreferrer">
             Watch
           </a>
         ),
       },
-      { Header: 'Description', accessor: 'video_description' },
-      { Header: 'Payment Status', accessor: 'payment_status' }, 
-      ...(selectedTab === '2' // Check if the current tab is "Completed"
+      { Header: "Description", accessor: "video_description" },
+      { Header: "Payment Status", accessor: "payment_status" },
+      ...(selectedTab === "2" // Check if the current tab is "Completed"
         ? [
             {
-              Header: 'View Evaluation',
+              Header: "View Evaluation",
               Cell: ({ row }: CellProps<Evaluation>) => (
                 <button
                   onClick={() => handleEvaluationDetails(row.original)} // Pass the evaluation object
@@ -104,13 +105,14 @@ const Dashboard: React.FC = () => {
     ],
     [selectedTab]
   );
-  const handleEvaluationDetails=(evaluation: Evaluation)=>{
-    
-    window.open(`/evaluationdetails?evaluationId=${evaluation.evaluationId}`, '_blank');
-  }
+
+  const handleEvaluationDetails = (evaluation: Evaluation) => {
+    window.open(`/evaluationdetails?evaluationId=${evaluation.evaluationId}`, "_blank");
+  };
+
   const handleAction = (evaluation: Evaluation) => {
     // Implement the action logic here
-    console.log('Action for:', evaluation);
+    console.log("Action for:", evaluation);
     // You could navigate to another page, open a modal, etc.
   };
 
@@ -120,83 +122,90 @@ const Dashboard: React.FC = () => {
   return (
     <div className="flex h-screen">
       <Sidebar />
-      <main className="flex-grow bg-gray-100 p-4">
-        <div className="bg-white shadow-md rounded-lg p-6">
-          <div className="flex space-x-4 mb-4">
-            {[
-              { name: 'Requested', value: '0' },
-              { name: 'Accepted', value: '1' },
-              { name: 'Completed', value: '2' },
-              { name: 'Declined', value: '3' },
-            ].map((tab) => (
+      <main className="flex-grow bg-gray-100 p-4 overflow-x-auto">
+        <div className="bg-white shadow-md rounded-lg p-6 ">
+          {/* Dropdown to select tab */}
+          
+          <div className="block md:hidden mb-4">
               <button
-                key={tab.value} // Added key here
-                onClick={() => {
-                  setSelectedTab(tab.value);
-                  fetchEvaluations(tab.value);
-                }}
-                className={`p-2 border-b-2 ${
-                  selectedTab === tab.value
-                    ? 'border-blue-500 font-bold'
-                    : 'border-transparent'
-                }`}
+                onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                className="bg-gray-200 text-gray-700 px-4 py-2 rounded w-full text-left"
               >
-                {tab.name}
+                {['Requested', 'Accepted', 'Completed', 'Declined', 'Drafted'][parseInt(selectedTab)]} ▼
               </button>
-            ))}
-          </div>
+              {isDropdownOpen && (
+                <ul className="bg-white shadow-lg rounded mt-2">
+                  {[
+                    { name: 'Requested', value: '0' },
+                    { name: 'Accepted', value: '1' },
+                    { name: 'Completed', value: '2' },
+                    { name: 'Declined', value: '3' },
+                    
+                  ].map((tab) => (
+                    <li key={tab.value}>
+                      <button
+                        onClick={() => {
+                          setSelectedTab(tab.value);
+                          setIsDropdownOpen(false);
+                        }}
+                        className="w-full text-left px-4 py-2 hover:bg-gray-100"
+                      >
+                        {tab.name}
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
 
           {/* Table to display evaluations */}
-          <table
-            {...tableInstance.getTableProps()}
-            className="min-w-full bg-white border border-gray-300"
-          >
-            <thead>
-              {tableInstance.headerGroups.map((headerGroup) => (
-                <tr
-                  {...headerGroup.getHeaderGroupProps()}
-                  key={headerGroup.id} // Added key here
+          <div className="overflow-x-auto">
+  <table {...tableInstance.getTableProps()} className="min-w-full bg-white border border-gray-300">
+    <thead>
+      {tableInstance.headerGroups.map((headerGroup) => (
+        <tr {...headerGroup.getHeaderGroupProps()} key={headerGroup.id}>
+          {headerGroup.headers.map((column) => (
+            <th
+              {...column.getHeaderProps()}
+              key={column.id}
+              className="border-b-2 border-gray-200 bg-gray-100 px-4 py-2 text-left text-gray-600"
+              style={{ whiteSpace: 'nowrap' }} // Ensure headers don't wrap
+            >
+              {column.render('Header')}
+            </th>
+          ))}
+        </tr>
+      ))}
+    </thead>
+    <tbody {...tableInstance.getTableBodyProps()}>
+      {loading ? (
+        <tr>
+          <td colSpan={columns.length} className="text-center py-4">
+            Loading...
+          </td>
+        </tr>
+      ) : (
+        tableInstance.rows.map((row) => {
+          tableInstance.prepareRow(row);
+          return (
+            <tr {...row.getRowProps()} key={row.id}>
+              {row.cells.map((cell) => (
+                <td
+                  {...cell.getCellProps()}
+                  key={`${row.id}-${cell.column.id}`}
+                  className="border-b border-gray-200 px-4 py-2"
+                  style={{ whiteSpace: 'nowrap' }} // Ensure cells don’t wrap unless necessary
                 >
-                  {headerGroup.headers.map((column) => (
-                    <th
-                      {...column.getHeaderProps()}
-                      className="border-b-2 border-gray-200 bg-gray-100 px-4 py-2"
-                      key={column.id} // Added key here
-                    >
-                      {column.render('Header')}
-                    </th>
-                  ))}
-                </tr>
+                  <div className="truncate w-auto min-w-0">{cell.render('Cell')}</div>
+                </td>
               ))}
-            </thead>
-            <tbody {...tableInstance.getTableBodyProps()}>
-              {loading ? (
-                // Display loader rows when loading
-                <tr>
-                  <td colSpan={columns.length} className="text-center py-4">
-                  Loading...
-                  </td>
-                </tr>
-              ) : (
-                tableInstance.rows.map((row) => {
-                  tableInstance.prepareRow(row);
-                  return (
-                    <tr {...row.getRowProps()} key={row.id}> {/* Added key here */}
-                      {row.cells.map((cell) => (
-                        <td
-                          {...cell.getCellProps()}
-                          className="border-b border-gray-200 px-4 py-2"
-                          key={cell.column.id} // Added key here
-                        >
-                          {cell.render('Cell')}
-                        </td>
-                      ))}
-                    </tr>
-                  );
-                })
-              )}
-            </tbody>
-          </table>
+            </tr>
+          );
+        })
+      )}
+    </tbody>
+  </table>
+</div>
         </div>
       </main>
     </div>

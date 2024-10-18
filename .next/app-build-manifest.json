@@ -1,9 +1,10 @@
 {
   "pages": {
-    "/page": [
+    "/coach/dashboard/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/page.js"
+      "static/css/app/coach/dashboard/page.css",
+      "static/chunks/app/coach/dashboard/page.js"
     ],
     "/layout": [
       "static/chunks/webpack.js",
@@ -17,11 +18,26 @@
       "static/css/app/login/page.css",
       "static/chunks/app/login/page.js"
     ],
-    "/coach/dashboard/page": [
+    "/dashboard/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/css/app/coach/dashboard/page.css",
-      "static/chunks/app/coach/dashboard/page.js"
+      "static/css/app/dashboard/page.css",
+      "static/chunks/app/dashboard/page.js"
+    ],
+    "/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/page.js"
+    ],
+    "/evaluations/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/evaluations/page.js"
+    ],
+    "/evaluationdetails/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/evaluationdetails/page.js"
     ]
   }
 }

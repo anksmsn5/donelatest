@@ -250,42 +250,52 @@ const Dashboard: React.FC = () => {
 
             {/* Responsive Table */}
             <div className="overflow-x-auto">
-              <table {...tableInstance.getTableProps()} className="min-w-full bg-white border border-gray-300">
-                <thead>
-                  {tableInstance.headerGroups.map((headerGroup) => (
-                    <tr {...headerGroup.getHeaderGroupProps()} key={headerGroup.id}>
-                      {headerGroup.headers.map((column) => (
-                        <th {...column.getHeaderProps()} key={column.id} className="border-b-2 border-gray-200 bg-gray-100 px-4 py-2 text-left text-gray-600">
-                          {column.render('Header')}
-                        </th>
-                      ))}
-                    </tr>
-                  ))}
-                </thead>
-                <tbody {...tableInstance.getTableBodyProps()}>
-                  {loading ? (
-                    <tr>
-                      <td colSpan={columns.length} className="text-center py-4">
-                        Loading...
-                      </td>
-                    </tr>
-                  ) : (
-                    tableInstance.rows.map((row) => {
-                      tableInstance.prepareRow(row);
-                      return (
-                        <tr {...row.getRowProps()} key={row.id}>
-                          {row.cells.map((cell) => (
-                            <td {...cell.getCellProps()} key={`${row.id}-${cell.column.id}`} className="border-b border-gray-200 px-4 py-2">
-                              {cell.render('Cell')}
-                            </td>
-                          ))}
-                        </tr>
-                      );
-                    })
-                  )}
-                </tbody>
-              </table>
-            </div>
+  <table {...tableInstance.getTableProps()} className="min-w-full bg-white border border-gray-300">
+    <thead>
+      {tableInstance.headerGroups.map((headerGroup) => (
+        <tr {...headerGroup.getHeaderGroupProps()} key={headerGroup.id}>
+          {headerGroup.headers.map((column) => (
+            <th
+              {...column.getHeaderProps()}
+              key={column.id}
+              className="border-b-2 border-gray-200 bg-gray-100 px-4 py-2 text-left text-gray-600"
+              style={{ whiteSpace: 'nowrap' }} // Ensure headers don't wrap
+            >
+              {column.render('Header')}
+            </th>
+          ))}
+        </tr>
+      ))}
+    </thead>
+    <tbody {...tableInstance.getTableBodyProps()}>
+      {loading ? (
+        <tr>
+          <td colSpan={columns.length} className="text-center py-4">
+            Loading...
+          </td>
+        </tr>
+      ) : (
+        tableInstance.rows.map((row) => {
+          tableInstance.prepareRow(row);
+          return (
+            <tr {...row.getRowProps()} key={row.id}>
+              {row.cells.map((cell) => (
+                <td
+                  {...cell.getCellProps()}
+                  key={`${row.id}-${cell.column.id}`}
+                  className="border-b border-gray-200 px-4 py-2"
+                  style={{ whiteSpace: 'nowrap' }} // Ensure cells don’t wrap unless necessary
+                >
+                  <div className="truncate w-auto min-w-0">{cell.render('Cell')}</div>
+                </td>
+              ))}
+            </tr>
+          );
+        })
+      )}
+    </tbody>
+  </table>
+</div>
           </div>
         </main>
       </div>
