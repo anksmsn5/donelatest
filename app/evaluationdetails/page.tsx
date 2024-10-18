@@ -176,14 +176,14 @@ const EvaluationPage: React.FC<EvaluationPageProps> = ({ searchParams }) => {
                         <h1 className='text-xl mb-4'>Technical </h1>
                         {technicalScores ? (
                             <ul className="list-disc ml-5">
-                                {Object.entries(physicalScores).map(([key, value]) => (
+                                {Object.entries(technicalScores).map(([key, value]) => (
                                     <li key={key}>
                                         {key}: {value}
                                     </li>
                                 ))}
                             </ul>
                         ) : (
-                            <p>No physical scores available.</p>
+                            <p>No Technical scores available.</p>
                         )}
                         <label htmlFor={`remarks-tech`} className="mt-4 text-sm font-medium">Remarks:</label>
                         {evaluationData?.technicalRemarks}
@@ -194,14 +194,14 @@ const EvaluationPage: React.FC<EvaluationPageProps> = ({ searchParams }) => {
                         <h2 className='text-xl mb-4'>Tactical</h2>
                         {tacticalScores ? (
                             <ul className="list-disc ml-5">
-                                {Object.entries(physicalScores).map(([key, value]) => (
+                                {Object.entries(tacticalScores).map(([key, value]) => (
                                     <li key={key}>
                                         {key}: {value}
                                     </li>
                                 ))}
                             </ul>
                         ) : (
-                            <p>No physical scores available.</p>
+                            <p>No Tactical scores available.</p>
                         )}
                         <label htmlFor={`remarks-tact`} className="mt-4 text-sm font-medium">Remarks:</label>
                         {evaluationData?.tacticalRemarks}
