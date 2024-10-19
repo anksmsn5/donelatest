@@ -213,7 +213,27 @@ const Header: React.FC = () => {
                 {dropdownOpen && (
                   <div className="absolute right-0 mt-2 w-48 bg-white shadow-lg rounded-md">
                     <ul>
-                      
+                    {session?.user?.type === 'coach' && (
+               
+                <li className="pt-[8px]">
+                  <Link href="/coach/profile" className="block w-full text-left px-4 py-2 text-black hover:bg-blue-300" onClick={closeMenu}>
+                    Profile
+                  </Link>
+                </li>
+                    
+                 
+              )}
+                 {session?.user?.type === 'player' && (
+               
+               <li className="pt-[8px]">
+                 <Link href="/profile" className="block w-full text-left px-4 py-2 text-black hover:bg-blue-300" onClick={closeMenu}>
+                   Profile
+                 </Link>
+               </li>
+                   
+                
+             )}
+
                       <li>
                         <button onClick={handleLogout} className="block w-full text-left px-4 py-2 text-black hover:bg-blue-300">
                           Logout
