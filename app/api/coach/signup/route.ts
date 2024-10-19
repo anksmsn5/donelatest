@@ -91,6 +91,7 @@ export async function GET(req: NextRequest) {
     const coachlist = await db
       .select({
         firstName: coaches.firstName,
+        lastName: coaches.lastName,
         image: coaches.image,
         clubName:coaches.clubName,
         slug:coaches.slug,
@@ -100,6 +101,7 @@ export async function GET(req: NextRequest) {
       .execute();
       const formattedCoachList = coachlist.map(coach => ({
         firstName: coach.firstName,
+        lastName: coach.lastName,
         clubName:coach.clubName,
         slug:coach.slug,
         rating:coach.rating,

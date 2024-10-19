@@ -35,7 +35,7 @@ const Header: React.FC = () => {
   
       window.location.href = '/login';
     } catch (error) {
-      console.error('Error during sign-out:', error);
+      
     }
   };
 
@@ -106,7 +106,7 @@ const Header: React.FC = () => {
         setIsUserImageAvailable(true);
       }
     } catch (error) {
-      console.error('Failed to fetch user image:', error);
+      
     }
   };
 

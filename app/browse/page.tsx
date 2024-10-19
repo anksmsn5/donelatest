@@ -10,6 +10,7 @@ import Loading from '../components/Loading';
 interface Profile {
   id:number;
   firstName: string;
+  lastName: string;
   organization: string;
   image: string | null;
   rating: number;
@@ -32,7 +33,7 @@ const Home = () => {
           throw new Error('Failed to fetch profiles');
         }
         const data = await response.json();
-        console.log(data);
+        
         setProfiles(data); // Assuming the data is an array of profiles
       } catch (err) {
         setError("Some issue occurred.");
@@ -45,9 +46,10 @@ const Home = () => {
   }, []);
 
   // Filter profiles based on the search query
-  const filteredProfiles = profiles.filter((profile) =>
-    profile.firstName.includes(searchQuery.toLowerCase()) // Check against name
-  );
+  const filteredProfiles = profiles.filter((profile) => {
+    const fullName = `${profile.firstName} ${profile.lastName}`.toLowerCase(); // Combine first and last names
+    return fullName.includes(searchQuery.toLowerCase()); // Search in the full name
+  });
   if (loading) {
     return <Loading/>; // Loading indicator
   }
@@ -68,20 +70,21 @@ const Home = () => {
         {error && <p className="text-red-500">{error}</p>} {/* Error message */}
 
         <div className="mt-4">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            {filteredProfiles.map((profile, index) => (
-              
-              <ProfileCard
-                key={profile.id}
-                name={profile.firstName} // Change from firstName to name
-                organization={profile.clubName} // Ensure this matches your Profile interface
-                image={profile.image ?? '/default-image.jpg'}
-                rating={profile.rating}
-                slug={profile.slug} // Ensure slug is also part of Profile interface
-              />
-            ))}
-          </div>
-        </div>
+  <div className="grid grid-cols-1 sm:grid-cols-1 lg:grid-cols-4 gap-2">
+    {filteredProfiles.map((profile, index) => (
+      <div className="w-full lg:w-auto" key={profile.id}> {/* Full width on mobile */}
+        <ProfileCard
+          key={profile.id}
+          name={profile.firstName} // Change from firstName to name
+          organization={profile.clubName} // Ensure this matches your Profile interface
+          image={profile.image ?? '/default-image.jpg'}
+          rating={profile.rating}
+          slug={profile.slug} // Ensure slug is also part of Profile interface
+        />
+      </div>
+    ))}
+  </div>
+</div>
       </div>
     </>
   );
