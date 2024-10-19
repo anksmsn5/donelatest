@@ -13,10 +13,10 @@ export default function Footer() {
 
           {/* Navigation Links */}
           <nav className="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-8">
-            <a href="#" className="hover:text-blue-400">Home</a>
-            <a href="#" className="hover:text-blue-400">About</a>
-            <a href="#" className="hover:text-blue-400">Coaches</a>
-            <a href="#" className="hover:text-blue-400">Contact</a>
+            <a href="/" className="hover:text-blue-400">Home</a>
+            <a href="/about" className="hover:text-blue-400">About</a>
+            <a href="/browse" className="hover:text-blue-400">Coaches</a>
+            <a href="/contact" className="hover:text-blue-400">Contact</a>
           </nav>
 
           {/* Social Media Icons */}

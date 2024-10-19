@@ -1,14 +1,24 @@
 import React, { useState } from 'react';
 import { FaPen, FaClipboardList, FaCog, FaSignOutAlt, FaBars } from 'react-icons/fa';
 import { MdDashboard } from 'react-icons/md';
+import { useSession, signOut } from 'next-auth/react';
 
 const Sidebar: React.FC = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-
+  const [isEvaluationListOpen, setIsEvaluationListOpen] = useState(false);
+  
+ 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
-
+  const toggleEvaluationList = () => {
+    setIsEvaluationListOpen((prev) => !prev);
+  };
+  const handleLogout = async () => {
+    await signOut(); // Sign out using NextAuth.js
+    localStorage.setItem('userImage', '')
+    window.location.href = '/login';
+  };
   return (
     <div>
       {/* Mobile Menu Toggle Button */}
@@ -28,15 +38,60 @@ const Sidebar: React.FC = () => {
         <nav className="flex-grow mt-10">
           <ul className="space-y-2 p-4">
             <li className="hover:bg-gray-700 rounded transition duration-200">
-              <a href="#tab1" className="flex items-center space-x-2 p-2">
+              <a href="/coach/dashboard" className="flex items-center space-x-2 p-2">
                 <MdDashboard className="text-xl" />
                 <span>Dashboard</span>
               </a>
             </li>
             <li className="hover:bg-gray-700 rounded transition duration-200">
-              <a href="#tab1" className="flex items-center space-x-2 p-2">
-                <FaPen className="text-xl" />
-                <span>Evaluation</span>
+            <a 
+              href="#tab1" 
+              className="flex items-center space-x-2 p-2" 
+              onClick={toggleEvaluationList}
+            >
+              <FaClipboardList className="text-xl" />
+              <span>Evaluation List</span>
+            </a>
+            {isEvaluationListOpen && (
+              <ul className="ml-4 mt-1 space-y-1">
+                <li className="hover:bg-gray-600 rounded transition duration-200">
+                  <a href="/coach/evaluations" className="flex items-center space-x-2 p-2">
+                    <span>All</span>
+                  </a>
+                </li>
+                <li className="hover:bg-gray-600 rounded transition duration-200">
+                  <a href="/coach/evaluations?status=0" className="flex items-center space-x-2 p-2">
+                    <span>Requested</span>
+                  </a>
+                </li>
+                <li className="hover:bg-gray-600 rounded transition duration-200">
+                  <a href="/coach/evaluations?status=1" className="flex items-center space-x-2 p-2">
+                    <span>Accepted</span>
+                  </a>
+                </li>
+                <li className="hover:bg-gray-600 rounded transition duration-200">
+                  <a href="/coach/evaluations?status=4" className="flex items-center space-x-2 p-2">
+                    <span>Drafted</span>
+                  </a>
+                </li>
+                <li className="hover:bg-gray-600 rounded transition duration-200">
+                  <a href="/coach/evaluations?status=2" className="flex items-center space-x-2 p-2">
+                    <span>Completed</span>
+                  </a>
+                </li>
+                <li className="hover:bg-gray-600 rounded transition duration-200">
+                  <a href="/coach/evaluations?status=3" className="flex items-center space-x-2 p-2">
+                    <span>Rejected</span>
+                  </a>
+                </li>
+              </ul>
+            )}
+          </li>
+
+            <li className="hover:bg-gray-700 rounded transition duration-200">
+              <a href="evaluations" className="flex items-center space-x-2 p-2">
+                <FaSignOutAlt className="text-xl" />
+                <span>Sign Out</span>
               </a>
             </li>
             {/* Add more sidebar items here */}

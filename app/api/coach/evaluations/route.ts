@@ -73,19 +73,19 @@ export async function PUT(req: NextRequest) {
 export async function GET(req: NextRequest) {
   try {
     const url = req.nextUrl;
-    const playerId = Number(url.searchParams.get('playerId'));
+    const coachId = Number(url.searchParams.get('coachId'));
     const status = url.searchParams.get('status');
     const search = url.searchParams.get('search') || '';
     const page = Number(url.searchParams.get('page')) || 1;
     const limit = Number(url.searchParams.get('limit')) || 10;
     const sort = url.searchParams.get('sort') || '';
 
-    if (isNaN(playerId)) {
+    if (isNaN(coachId)) {
       return NextResponse.json({ error: 'Invalid query parameters' }, { status: 400 });
     }
 
     // Define an initial condition with the playerId
-    const conditions = [eq(playerEvaluation.player_id, playerId)];
+    const conditions = [eq(playerEvaluation.coach_id, coachId)];
 
     // Conditionally add status filter
     if (status) {
@@ -103,15 +103,20 @@ export async function GET(req: NextRequest) {
     // Execute the query with the combined condition
     let query = db
       .select({
-        firstName: coaches.firstName,
-        lastName: coaches.lastName,
+        firstName: users.first_name,
+        lastName: users.last_name,
         evaluationId: playerEvaluation.id, // Select specific columns
-        reviewTitle: playerEvaluation.review_title,
+        review_title: playerEvaluation.review_title,
+        primary_video_link: playerEvaluation.primary_video_link,
         evaluationStatus: playerEvaluation.status,
         createdAt: playerEvaluation.created_at,
+        video_link_two: playerEvaluation.video_link_two,
+        video_link_three: playerEvaluation.video_link_three,
+        status: playerEvaluation.status,
+        video_description: playerEvaluation.video_description,
       })
       .from(playerEvaluation)
-      .innerJoin(coaches, eq(playerEvaluation.coach_id, coaches.id))
+      .innerJoin(users, eq(playerEvaluation.player_id, users.id))
       .where(queryCondition)
       .limit(limit);
 
@@ -123,7 +128,7 @@ export async function GET(req: NextRequest) {
       filteredData = filteredData.filter(item =>
         (item.firstName?.toLowerCase() ?? '').includes(search.toLowerCase()) ||
         (item.lastName?.toLowerCase() ?? '').includes(search.toLowerCase()) ||
-        (item.reviewTitle?.toLowerCase() ?? '').includes(search.toLowerCase())
+        (item.review_title?.toLowerCase() ?? '').includes(search.toLowerCase())
       );
     }
 
