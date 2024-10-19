@@ -90,12 +90,7 @@ const Sidebar: React.FC = () => {
               <span>Payment History</span>
             </a>
           </li>
-          <li className="hover:bg-gray-700 rounded transition duration-200">
-            <a href="#tab4" className="flex items-center space-x-2 p-2">
-              <FaCog className="text-xl" />
-              <span>Settings</span>
-            </a>
-          </li>
+          
           <li className="hover:bg-gray-700 rounded transition duration-200">
             <a  onClick={handleLogout} className="flex items-center space-x-2 p-2">
               <FaSignOutAlt className="text-xl" />
