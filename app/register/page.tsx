@@ -5,6 +5,7 @@ import Brand from '../public/images/brand.jpg';
 import Image from 'next/image';
 import { showError, showSuccess } from '../components/Toastr';
 import { z } from 'zod';
+import { FaCheck, FaSpinner } from 'react-icons/fa';
 
 // Zod schema for validation
 const formSchema = z.object({
@@ -107,13 +108,24 @@ export default function Register() {
                   onChange={handleChange}
                 />
               </div>
+              <div className="col-span-1 sm:col-span-2 lg:col-span-3 flex justify-center">
               <button
-                type="submit"
-                className="w-full bg-blue-500 text-white font-semibold py-2 rounded-lg hover:bg-blue-600 transition duration-200"
-                disabled={loading}
-              >
-                {loading ? 'Signing Up...' : 'Sign Up'}
-              </button>
+    type="submit"
+    className="flex items-center bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-lg"
+    disabled={loading}
+  >
+    {loading ? (
+      <>
+        <FaSpinner className="animate-spin mr-2" /> Registering...
+      </>
+    ) : (
+      <>
+        <FaCheck className="mr-2" /> Sign Up
+      </>
+    )}
+  </button>
+  </div>
+             
             </form>
             <p className="text-center text-gray-600 text-sm mt-4">
               Already have an account?{' '}

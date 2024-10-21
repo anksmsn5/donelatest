@@ -109,7 +109,7 @@ export async function GET(req: NextRequest) {
         review_title: playerEvaluation.review_title,
         primary_video_link: playerEvaluation.primary_video_link,
         evaluationStatus: playerEvaluation.status,
-        createdAt: playerEvaluation.created_at,
+        created_at: playerEvaluation.created_at,
         video_link_two: playerEvaluation.video_link_two,
         video_link_three: playerEvaluation.video_link_three,
         status: playerEvaluation.status,

@@ -6,6 +6,7 @@ import DefaultPic from "../../public/default.jpg";
 import Brand from '../../public/images/brand.jpg';
 import CertificateImage from '../../public/certificate.png'
 import Image from 'next/image';
+import { FaCheck, FaSpinner } from 'react-icons/fa';
 
 interface FormValues {
   firstName: string;
@@ -240,7 +241,8 @@ export default function Register() {
 
   return (
     <>
-      <div className="flex flex-col md:flex-row">
+     <div className="container mx-auto p-4">
+      <div className="flex flex-col justify-center bg-white p-4 w-full">
         <div className="flex-1 bg-white p-1 md:p-8">
           <div className="bg-white rounded-lg p-4  mx-auto">
             <h2 className="text-2xl font-bold mb-6 text-left">Coach Sign Up</h2>
@@ -274,8 +276,8 @@ export default function Register() {
                 </div>
               </div>
 
-              <div className="flex mb-4 space-x-4">
-                <div className="flex-1">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 pb-5">
+                <div>
                   <label htmlFor="firstName" className="block text-gray-700 text-sm font-semibold mb-2">First Name</label>
                   <input
                     type="text"
@@ -287,7 +289,7 @@ export default function Register() {
                   {formErrors.firstName && <p className="text-red-600 text-sm">{formErrors.firstName}</p>}
                 </div>
 
-                <div className="flex-1">
+                <div>
                   <label htmlFor="lastName" className="block text-gray-700 text-sm font-semibold mb-2">Last Name</label>
                   <input
                     type="text"
@@ -298,13 +300,7 @@ export default function Register() {
                   />
                   {formErrors.lastName && <p className="text-red-600 text-sm">{formErrors.lastName}</p>}
                 </div>
-              </div>
-              {/* Other form fields with similar error handling as shown above */}
-              {/* First Name */}
-              
-              {/* Email */}
-              <div className="flex mb-4 space-x-4">
-              <div className="flex-1">
+                <div>
                 <label htmlFor="email" className="block text-gray-700 text-sm font-semibold mb-2">Email</label>
                 <input
                   type="email"
@@ -315,9 +311,7 @@ export default function Register() {
                 />
                 {formErrors.email && <p className="text-red-600 text-sm">{formErrors.email}</p>}
               </div>
-
-              {/* Phone Number */}
-              <div className="flex-1">
+              <div>
                 <label htmlFor="phoneNumber" className="block text-gray-700 text-sm font-semibold mb-2">Phone Number</label>
                 <input
                   type="tel"
@@ -328,11 +322,12 @@ export default function Register() {
                 />
                 {formErrors.phoneNumber && <p className="text-red-600 text-sm">{formErrors.phoneNumber}</p>}
               </div>
-             </div>
-             <div className="flex mb-4 space-x-4">
+              </div>
+              
+             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 pb-5">
 
               {/* Gender */}
-              <div className="flex-1">
+              <div>
                 <label htmlFor="gender" className="block text-gray-700 text-sm font-semibold mb-2">Gender</label>
                 <select
                   name="gender"
@@ -349,7 +344,7 @@ export default function Register() {
               </div>
 
               {/* Location */}
-              <div className="flex-1">
+              <div>
                 <label htmlFor="location" className="block text-gray-700 text-sm font-semibold mb-2">Location</label>
                 <input
                   type="text"
@@ -360,10 +355,8 @@ export default function Register() {
                 />
                 {formErrors.location && <p className="text-red-600 text-sm">{formErrors.location}</p>}
               </div>
-              </div>
-              <div className="flex mb-4 space-x-4">
-              <div className="flex-1">
-                <label htmlFor="sport" className="block text-gray-700 text-sm font-semibold mb-2">What Sport Do you Coach?</label>
+              <div>
+                <label htmlFor="sport" className="block text-gray-700 text-sm font-semibold mb-2">Sport you coach</label>
                 <select
                   name="sport"
                   className="border border-gray-300 rounded-lg py-2 px-4 w-full"
@@ -377,10 +370,8 @@ export default function Register() {
                 </select>
                 {formErrors.sport && <p className="text-red-600 text-sm">{formErrors.sport}</p>}
               </div>
-
-              {/* Club/Company Name */}
-              <div className="flex-1">
-                <label htmlFor="clubName" className="block text-gray-700 text-sm font-semibold mb-2">Name of the Club or Company</label>
+              <div>
+                <label htmlFor="clubName" className="block text-gray-700 text-sm font-semibold mb-2">Club/Company name</label>
                 <input
                   type="text"
                   name="clubName"
@@ -390,11 +381,13 @@ export default function Register() {
                 />
                 {formErrors.clubName && <p className="text-red-600 text-sm">{formErrors.clubName}</p>}
               </div>
-</div>
+              </div>
+             
               {/* Qualifications */}
               <div className="mb-4">
                 <label htmlFor="qualifications" className="block text-gray-700 text-sm font-semibold mb-2">Qualifications</label>
                 <textarea
+                placeholder='Specify your qualification(s)'
                   name="qualifications"
                   className="border border-gray-300 rounded-lg py-2 px-4 w-full"
                   value={formValues.qualifications}
@@ -435,11 +428,11 @@ export default function Register() {
 coaching certifications, relevant past and current experience, team(s) and/ or coaching accolades, 
 relevant soccer affiliations, personal soccer links (eg, training business, current club), etc.</label>
                 <div className="relative items-center cursor-pointer" onClick={handleCertificateClick}>
-                  <div className="w-24 h-24   overflow-hidden border-2 border-gray-300 m-auto">
+                  <div className="w-44 h-24   overflow-hidden border-2 border-gray-300 m-auto">
                     <Image  
                       src={formValues.certificate ? formValues.certificate : CertificateImage} 
                       alt="Certificate "
-                      width={200}
+                      width={400}
                       height={200}
                       className="object-cover w-full h-full"
                     />
@@ -455,24 +448,30 @@ relevant soccer affiliations, personal soccer links (eg, training business, curr
                 </div>
               </div>
               {/* Submit Button */}
-              <div className="mt-6">
-                <button
-                  type="submit"
-                  className="bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 w-full"
-                  disabled={loading}
-                >
-                  {loading ? 'Submitting...' : 'Register'}
-                </button>
-              </div>
+              <div className="col-span-1 sm:col-span-2 lg:col-span-3 flex justify-center">
+  <button
+    type="submit"
+    className="flex items-center bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-lg"
+    disabled={loading}
+  >
+    {loading ? (
+      <>
+        <FaSpinner className="animate-spin mr-2" /> Registering...
+      </>
+    ) : (
+      <>
+        <FaCheck className="mr-2" /> Submit
+      </>
+    )}
+  </button>
+</div>
             </form>
           </div>
         </div>
         
 
-        {/* Brand Image Section */}
-        <div className="hidden md:block flex-1 bg-gray-100 relative">
-          <Image src={Brand} alt="Brand Image" layout="fill" />
-        </div>
+        
+      </div>
       </div>
     </>
   );

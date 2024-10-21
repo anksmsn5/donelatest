@@ -42,6 +42,7 @@ export async function POST(req: NextRequest) {
       country:null,
       state:null,
       city:null,
+      jersey:null,
       password: hashedPassword, // Store the hashed password
       createdAt: new Date(), // Store the current timestamp as createdAt
     }).returning();
@@ -78,6 +79,7 @@ export async function PUT(req: NextRequest) {
   const city = formData.get('city') as string;
   const bio = formData.get('bio') as string;
   const jersey = formData.get('jersey') as string;
+  const league = formData.get('league') as string;
  
 
   const imageFile = formData.get('image') as string | null;
@@ -101,6 +103,7 @@ export async function PUT(req: NextRequest) {
       city:city || null,
       bio:bio || null,
       jersey:jersey||null,
+      league:league||null,
       image:imageFile
 
     })

@@ -22,7 +22,7 @@ const ProfileCard: React.FC<ProfileCardProps> = ({ name, organization, image, ra
     <>
     <div
   onClick={() => handleRedirect(slug)}
-  className="w-full min-w-[250px] bg-white rounded-lg shadow-md p-4 flex-shrink-0"
+  className="flex-none w-64 h-80 bg-white rounded-lg shadow-md overflow-hidden snap-center"
   key={slug}>
   <Image
     src={image}

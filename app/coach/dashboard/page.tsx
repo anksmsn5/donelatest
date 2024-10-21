@@ -67,8 +67,14 @@ const Dashboard: React.FC = () => {
   const columns = React.useMemo<Column<Evaluation>[]>(
     () => [
       {
-        Header: 'Sr No.',
-        Cell: ({ row }: CellProps<Evaluation>) => row.index + 1,
+        Header: 'Date',
+    accessor: 'created_at',
+    Cell: ({ value }: CellProps<Evaluation>) => {
+      // Format the date to 'dd-mm-yyyy'
+      const date = new Date(value);
+      return date.toLocaleDateString('en-GB'); // This formats the date to 'dd/mm/yyyy'
+    },
+        
       },
       {
         Header: 'Player Name',

@@ -47,7 +47,7 @@ const SearchFilter: React.FC<SearchFilterProps> = ({ searchQuery, setSearchQuery
 
       {!session && (
       <button className="mb-2 md:mb-0 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-        Sign in to book
+        Book
       </button>
        )}
 

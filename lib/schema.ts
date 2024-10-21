@@ -35,6 +35,7 @@ export const users = pgTable(
     country:varchar("country"),
     state:varchar("state"),
     city:varchar("city"),
+    league:text("league"),
     password: text("password").notNull(),
     createdAt: timestamp("createdAt").defaultNow().notNull(),
   },
@@ -62,6 +63,7 @@ export const coaches = pgTable(
     expectedCharge: decimal("expectedCharge", { precision: 10, scale: 2 }), // Decimal type with precision and scale
     image: text("image"),
     slug: text("slug"),
+   
     rating: integer("rating").default(0),
     password: text("password").notNull(),
     certificate:text("certificate"),

@@ -6,7 +6,9 @@ import Brand from "../public/images/brand.jpg";
 import Image from "next/image";
 import DefaultPic from "../public/default.jpg";
 import { useSession } from "next-auth/react";
+
 import Select from "react-select";
+import { FaCheck, FaSpinner } from "react-icons/fa";
 interface FormValues {
   first_name: string;
   last_name: string;
@@ -23,6 +25,7 @@ interface FormValues {
   state:string;
   city:string;
   jersey:string;
+  league:string;
   image: string | null; // Updated to store Base64 string
 }
 
@@ -43,6 +46,7 @@ export default function Register() {
     state:"",
     city:"",
     jersey:"",
+    league:"",
     image: null,
   });
 
@@ -143,17 +147,18 @@ export default function Register() {
     if (!formValues.team.trim()) newErrors.team = "Team is required.";
     if (!formValues.position.trim()) newErrors.position = "Position is required.";
     if (!formValues.number.trim()) newErrors.number = "Number is required.";
-    if (formValues.number.length < 10) newErrors.number = 'Phone Number Must be of 10 Digits Minimum';
-    if (!/^\d+$/.test(formValues.number)) {
-      newErrors.number = 'Phone Number must contain only numeric characters';
+    if (formValues.number.length < 14) newErrors.number = 'Phone Number Must be of 14 Digits Minimum';
+    if (!/^\(\d{3}\) \d{3}-\d{4}$/.test(formValues.number)) {
+      newErrors.number = 'Phone Number must be in the format (XXX) XXX-XXXX';
     }
-    if (formValues.number.length > 10) newErrors.number = 'Phone Number Must be of 10 Digits Maximum';
+    if (formValues.number.length > 14) newErrors.number = 'Phone Number Must be of 14 Digits Maximum';
     
 
     if (!formValues.bio.trim()) newErrors.bio = "Bio is required.";
     if (!formValues.country.trim()) newErrors.country = "Country is required.";
     if (!formValues.state.trim()) newErrors.state = "State is required.";
     if (!formValues.city.trim()) newErrors.city = "city is required.";
+    if (!formValues.league.trim()) newErrors.league = "city is required.";
 
     // Set validation errors if any
     if (Object.keys(newErrors).length > 0) {
@@ -192,6 +197,7 @@ export default function Register() {
       }
 
       const data = await response.json();
+     
       localStorage.setItem("userImage", data.image);
       window.location.href = "/dashboard"; // Redirect after successful registration
     } catch (err) {
@@ -220,7 +226,25 @@ export default function Register() {
       }
     }
   };
+  const formatPhoneNumber = (value: string) => {
+    if (!value) return value;
 
+    const phoneNumber = value.replace(/[^\d]/g, ""); // Remove all non-numeric characters
+
+    const phoneNumberLength = phoneNumber.length;
+
+    if (phoneNumberLength < 4) return phoneNumber;
+
+    if (phoneNumberLength < 7) {
+      return `(${phoneNumber.slice(0, 3)}) ${phoneNumber.slice(3)}`;
+    }
+
+    return `(${phoneNumber.slice(0, 3)}) ${phoneNumber.slice(3, 6)}-${phoneNumber.slice(6, 10)}`;
+  };
+  const handlePhoneNumberChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const formattedNumber = formatPhoneNumber(event.target.value);
+    setFormValues({ ...formValues, number: formattedNumber });
+  };
   const handleImageClick = () => {
     if (fileInputRef.current) {
       fileInputRef.current.click(); // Trigger file input click
@@ -239,7 +263,7 @@ export default function Register() {
   <div className="flex flex-col justify-center bg-white p-4 w-full">
     <div className="bg-white rounded-lg p-0 w-full md:max-w-3xl lg:max-w-5xl m-auto">
       <h2 className="text-2xl lg:text-3xl font-bold mb-2 text-left">Add Your Personal Information</h2>
-      <p className="text-red-500">( All fiels are mandatory. Please upload your photo with your face. )</p>
+      <p className="text-red-500">( All fiels are mandatory including photo upload.)</p>
       {error && <p style={{ color: "red" }}>{error}</p>}
       {successMessage && <p style={{ color: "green" }}>{successMessage}</p>}
       <form onSubmit={handleSubmit} >
@@ -323,18 +347,15 @@ export default function Register() {
         {/* Grade Level */}
         <div>
           <label htmlFor="grade_level" className="block text-gray-700 text-sm font-semibold mb-2"> Level</label>
-          <select
+          <input
+          placeholder="Specify level"
+            type="text"
             name="grade_level"
             className="border border-gray-300 rounded-lg py-2 px-4 w-full"
             value={formValues.grade_level}
             onChange={handleChange}
-          >
-            <option value="">Select  Level</option>
-            <option value="Club">Club</option>
-            <option value="League">League</option>
-            <option value="Academy">Academy</option>
-            <option value="Organization">Organization</option>
-          </select>
+          />
+          
           {validationErrors.grade_level && <p className="text-red-500 text-sm">{validationErrors.grade_level}</p>}
         </div>
 
@@ -355,7 +376,7 @@ export default function Register() {
           {validationErrors.gender && <p className="text-red-500 text-sm">{validationErrors.gender}</p>}
         </div>
         <div>
-          <label htmlFor="jersey" className="block text-gray-700 text-sm font-semibold mb-2">Jersey No <span className="text-xs text-gray-500">(Optional)</span></label>
+          <label htmlFor="jersey" className="block text-gray-700 text-sm font-semibold mb-2">Jersey Number <span className="text-xs text-gray-500">(Optional)</span></label>
           <input
             type="text"
             name="jersey"
@@ -387,6 +408,7 @@ export default function Register() {
         <div>
           <label htmlFor="team" className="block text-gray-700 text-sm font-semibold mb-2">Team Name/ Year</label>
           <input
+          placeholder="Team Name/ 2024"
             type="text"
             name="team"
             className="border border-gray-300 rounded-lg py-2 px-4 w-full"
@@ -414,22 +436,37 @@ export default function Register() {
         <div>
           <label htmlFor="number" className="block text-gray-700 text-sm font-semibold mb-2">Phone Number</label>
           <input
-            type="text"
-            name="number"
-            className="border border-gray-300 rounded-lg py-2 px-4 w-full"
-            value={formValues.number}
-            onChange={handleChange}
-          />
+          placeholder="(342) 342-3423"
+          type="text"
+          name="number"
+          className="border border-gray-300 rounded-lg py-2 px-4 w-full"
+          value={formValues.number}
+          onChange={handlePhoneNumberChange}
+          maxLength={14} // (123) 456-7890 is 14 characters long
+        />
           {validationErrors.number && <p className="text-red-500 text-sm">{validationErrors.number}</p>}
         </div>
         </div>
-
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-6 pb-5">
         <div>
-          <label htmlFor="bio" className="block text-gray-700 text-sm font-semibold mb-2">Tell us about your player’s experience/ competition level, any 
-          accolades and goals.</label>
+          <label htmlFor="bio" className="block text-gray-700 text-sm font-semibold mb-2">League</label>
+          <input
+          type="text"
+            placeholder="Specify experience league (AYSO, club, school, etc.)"
+            name="league"
+            className="border border-gray-300 rounded-lg py-2 px-4 w-full"
+            value={formValues.league}
+            onChange={handleChange}
+          /> 
+          {validationErrors.bio && <p className="text-red-500 text-sm">{validationErrors.league}</p>}
+        </div>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-6 pb-5">
+        <div>
+          <label htmlFor="bio" className="block text-gray-700 text-sm font-semibold mb-2">Experience/Accolades</label>
           <textarea
-            
+            placeholder="Tell us about your player’s experience/ competition level, any 
+          accolades and goals."
             name="bio"
             className="border border-gray-300 rounded-lg py-2 px-4 w-full"
             value={formValues.bio}
@@ -487,15 +524,24 @@ export default function Register() {
         </div>
 
         </div>
-        <div className="col-span-1 sm:col-span-2 lg:col-span-3">
-          <button
-            type="submit"
-            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg w-full"
-            disabled={loading}
-          >
-            {loading ? "Registering..." : "Submit"}
-          </button>
-        </div>
+        
+<div className="col-span-1 sm:col-span-2 lg:col-span-3 flex justify-center">
+  <button
+    type="submit"
+    className="flex items-center bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-lg"
+    disabled={loading}
+  >
+    {loading ? (
+      <>
+        <FaSpinner className="animate-spin mr-2" /> Registering...
+      </>
+    ) : (
+      <>
+        <FaCheck className="mr-2" /> Submit
+      </>
+    )}
+  </button>
+</div>
       </form>
     </div>
   </div>

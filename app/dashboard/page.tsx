@@ -66,8 +66,14 @@ const Dashboard: React.FC = () => {
   const columns: Column<Evaluation>[] = React.useMemo(
     () => [
       {
-        Header: "Sr No",
-        Cell: ({ row }) => row.index + 1, // Serial Number starts from 1
+        Header: 'Date',
+    accessor: 'created_at',
+    Cell: ({ value }: CellProps<Evaluation>) => {
+      // Format the date to 'dd-mm-yyyy'
+      const date = new Date(value);
+      return date.toLocaleDateString('en-GB'); // This formats the date to 'dd/mm/yyyy'
+    },
+        
       },
       {
         Header: "Coach Name",
@@ -207,6 +213,8 @@ const Dashboard: React.FC = () => {
           return (
             <tr {...row.getRowProps()} key={row.id}>
               {row.cells.map((cell) => (
+
+                
                 <td
                   {...cell.getCellProps()}
                   key={`${row.id}-${cell.column.id}`}

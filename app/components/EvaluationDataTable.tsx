@@ -61,7 +61,13 @@ const EvaluationDataTable: React.FC<EvaluationDataTableProps> = ({ limit, defaul
     };
 
     const totalPages = Math.ceil(total / limit); // Calculate total pages
-
+    const formatDate = (dateString: string) => {
+        const date = new Date(dateString);
+        const day = String(date.getDate()).padStart(2, '0'); // Get day and pad with leading zero if necessary
+        const month = String(date.getMonth() + 1).padStart(2, '0'); // Get month (0-indexed, so add 1) and pad
+        const year = date.getFullYear();
+        return `${day}-${month}-${year}`; // Format as d-m-Y
+    };
     return (
         <div>
             <input 
@@ -74,6 +80,7 @@ const EvaluationDataTable: React.FC<EvaluationDataTableProps> = ({ limit, defaul
             <table>
                 <thead>
                     <tr>
+                        <th onClick={() => handleSort('created_at')}>Date</th>
                         <th onClick={() => handleSort('firstName')}>Coach Name</th>
                         <th onClick={() => handleSort('review_title')}>Review Title</th>
                         <th onClick={() => handleSort('primary_video_link')}>Video Link</th>
@@ -90,6 +97,7 @@ const EvaluationDataTable: React.FC<EvaluationDataTableProps> = ({ limit, defaul
                     ) : (
                         data.map(item => (
                             <tr key={item.id}>
+                                <td>{formatDate(item.created_at)}</td>
                                 <td>{item.firstName} {item.lastName}</td>
                                 <td>{item.review_title}</td>
                                 <td><a href={item.primary_video_link} target='_blank'><VisibilityIcon className="icon" /></a></td>

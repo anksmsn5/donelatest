@@ -26,7 +26,7 @@ export interface Evaluation {
     physicalRemarks:string;
     finalRemarks:string;
     rating:number;
-    
+     
     
   }
   
