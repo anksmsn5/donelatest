@@ -21,6 +21,7 @@ const Profile: React.FC = () => {
     expectedCharge: "",
     image: "",
     certificate: "",
+    password: "",
   });
 
   const { data: session, status } = useSession();
@@ -324,7 +325,7 @@ const Profile: React.FC = () => {
               </div>
 
               {/* Qualifications */}
-              <div className="col-span-1 md:col-span-2">
+              <div >
                 <label className="block text-lg font-medium text-gray-700">Qualifications</label>
                 {isEditMode ? (
                   <textarea
@@ -337,6 +338,23 @@ const Profile: React.FC = () => {
                 ) : (
                   <p className="mt-2 text-sm font-medium text-gray-800 whitespace-pre-wrap">
                     {profileData.qualifications}
+                  </p>
+                )}
+              </div>
+
+              <div >
+                <label className="block text-lg font-medium text-gray-700">Password</label>
+                {isEditMode ? (
+                 <input
+                 type="password"
+                 name="password"
+                 value={profileData.password}
+                 onChange={handleChange}
+                 className="mt-2 block w-full border border-gray-300 rounded-md p-2 shadow-sm focus:border-indigo-500"
+               />
+                ) : (
+                  <p className="mt-2 text-sm font-medium text-gray-800 whitespace-pre-wrap">
+                    ******************
                   </p>
                 )}
               </div>

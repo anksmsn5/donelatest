@@ -86,12 +86,20 @@ const Dashboard: React.FC = () => {
         accessor: 'review_title',
       },
       {
-        Header: 'Video Link',
-        accessor: 'primary_video_link',
-        Cell: ({ value }: { value: string }) => (
-          <a href={value} target="_blank" rel="noopener noreferrer">
-            Watch
-          </a>
+        Header: "Video Links",  // Combine all video links under this column
+        accessor: "primary_video_link",  // Or just leave it as undefined if it's not needed
+        Cell: ({ row }: CellProps<Evaluation>) => (
+          <div className="space-y-2"> {/* Stack links vertically with spacing */}
+            <a href={row.original.primary_video_link} target="_blank" rel="noopener noreferrer" className="block w-full text-center px-4 py-2 text-white bg-blue-600 hover:bg-blue-700 rounded-md text-base font-medium mt-2">
+              One
+            </a>
+            <a href={row.original.video_link_two} target="_blank" rel="noopener noreferrer" className="block w-full text-center px-4 py-2 text-white bg-blue-600 hover:bg-blue-700 rounded-md text-base font-medium mt-2">
+             Two
+            </a>
+            <a href={row.original.video_link_three} target="_blank" rel="noopener noreferrer" className="block w-full text-center px-4 py-2 text-white bg-blue-600 hover:bg-blue-700 rounded-md text-base font-medium mt-2">
+              Three
+            </a>
+          </div>
         ),
       },
       {

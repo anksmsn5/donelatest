@@ -100,30 +100,40 @@ import { SECRET_KEY } from '@/lib/constants';
         state,
         city,
         jersey,
+        password
       } = finalBody;
+
+
+      let updateData: any = {
+        first_name: first_name || null,
+        last_name: last_name || null,
+        grade_level: grade_level || null,
+        birthday:birthday  || null,
+        team: team || null,
+        email: email  || null,
+        position: position || null,
+        gender: gender || null,
+        image: image || null,
+        location: location || null,
+        number:number || null,
+        sport: sport || null,
+        bio: bio || null,
+        country: country || null,
+        state: state || null,
+        city: city || null,
+        jersey:jersey || null,
+        password: password || null
+      };
   
+      if (password) {
+        const hashedPassword = await hash(password, 10); // Hash the password with bcrypt
+        updateData.password = hashedPassword; // Add the hashed password to the update data
+      }
+
       // Update the coach's profile
       const updatedUser = await db
         .update(users)
-        .set({
-            first_name: first_name || null,
-            last_name: last_name || null,
-            grade_level: grade_level || null,
-          location: location || null,
-          birthday: birthday || null,
-          gender: gender || null,
-          sport: sport || null,
-          team: team || null,
-          position: position || null,
-          number: number || null,
-          email: email || null,
-          image: image || null,
-          bio: bio || null,
-          country: country || null,
-          state: state || null,
-          city: city || null,
-          jersey: jersey || null,
-        })
+        .set(updateData)
         .where(eq(users.id, playerId))
         .execute();
   

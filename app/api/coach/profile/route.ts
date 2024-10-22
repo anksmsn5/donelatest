@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { hash } from 'bcryptjs';
 import { db } from '../../../../lib/db';
+
 import { coaches } from '../../../../lib/schema'
 import debug from 'debug';
 import { eq } from 'drizzle-orm';
@@ -83,26 +84,32 @@ import { SECRET_KEY } from '@/lib/constants';
         location,
         qualifications,
         sport,
+        password
         
       } = finalBody;
-  
+      let updateData: any = {
+        firstName: firstName || null,
+        lastName: lastName || null,
+        phoneNumber: phoneNumber || null,
+        location: location || null,
+        certificate: certificate || null,
+        gender: gender || null,
+        sport: sport || null,
+        clubName: clubName || null,
+        email: email || null,
+        expectedCharge: expectedCharge || null,
+        qualifications: qualifications || null,
+        image: image || null,
+      };
+
+      if (password) {
+        const hashedPassword = await hash(password, 10); // Hash the password with bcrypt
+        updateData.password = hashedPassword; // Add the hashed password to the update data
+      }
       // Update the coach's profile
       const updatedUser = await db
         .update(coaches)
-        .set({
-          firstName: firstName || null,
-          lastName: lastName || null,
-          phoneNumber: phoneNumber || null,
-          location: location || null,
-          certificate: certificate || null,
-          gender: gender || null,
-          sport: sport || null,
-          clubName: clubName || null,
-          email: email || null,
-          expectedCharge: expectedCharge || null,
-          qualifications: qualifications || null,
-          image: image || null,
-        })
+        .set(updateData)
         .where(eq(coaches.id, coachId))
         .execute();
   

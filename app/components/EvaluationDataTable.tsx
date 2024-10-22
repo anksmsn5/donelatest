@@ -84,8 +84,7 @@ const EvaluationDataTable: React.FC<EvaluationDataTableProps> = ({ limit, defaul
                         <th onClick={() => handleSort('firstName')}>Coach Name</th>
                         <th onClick={() => handleSort('review_title')}>Review Title</th>
                         <th onClick={() => handleSort('primary_video_link')}>Video Link</th>
-                        <th onClick={() => handleSort('video_link_two')}>Video Link 2</th>
-                        <th onClick={() => handleSort('video_link_three')}>Video Link 3</th>
+                        
                         <th onClick={() => handleSort('video_description')}>Video Description</th>
                         <th onClick={() => handleSort('evaluation_status')}>Status</th>
                         <th onClick={() => handleSort('evaluation_status')}>View Evaluation</th>
@@ -100,9 +99,27 @@ const EvaluationDataTable: React.FC<EvaluationDataTableProps> = ({ limit, defaul
                                 <td>{formatDate(item.created_at)}</td>
                                 <td>{item.firstName} {item.lastName}</td>
                                 <td>{item.review_title}</td>
-                                <td><a href={item.primary_video_link} target='_blank'><VisibilityIcon className="icon" /></a></td>
-                                <td><a href={item.video_link_two} target='_blank'><VisibilityIcon className="icon" /></a> </td>
-                                <td><a href={item.video_link_three} target='_blank'><VisibilityIcon className="icon" /> </a></td>
+                                <td>
+                                    
+                                <a href={item.primary_video_link} 
+   className="block w-full text-center px-4 py-2 text-white bg-blue-600 hover:bg-blue-700 rounded-md text-base font-medium mt-2" 
+   target="_blank">
+   One
+</a>
+<a href={item.video_link_two} 
+   className="block w-full text-center px-4 py-2 text-white bg-blue-600 hover:bg-blue-700 rounded-md text-base font-medium mt-2" 
+   target="_blank">
+   Two
+</a>
+<a href={item.video_link_three} 
+   className="block w-full text-center px-4 py-2 text-white bg-blue-600 hover:bg-blue-700 rounded-md text-base font-medium mt-2" 
+   target="_blank">
+   Three
+</a>
+
+                                
+                                </td>
+                               
                                 <td>{item.video_description}</td>
                                 <td> 
                                     {item.status === 0 && (
