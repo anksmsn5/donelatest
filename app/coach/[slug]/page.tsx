@@ -1,24 +1,34 @@
 "use client"; // Ensure this is a client component
 
 import { useEffect, useState } from 'react';
-import { Metadata } from 'next';
-import { API_URL, BASEURL, SECRET_KEY } from '../../../lib/constants';
+import { useSession } from 'next-auth/react';
 import Image from 'next/image';
 import LoginModal from '../../components/LoginModal'; // Import the modal
 import EvaluationModal from '@/app/components/EvaluationModal';
-import { useSession, signOut } from 'next-auth/react';
-import { usePathname } from 'next/navigation';
 import Loading from '@/app/components/Loading';
+import CertificateModal from '@/app/components/CertificateModal';
+
+import { EvaluationData } from '../../types/types';
+
+
+
 
 interface CoachData {
-  id: string; // or number depending on your data structure
+ 
   firstName: string;
   lastName: string;
-  image: string;
+  id:  string;
+  expectedCharge:  number;
+  createdAt:  string;
+  slug: string;
   rating: number;
-  createdAt: string; // or Date if your API returns a Date object
-  expectedCharge: number;
-  slug: string; // If slug is part of the response
+  gender: string;
+  location: string;
+  sport: string;
+  clubName: string;
+  qualifications: string;
+  certificate: string;
+  image:string;
 }
 
 interface CoachProfileProps {
@@ -27,12 +37,9 @@ interface CoachProfileProps {
   };
 }
 
-// Coach profile component
 const CoachProfile = ({ params }: CoachProfileProps) => {
   const { slug } = params;
-
-  // State for managing coach data and modal visibility
-  const [coachData, setCoachData] = useState<CoachData | null>(null); // Use CoachData type
+  const [coachData, setCoachData] = useState<CoachData | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isevaludationModalopen, setIsevaluationModalOpen] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -40,11 +47,15 @@ const CoachProfile = ({ params }: CoachProfileProps) => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const [playerId, setPlayerId] = useState<string | null>(null);
   const { data: session } = useSession();
+  const [isCertificateModalOpen, setIsCertificateModalOpen] = useState(false);
+
+  const openCertificateModal = () => setIsCertificateModalOpen(true);
+  const closeCertificateModal = () => setIsCertificateModalOpen(false);
+  const [evaluationList, setEvaluationList] = useState<EvaluationData[]>([]);
+  
   // Fetch coach data
   useEffect(() => {
-    const payload={
-      slug:slug
-    }
+    const payload = { slug: slug };
     const fetchCoachData = async () => {
       try {
         const response = await fetch(`/api/coachprofile/`, {
@@ -57,10 +68,9 @@ const CoachProfile = ({ params }: CoachProfileProps) => {
           throw new Error('Coach not found');
         }
 
-
-        const data: CoachData = await response.json(); // Specify the type of data
-        console.log(data); // Log the entire data object to inspect its structure
-        setCoachData(data);
+        const responseData = await response.json();
+setCoachData(responseData.coachdata);
+setEvaluationList(responseData.evaluationlist || []);
       } catch (err) {
         setError("Some error occurred.");
       } finally {
@@ -70,12 +80,11 @@ const CoachProfile = ({ params }: CoachProfileProps) => {
 
     fetchCoachData();
     setPlayerId(session?.user?.id || null);
-  
-  }, [session,slug]); // Only re-run the effect if the slug changes
 
-  // Handle loading and error states
+  }, [session, slug]);
+
   if (loading) {
-    return <Loading/>; // Loading indicator
+    return <Loading />;
   }
   if (error) return <div>{error}</div>;
   if (!coachData) return <div>Coach not found</div>;
@@ -85,56 +94,54 @@ const CoachProfile = ({ params }: CoachProfileProps) => {
     month: 'long',
     day: 'numeric',
   });
-
+  const stars = Array.from({ length: 5 }, (_, i) => (
+    <span key={i} className={i < coachData.rating ? 'text-yellow-500' : 'text-gray-300'}>★</span>
+  ));
   return (
     <>
-      <div className="min-h-screen bg-gradient-to-b from-blue-900 to-gray-900 flex items-center justify-center">
-        <div className="bg-white shadow-md rounded-lg p-8 max-w-md w-full">
-          <div className="flex justify-center mb-6">
-            {/* Profile Picture */}
-            <div className="relative w-32 h-32">
-              
-              <Image
-                src={coachData.image}
-                alt="Profile Picture"
-                className="rounded-full"
-                layout="fill"
-                objectFit="cover"
-                priority
-              />
-            </div>
-          </div>
+      <div className="container mx-auto px-4 py-8 animate-fadeIn" >
+        {/* Header Section */}
+       
+        <div className="flex flex-col md:flex-row items-start bg-white p-6 rounded-lg shadow-md transform transition-all duration-300 hover:shadow-lg">
+  {/* Profile Image and Coach Info */}
+  <div className="flex flex-col md:flex-row md:w-2/3 mb-4 md:mb-0 md:mr-4">
+    {/* Profile Image */}
+    <div className="flex-shrink-0 mb-4 md:mb-0 md:mr-4">
+      <Image
+        src={coachData.image}
+        alt={`${coachData.firstName} ${coachData.lastName}`}
+        width={200}
+        height={200}
+        className="rounded-full object-cover"
+      />
+    </div>
 
-          <div className="text-center">
-            {/* Name */}
-            <h1 className="text-2xl font-bold text-gray-800">{coachData.firstName} {coachData.lastName}</h1>
-            {/* Website */}
-            <p className="text-sm text-gray-500">socaltraining.com</p>
+    {/* Coach Info */}
+    <div className="text-center md:text-left">
+      <h1 className="text-3xl font-bold text-gray-800 animate-bounce-once">
+        {coachData.firstName} {coachData.lastName}
+      </h1>
+      <p className="text-gray-600 text-lg">
+        {coachData.sport} Coach at {coachData.clubName}
+      </p>
 
-            {/* Rating */}
-            <div className="mt-4">
-              <div className="flex justify-center items-center space-x-1">
-                {/* Stars (use icons here if you'd like) */}
-                {[...Array(5)].map((_, i) => (
-                   <span key={i} className={i < coachData.rating ? 'text-yellow-500' : 'text-gray-400'}>
-                   ★
-                 </span>
-                ))}
-              </div>
-            </div>
+      {/* Rating */}
+      <div className="flex items-center justify-center md:justify-start mt-2">
+      <div className="mt-1">{stars}</div>
+      
+      </div>
+      <span className="text-yellow-500 text-2xl">{coachData.rating}</span>
+      <span className="ml-2 text-gray-500">/ 5.0</span>
+    </div>
+  </div>
 
-            {/* Average completion time */}
-            <div className="mt-4 flex justify-center items-center text-sm text-gray-500">
-              <span>⏱</span>
-              <p className="ml-2">Average completion time: 2 days</p>
-            </div>
-
-            {/* Join Date */}
-            <div className="mt-2 flex justify-center items-center text-sm text-gray-500">
-              <span>📅</span>
-              <p className="ml-2">Joined {joiningDate}</p>
-            </div>
-            {session ? (
+  {/* Additional Text and Button */}
+  <div className="md:w-1/3 text-center md:text-left">
+    <h2 className="text-2xl font-semibold text-gray-800 mb-4">Want {coachData.gender === 'Male' ? 'Him' : 'Her'} to evaluate your game?</h2>
+    <p className="text-gray-600 mb-4">
+    Very simple! Just login and fill in your evaluation form. You will get feedback from them.
+    </p>
+    {session ? (
               <div className="mt-2 flex justify-center items-center text-sm text-gray-500">
                 <span>Rate</span>
                 <p className="ml-2">  ${coachData.expectedCharge}</p>
@@ -160,23 +167,143 @@ const CoachProfile = ({ params }: CoachProfileProps) => {
                 Proceed to Evaluation
               </button>
             )}
+  </div>
+</div>
+
+
+
+
+        {/* Contact Info Section */}
+        <h2 className="text-lg font-semibold mt-5  bg-blue-500 text-white p-4 rounded-lg">
+    General Information
+  </h2>
+        <section className="bg-white-50 p-6 rounded-lg shadow-md transform transition-all duration-300 hover:shadow-lg animate-fadeInDelay">
+
+   
+  <div className="flex flex-col md:flex-row md:space-x-8">
+    {/* Column 1 */}
+    <div className="flex-1 mb-4 md:mb-0">
+      <ul className="space-y-4">
+        <li><strong>Expected Charge:</strong> ${coachData.expectedCharge}/Session</li>
+        <li><strong>Sport {coachData.gender === 'Male' ? 'He' : 'She'} Coaches:</strong> {coachData.sport}</li>
+        <li><strong>Club/Company Name:</strong> {coachData.clubName}</li>
+      </ul>
+    </div>
+    
+    {/* Column 2 */}
+    <div className="flex-1">
+      <ul className="space-y-4">
+        <li><strong>Gender:</strong> {coachData.gender}</li>
+        <li><strong>Location:</strong> {coachData.location}</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<h2 className="text-lg font-semibold mt-5  bg-blue-500 text-white p-4 rounded-lg">
+Qualification & Certifications
+  </h2>
+<section className="bg-white p-6 rounded-lg shadow-md transform transition-all duration-300 hover:shadow-lg animate-fadeInDelay">
+ 
+<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+    
+    {/* First Column: Qualifications */}
+    <div>
+      <h3 className="text-lg font-semibold mb-2">Qualifications</h3>
+      <p className="text-gray-700">
+        {coachData.qualifications}
+      </p>
+    </div>
+
+    {/* Second Column: Certificate */}
+    <div>
+      <h3 className="text-lg font-semibold mb-2">Certificate</h3>
+      {coachData.certificate ? (
+        <button
+          onClick={openCertificateModal}
+          className="text-blue-500 underline hover:text-blue-700 transform transition-all duration-300"
+        >
+          View Certification
+        </button>
+      ) : (
+        <p className="text-gray-500">No certificate available</p>
+      )}
+    </div>
+  </div>
+
+  {/* Modal */}
+ 
+</section>
+
+{isCertificateModalOpen && (
+    <CertificateModal  certificate={coachData.certificate} closeCertificateModal={closeCertificateModal}/>
+    
+  )}
+
+<h2 className="text-lg font-semibold mt-5  bg-blue-500 text-white p-4 rounded-lg">
+Previous Evaluations
+  </h2>
+  <section className="mt-8 bg-gray-50 p-0 rounded-lg shadow-md transform transition-all duration-300 hover:shadow-lg animate-fadeInDelay">
+  {evaluationList.length > 0 ? (
+
+    
+    <ul className="space-y-4">
+      {evaluationList.map((evaluation, index) => {
+        const stars = Array.from({ length: 5 }, (_, i) => (
+          <span key={i} className={i < evaluation.rating ? 'text-yellow-500' : 'text-gray-300'}>
+            ★
+          </span>
+        ));
+
+        return (
+
+        <li key={index} className="bg-white p-4 rounded-lg shadow flex items-center">
+          {/* Circular Image */}
+          <Image
+            src={evaluation.image} // Adjust this based on your actual data structure
+            alt={`Evaluation by ${evaluation.review_title}`} // Provide a meaningful alt text
+            width={50} // Set width for the image
+            height={50} // Set height for the image
+            className="rounded-full object-cover mr-4" // Add margin-right for spacing
+          />
+          
+          {/* Review Title and Other Details */}
+          <div className="flex-1">
+            <h3 className="font-semibold text-gray-800">{evaluation.review_title}</h3>
+            <p>{evaluation.first_name} {evaluation.last_name}</p>
           </div>
-        </div>
+
+          {/* Rating Column */}
+          <div>
+            <p className="text-gray-600">Rating:
+            {stars}    
+               {evaluation.rating || 0} / 5</p>
+          </div>
+        </li>
+      );
+    })}
+    </ul>
+  ) : (
+    <p className="text-gray-500">No evaluations available.</p>
+  )}
+</section>
+ 
       </div>
 
+      {/* Modals */}
       {isModalOpen && (
         <LoginModal isOpen={isModalOpen} coachslug={coachData.slug} onClose={() => setIsModalOpen(false)} />
       )}
 
-{isevaludationModalopen && playerId && (
-  <EvaluationModal
-  amount={coachData.expectedCharge}
-    isOpen={isevaludationModalopen}
-    coachId={coachData.id} 
-    playerId={playerId} 
-    onClose={() => setIsevaluationModalOpen(false)} 
-  />
-)}
+      {isevaludationModalopen && playerId && (
+        <EvaluationModal
+          amount={coachData.expectedCharge}
+          isOpen={isevaludationModalopen}
+          coachId={coachData.id}
+          playerId={playerId}
+          onClose={() => setIsevaluationModalOpen(false)}
+        />
+      )}
     </>
   );
 };

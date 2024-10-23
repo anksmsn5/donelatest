@@ -37,4 +37,13 @@ export interface Evaluation {
     Declined: Evaluation[];
     Drafted:Evaluation[];
   }
+
+
+export  interface EvaluationData {
+    review_title: string;
+    rating: number;
+    image: string; // Adjust this type based on your actual image data
+    first_name: string; // Adjust this type based on your actual image data
+    last_name: string; // Adjust this type based on your actual image data
+  }
   

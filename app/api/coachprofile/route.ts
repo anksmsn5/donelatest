@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { hash } from 'bcryptjs';
 import { db } from '../../../lib/db';
-import { coaches } from '../../../lib/schema'
+import { coaches, playerEvaluation, users } from '../../../lib/schema'
 import debug from 'debug';
 import { eq } from 'drizzle-orm';
 import { promises as fs } from 'fs';
@@ -17,17 +17,7 @@ import { SECRET_KEY } from '@/lib/constants';
     try {
       // Using 'like' with lower case for case-insensitive search
       const coachlist = await db
-        .select({
-          firstName:coaches.firstName,
-          lastName:coaches.lastName,
-          id:coaches.id,
-          expectedCharge:coaches.expectedCharge,
-          createdAt:coaches.createdAt,
-          slug:coaches.slug,
-          image:coaches.image,
-          rating:coaches.rating
-
-        })
+        .select()
         .from(coaches)
         .where(
           eq(coaches.slug,slug)
@@ -42,12 +32,36 @@ import { SECRET_KEY } from '@/lib/constants';
           createdAt: coach.createdAt, 
           slug:coach.slug,
           rating:coach.rating,
+          gender:coach.gender,
+          location:coach.location,
+          sport:coach.sport,
+          clubName:coach.clubName,
+          qualifications:coach.qualifications,
+          certificate:coach.certificate,
+          
           image: coach.image ? `${coach.image}` : null,
         }));
-
+ 
+ 
+        const evaluationlist = await db
+        .select({
+          review_title: playerEvaluation.review_title,
+          rating: playerEvaluation.rating,
+          first_name: users.first_name, // Assuming the users table has a `name` field
+          last_name: users.last_name, // Assuming the users table has an `image` field
+          image: users.image, // Assuming the users table has an `image` field
+        })
+        .from(playerEvaluation)
+        .innerJoin(users, eq(playerEvaluation.player_id, users.id)) // Join condition
+        .where(eq(playerEvaluation.coach_id, coachlist[0].id))
+        .execute();
+        
        
+      
+     
+        
   
-      return NextResponse.json(payload[0]);
+      return NextResponse.json({coachdata:payload[0], evaluationlist:evaluationlist});
     } catch (error) {
       const err = error as any;
       console.error('Error fetching coaches:', error);

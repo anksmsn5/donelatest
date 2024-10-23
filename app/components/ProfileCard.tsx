@@ -1,5 +1,8 @@
 import React from 'react';
 import Image from 'next/image';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { FaUser } from 'react-icons/fa';
+ 
 
 interface ProfileCardProps {
   slug: string;
@@ -22,8 +25,9 @@ const ProfileCard: React.FC<ProfileCardProps> = ({ name, organization, image, ra
     <>
     <div
   onClick={() => handleRedirect(slug)}
-  className="flex-none w-64 h-80 bg-white rounded-lg shadow-md overflow-hidden snap-center"
-  key={slug}>
+  className="flex-none w-64 h-150 bg-white rounded-lg shadow-md mt-5 overflow-hidden snap-center"
+  key={slug}
+>
   <Image
     src={image}
     alt={name}
@@ -35,7 +39,17 @@ const ProfileCard: React.FC<ProfileCardProps> = ({ name, organization, image, ra
     <h3 className="text-lg font-semibold">{name}</h3>
     <p className="text-gray-500">{organization}</p>
     <div className="mt-2 flex justify-center">
-      <div className="mt-2">{stars}</div>
+      <div className="mt-1">{stars}</div>
+    </div>
+    {/* Bio Icon Section */}
+    <div className="mt-2 flex justify-center">
+      <button 
+        onClick={() => handleRedirect(slug)} // Function to redirect to the bio
+        className="flex items-center space-x-2 text-gray-500"
+      >
+       <FaUser/>
+        <span>View Bio</span>
+      </button>
     </div>
   </div>
 </div>
