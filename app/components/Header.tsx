@@ -257,17 +257,17 @@ const Header: React.FC = () => {
                       <div className="absolute left-0 mt-2 w-48 bg-white shadow-lg rounded-md">
                         <ul>
                           <li className="pt-[8px]">
-                            <Link href="/register" className="block px-4 py-2 text-black hover:bg-blue-300" onClick={closeMenu}>
+                            <Link href="/register" className="block px-4 py-2 text-black hover:bg-blue-300" onClick={() => setCreateAccountOpen(false)}>
                               Player Signup
                             </Link>
                           </li>
                           <li className="pt-[8px]">
-                            <Link href="/coach/signup" className="block px-4 py-2 text-black hover:bg-blue-300" onClick={closeMenu}>
+                            <Link href="/coach/signup" className="block px-4 py-2 text-black hover:bg-blue-300" onClick={() => setCreateAccountOpen(false)}>
                               Coach Signup
                             </Link>
                           </li>
                           <li className="pt-[8px]">
-                            <Link href="/enterprise/signup" className="block px-4 py-2 text-black hover:bg-blue-300" onClick={closeMenu}>
+                            <Link href="/enterprise/signup" className="block px-4 py-2 text-black hover:bg-blue-300" onClick={() => setCreateAccountOpen(false)}>
                               Enterprise Signup
                             </Link>
                           </li>
