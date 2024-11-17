@@ -27,6 +27,9 @@ interface CoachData {
   sport: string;
   clubName: string;
   qualifications: string;
+  country: string;
+  state: string;
+  city: string;
   certificate: string;
   image:string;
 }
@@ -137,10 +140,7 @@ setEvaluationList(responseData.evaluationlist || []);
 
   {/* Additional Text and Button */}
   <div className="md:w-1/3 text-center md:text-left">
-    <h2 className="text-2xl font-semibold text-gray-800 mb-4">Want {coachData.gender === 'Male' ? 'Him' : 'Her'} to evaluate your game?</h2>
-    <p className="text-gray-600 mb-4">
-    Very simple! Just login and fill in your evaluation form. You will get feedback from them.
-    </p>
+    
     {session ? (
               <div className="mt-2 flex justify-center items-center text-sm text-gray-500">
                 <span>Rate</span>
@@ -154,7 +154,7 @@ setEvaluationList(responseData.evaluationlist || []);
               <>
                 <button
                   onClick={() => setIsModalOpen(true)} // Open modal on click
-                  className="mt-6 bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
+                  className="mt-6 bg-customBlue text-black px-4 py-2 rounded-md hover:bg-blue-600 hover:text-white"
                 >
                   Sign in to book
                 </button>
@@ -162,7 +162,7 @@ setEvaluationList(responseData.evaluationlist || []);
             ) : (
               <button
                 onClick={() => setIsevaluationModalOpen(true)} // Open modal on click
-                className="mt-6 bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
+                className="mt-6 bg-blue-500 text-black px-4 py-2 rounded-md hover:bg-blue-600"
               >
                 Proceed to Evaluation
               </button>
@@ -174,7 +174,7 @@ setEvaluationList(responseData.evaluationlist || []);
 
 
         {/* Contact Info Section */}
-        <h2 className="text-lg font-semibold mt-5  bg-blue-500 text-white p-4 rounded-lg">
+        <h2 className="text-lg font-semibold mt-5 bg-customBlue text-black p-4 rounded-lg">
     General Information
   </h2>
         <section className="bg-white-50 p-6 rounded-lg shadow-md transform transition-all duration-300 hover:shadow-lg animate-fadeInDelay">
@@ -184,23 +184,27 @@ setEvaluationList(responseData.evaluationlist || []);
     {/* Column 1 */}
     <div className="flex-1 mb-4 md:mb-0">
       <ul className="space-y-4">
-        <li><strong>Expected Charge:</strong> ${coachData.expectedCharge}/Session</li>
-        <li><strong>Sport {coachData.gender === 'Male' ? 'He' : 'She'} Coaches:</strong> {coachData.sport}</li>
-        <li><strong>Club/Company Name:</strong> {coachData.clubName}</li>
+        <li><strong>Rate per evaluation:</strong> {coachData.expectedCharge} USD</li>
+        <li><strong>Sport :</strong> {coachData.sport}</li>
+        <li><strong>Title/ organization(s)/Affilication(s):</strong> {coachData.clubName}</li>
+        <li><strong>Gender:</strong> {coachData.gender}</li>
+        
       </ul>
     </div>
     
     {/* Column 2 */}
     <div className="flex-1">
       <ul className="space-y-4">
-        <li><strong>Gender:</strong> {coachData.gender}</li>
-        <li><strong>Location:</strong> {coachData.location}</li>
+      <li><strong>Location:</strong> {coachData.location}</li>
+        <li><strong>Country:</strong> {coachData.country}</li>
+        <li><strong>State:</strong> {coachData.state}</li>
+        <li><strong>City:</strong> {coachData.city}</li>
       </ul>
     </div>
   </div>
 </section>
 
-<h2 className="text-lg font-semibold mt-5  bg-blue-500 text-white p-4 rounded-lg">
+<h2 className="text-lg font-semibold mt-5  bg-customBlue text-black p-4 rounded-lg">
 Qualification & Certifications
   </h2>
 <section className="bg-white p-6 rounded-lg shadow-md transform transition-all duration-300 hover:shadow-lg animate-fadeInDelay">
@@ -240,7 +244,7 @@ Qualification & Certifications
     
   )}
 
-<h2 className="text-lg font-semibold mt-5  bg-blue-500 text-white p-4 rounded-lg">
+<h2 className="text-lg font-semibold mt-5  bg-customBlue text-black p-4 rounded-lg">
 Previous Evaluations
   </h2>
   <section className="mt-8 bg-gray-50 p-0 rounded-lg shadow-md transform transition-all duration-300 hover:shadow-lg animate-fadeInDelay">

@@ -82,7 +82,7 @@ const Dashboard: React.FC = () => {
         Cell: ({ row }: CellProps<Evaluation>) => `${row.original.first_name} ${row.original.last_name}`,
       },
       {
-        Header: 'Evaluation Title',
+        Header: 'Review Title',
         accessor: 'review_title',
       },
       {

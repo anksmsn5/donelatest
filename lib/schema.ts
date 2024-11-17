@@ -12,6 +12,7 @@ import {
   pgEnum,
   integer // Ensure integer is imported from drizzle-orm/pg-core
 } from "drizzle-orm/pg-core";
+import { number } from "zod";
 
 // Users table
 export const users = pgTable(
@@ -36,7 +37,9 @@ export const users = pgTable(
     state:varchar("state"),
     city:varchar("city"),
     league:text("league"),
+    countrycode:text("countrycode"),
     password: text("password").notNull(),
+    enterprise_id: text("enterprise_id"),
     createdAt: timestamp("createdAt").defaultNow().notNull(),
   },
   (users) => {
@@ -63,10 +66,14 @@ export const coaches = pgTable(
     expectedCharge: decimal("expectedCharge", { precision: 10, scale: 2 }), // Decimal type with precision and scale
     image: text("image"),
     slug: text("slug"),
-   
+    enterprise_id: text("enterprise_id"),
+    country:varchar("country"),
+    state:varchar("state"),
+    city:varchar("city"),
     rating: integer("rating").default(0),
     password: text("password").notNull(),
     certificate:text("certificate"),
+    countrycode:text("countrycode"),
     createdAt: timestamp("createdAt").defaultNow().notNull(),
   },
   (coaches) => {
@@ -92,6 +99,7 @@ export const playerEvaluation = pgTable(
     video_link_three: text("video_link_three"),
     video_description: text("video_description").notNull(),
     status: integer("status").notNull(), // Use enum type here
+    turnaroundTime: varchar("turnaroundTime"), // Use enum type here
     payment_status: varchar("payment_status"),
     created_at: timestamp("created_at").defaultNow().notNull(),
     rating: integer("rating"), // New field for rating, nullable by default
@@ -140,4 +148,61 @@ export const evaluationResults = pgTable('evaluation_results', {
   physicalScores: text('physicalScores').notNull(), // JSON field for physical scores
   tacticalScores: text('tacticalScores').notNull(), // JSON field for tactical scores
   technicalScores: text('technicalScores').notNull(), // JSON field for technical scores
+});
+
+export const otps = pgTable('otps', {
+  id: serial('id').primaryKey(),
+  email: text('email').notNull(),
+  otp: text('otp').notNull()
+});
+
+export const enterprises=pgTable('enterprises', {
+  id: serial('id').primaryKey(),
+  organizationName: text('organizationName').notNull(),
+  contactPerson: text('contactPerson').notNull(),
+  package_id: integer('package_id'),
+  email: text('email').notNull(),
+  mobileNumber: text('mobileNumber'),
+  address: text('address'),
+  country: text('country'),
+  state: text('state'),
+  city: text('city'),
+  logo: text('logo'),
+  affiliationDocs: text('affiliationDocs'),
+  slug: text('slug'),
+  password: text('password').notNull(),
+  createdAt: timestamp('createdAt').defaultNow().notNull(),
+});
+
+export const packages=pgTable('packages', {
+  id: serial('id').primaryKey(),
+  packageName: text('packageName').notNull(),
+  amount: text('amount').notNull(),
+  noOfLicnese: integer('noOfLicnese'),
+  details: text('details').notNull(),
+  status:text('status').notNull(),
+  createdAt: timestamp('createdAt').defaultNow().notNull(),
+});
+
+export const orderHistory=pgTable('orderHistory', {
+  id: serial('id').primaryKey(),
+  enterprise_id: integer('enterprise_id').notNull(),
+  package_id: integer('package_id').notNull(),
+  amount: text('amount').notNull(),
+  description: text('description').notNull(),
+  status:text('status').notNull(),
+  payment_info:text('payment_info'),
+  createdAt: timestamp('createdAt').defaultNow().notNull(),
+});
+
+export const licenses=pgTable('licenses', {
+  id: serial('id').primaryKey(),
+  enterprise_id: integer('enterprise_id').notNull(),
+  package_id: integer('package_id').notNull(),
+  payment_info:text('payment_info'),
+  licenseKey: text('licenseKey').notNull(),
+  used_for:text('used_for'),
+  used_by:text('used_by'),
+  status:text('status').notNull(),
+  createdAt: timestamp('createdAt').defaultNow().notNull(),
 });

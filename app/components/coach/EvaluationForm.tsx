@@ -31,10 +31,10 @@ const technical = [
 
 const tactical = [
     { id: 1, label: 'Reading The Game', options: ['0', '1', '2', '3', '4', '5'] },
-    { id: 2, label: 'Decisions w/ Balls', options: ['0', '1', '2', '3', '4', '5'] },
+    { id: 2, label: 'Decisions w/ Ball', options: ['0', '1', '2', '3', '4', '5'] },
     { id: 3, label: 'Decisions w/o Balls', options: ['0', '1', '2', '3', '4', '5'] },
     { id: 4, label: 'Understanding of team play', options: ['0', '1', '2', '3', '4', '5'] },
-    { id: 5, label: 'Understanding of role & position', options: ['0', '1', '2', '3', '4', '5'] },
+    { id: 5, label: 'Understanding of Role & Position', options: ['0', '1', '2', '3', '4', '5'] },
     { id: 6, label: 'Timing of Runs', options: ['0', '1', '2', '3', '4', '5'] }
 ];
 
@@ -247,7 +247,7 @@ const EvaluationForm: React.FC<EvaluationFormProps> = ({ evaluationId,
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
     {/* Player Information */}
     <div className="bg-white p-6 border border-gray-300 rounded-lg md:col-span-2">
-        <h3 className="text-lg font-semibold mb-4">{evaluationData?.review_title}</h3>
+        <h3 className="text-lg font-semibold mb-4">Review Title: <span className="font-normal">{evaluationData?.review_title}</span></h3>
         <div className="flex items-center mb-4">
             <strong className="mr-2">Player:</strong>
             {evaluationData?.image ? (
@@ -274,17 +274,17 @@ const EvaluationForm: React.FC<EvaluationFormProps> = ({ evaluationId,
         </div>
 
         <div className="mb-4">
-            <strong className="mr-2">Primary link:</strong> <a href={evaluationData?.primary_video_link} className="text-blue-500" target='_blank'>Link to video</a>
+            <strong className="mr-2">Primary Link:</strong> <a href={evaluationData?.primary_video_link} className="text-blue-500" target='_blank'>Link to video</a>
         </div>
         <div className="mb-4">
-            <strong className="mr-2">Video link Two:</strong> <a href={evaluationData?.video_link_two} className="text-blue-500" target='_blank'>Link to video</a>
+            <strong className="mr-2">Video Link #2:</strong> <a href={evaluationData?.video_link_two} className="text-blue-500" target='_blank'>Link to video</a>
         </div>
         <div className="mb-4">
-            <strong className="mr-2">Video link Three:</strong> <a href={evaluationData?.video_link_three} className="text-blue-500" target='_blank'>Link to video</a>
+            <strong className="mr-2">Video Link #3:</strong> <a href={evaluationData?.video_link_three} className="text-blue-500" target='_blank'>Link to video</a>
         </div>
 
         <div className="mb-4">
-            <strong className="mr-2">Video description:</strong>
+            <strong className="mr-2">Video Description:</strong>
             <span className="text-gray-700">{evaluationData?.video_description}</span>
         </div>
     </div>
@@ -323,7 +323,7 @@ const EvaluationForm: React.FC<EvaluationFormProps> = ({ evaluationId,
                                             </div>
                                         ))}
                                     </div>
-                                    <label htmlFor={`remarks-tech`} className="mt-4 text-sm font-medium">Remarks:</label>
+                                    <label htmlFor={`remarks-tech`} className="mt-4 text-sm font-medium">Commentary:</label>
                                     <textarea
                                         id={`remarks-tech`}
                                         value={technicalRemarks}
@@ -353,7 +353,7 @@ const EvaluationForm: React.FC<EvaluationFormProps> = ({ evaluationId,
                                             </div>
                                         ))}
                                     </div>
-                                    <label htmlFor={`remarks-tact`} className="mt-4 text-sm font-medium">Remarks:</label>
+                                    <label htmlFor={`remarks-tact`} className="mt-4 text-sm font-medium">Commentary:</label>
                                     <textarea
                                         id={`remarks-tact`}
                                         className="border border-gray-300 rounded-md p-2 text-gray-700 text-sm w-full mt-1"
@@ -383,7 +383,7 @@ const EvaluationForm: React.FC<EvaluationFormProps> = ({ evaluationId,
                                             </div>
                                         ))}
                                     </div>
-                                    <label htmlFor={`remarks-phys`} className="mt-4 text-sm font-medium">Remarks:</label>
+                                    <label htmlFor={`remarks-phys`} className="mt-4 text-sm font-medium">Commentary:</label>
                                     <textarea
                                         id={`remarks-phys`}
                                         className="border border-gray-300 rounded-md p-2 text-gray-700 text-sm w-full mt-1"
@@ -398,7 +398,7 @@ const EvaluationForm: React.FC<EvaluationFormProps> = ({ evaluationId,
 
                             {/* Final Remarks Section */}
                             <div className="mt-6">
-                                <label htmlFor="final-remarks" className="text-sm font-medium">Final Remarks:</label>
+                                <label htmlFor="final-remarks" className="text-sm font-medium">Additional Comments:</label>
                                 <textarea
                                     value={finalRemarks}
                                     id="final-remarks"

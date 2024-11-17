@@ -22,7 +22,6 @@ export async function POST(req: NextRequest) {
         evaluationId:playerEvaluation.id,
         first_name: coaches.firstName,
         last_name: coaches.lastName,
-        slug:coaches.slug,
         review_title: playerEvaluation.review_title,
         primary_video_link: playerEvaluation.primary_video_link,
         video_link_two: playerEvaluation.video_link_two,
@@ -32,6 +31,7 @@ export async function POST(req: NextRequest) {
         payment_status: playerEvaluation.payment_status,
         created_at: playerEvaluation.created_at,
         updated_at: playerEvaluation.updated_at,
+        slug: coaches.slug,
       })
       .from(playerEvaluation)  // This selects from the `playerEvaluation` table
       .innerJoin(coaches, eq(playerEvaluation.coach_id, coaches.id)) // Inner join with the `users` table

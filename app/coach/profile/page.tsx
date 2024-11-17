@@ -289,7 +289,7 @@ const Profile: React.FC = () => {
                 )}
               </div>
 
-              {/* Sport */}
+              
               <div>
                 <label className="block text-lg font-medium text-gray-700">Sport</label>
                 {isEditMode ? (

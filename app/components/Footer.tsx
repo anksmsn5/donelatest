@@ -1,5 +1,5 @@
 "use client"
-import { FaFacebook, FaTwitter, FaInstagram, FaTimes } from 'react-icons/fa'; // You can install react-icons for icons
+import { FaFacebook, FaTwitter, FaInstagram } from 'react-icons/fa'; // You can install react-icons for icons
 
 export default function Footer() {
   return (
@@ -8,7 +8,7 @@ export default function Footer() {
         <div className="flex flex-col md:flex-row justify-between items-center">
           {/* Logo or Brand Name */}
           <div className="text-2xl font-bold mb-4 md:mb-0">
-            D1 Notes
+            D1 NOTES
           </div>
 
           {/* Navigation Links */}
@@ -25,16 +25,7 @@ export default function Footer() {
               <FaFacebook className="h-6 w-6 hover:text-blue-600" />
             </a>
             <a href="#" aria-label="Twitter">
-            <svg
-        xmlns="http://www.w3.org/2000/svg"
-        width="24"
-        height="24"
-        viewBox="0 0 24 24"
-        fill="currentColor"
-      >
-        <path d="M3 3L21 21M3 21L21 3" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-      </svg>
-              
+              <FaTwitter className="h-6 w-6 hover:text-blue-400" />
             </a>
             <a href="#" aria-label="Instagram">
               <FaInstagram className="h-6 w-6 hover:text-pink-500" />
@@ -45,7 +36,7 @@ export default function Footer() {
         {/* Copyright Section */}
         <div className="text-center mt-6">
           <p className="text-sm text-gray-400">
-            © {new Date().getFullYear()} D1 Notes. All rights reserved.
+            © {new Date().getFullYear()} D1 NOTES. All rights reserved.
           </p>
         </div>
       </div>

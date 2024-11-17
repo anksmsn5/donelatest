@@ -26,6 +26,7 @@ interface FormValues {
   city:string;
   jersey:string;
   league:string;
+  countrycode:string;
   image: string | null; // Updated to store Base64 string
 }
 
@@ -47,6 +48,7 @@ export default function Register() {
     city:"",
     jersey:"",
     league:"",
+    countrycode:"",
     image: null,
   });
 
@@ -67,6 +69,81 @@ export default function Register() {
     { value: "Center Back", label: "Center Back" },
     // Add more positions as needed
   ];
+
+  const countryCodes = [
+    { id: 1, code: "+1", country: "USA" },
+    { id: 2, code: "+44", country: "UK" },
+    { id: 3, code: "+91", country: "India" },
+    { id: 4, code: "+61", country: "Australia" },
+    { id: 5, code: "+33", country: "France" },
+    { id: 6, code: "+49", country: "Germany" },
+    { id: 7, code: "+81", country: "Japan" },
+    { id: 8, code: "+55", country: "Brazil" },
+    { id: 9, code: "+34", country: "Spain" },
+    { id: 10, code: "+39", country: "Italy" },
+    { id: 11, code: "+52", country: "Mexico" },
+    { id: 12, code: "+7", country: "Russia" },
+    { id: 13, code: "+86", country: "China" },
+    { id: 14, code: "+27", country: "South Africa" },
+    { id: 15, code: "+20", country: "Egypt" },
+    { id: 16, code: "+62", country: "Indonesia" },
+    { id: 17, code: "+60", country: "Malaysia" },
+    { id: 18, code: "+34", country: "Spain" },
+    { id: 19, code: "+91", country: "India" },
+    { id: 20, code: "+63", country: "Philippines" },
+    { id: 21, code: "+90", country: "Turkey" },
+    { id: 22, code: "+94", country: "Sri Lanka" },
+    { id: 23, code: "+971", country: "UAE" },
+    { id: 24, code: "+34", country: "Spain" },
+    { id: 25, code: "+27", country: "South Africa" },
+    { id: 26, code: "+44", country: "United Kingdom" },
+    { id: 27, code: "+55", country: "Brazil" },
+    { id: 28, code: "+49", country: "Germany" },
+    { id: 29, code: "+62", country: "Indonesia" },
+    { id: 30, code: "+52", country: "Mexico" },
+    { id: 31, code: "+61", country: "Australia" },
+    { id: 32, code: "+33", country: "France" },
+    { id: 33, code: "+44", country: "United Kingdom" },
+    { id: 34, code: "+1", country: "USA" },
+    { id: 35, code: "+968", country: "Oman" },
+    { id: 36, code: "+972", country: "Israel" },
+    { id: 37, code: "+886", country: "Taiwan" },
+    { id: 38, code: "+90", country: "Turkey" },
+    { id: 39, code: "+351", country: "Portugal" },
+    { id: 40, code: "+977", country: "Nepal" },
+    { id: 41, code: "+265", country: "Malawi" },
+    { id: 42, code: "+234", country: "Nigeria" },
+    { id: 43, code: "+254", country: "Kenya" },
+    { id: 44, code: "+1", country: "Canada" },
+    { id: 45, code: "+54", country: "Argentina" },
+    { id: 46, code: "+48", country: "Poland" },
+    { id: 47, code: "+351", country: "Portugal" },
+    { id: 48, code: "+20", country: "Egypt" },
+    { id: 49, code: "+971", country: "UAE" },
+    { id: 50, code: "+962", country: "Jordan" },
+    { id: 51, code: "+975", country: "Bhutan" },
+    { id: 52, code: "+977", country: "Nepal" },
+    { id: 53, code: "+1", country: "USA" },
+    { id: 54, code: "+49", country: "Germany" },
+    { id: 55, code: "+7", country: "Russia" },
+    { id: 56, code: "+60", country: "Malaysia" },
+    { id: 57, code: "+92", country: "Pakistan" },
+    { id: 58, code: "+370", country: "Lithuania" },
+    { id: 59, code: "+502", country: "Guatemala" },
+    { id: 60, code: "+504", country: "Honduras" },
+    { id: 61, code: "+852", country: "Hong Kong" },
+    { id: 62, code: "+63", country: "Philippines" },
+    { id: 63, code: "+33", country: "France" },
+    { id: 64, code: "+55", country: "Brazil" },
+    { id: 65, code: "+56", country: "Chile" },
+    { id: 66, code: "+57", country: "Colombia" },
+    { id: 67, code: "+60", country: "Malaysia" },
+    { id: 68, code: "+503", country: "El Salvador" },
+    { id: 69, code: "+91", country: "India" },
+    { id: 70, code: "+1", country: "USA" }
+  ];
+  
+
   
   const states = [
     { name: "Alabama", abbreviation: "AL" },
@@ -133,8 +210,8 @@ export default function Register() {
     } else {
         // Calculate the approximate size of the base64 string
         const imageSizeInBytes = (formValues.image.length * 3) / 4;
-        if (imageSizeInBytes > 2 * 1024 * 1024) {
-            newErrors.image = "Image size must be less than 2MB";
+        if (imageSizeInBytes > 5 * 1024 * 1024) {
+            newErrors.image = "Image size must be less than 5MB";
         }
     }
     if (!formValues.first_name.trim()) newErrors.first_name = "First name is required.";
@@ -146,12 +223,13 @@ export default function Register() {
     if (!formValues.sport) newErrors.sport = "Sport is required.";
     if (!formValues.team.trim()) newErrors.team = "Team is required.";
     if (!formValues.position.trim()) newErrors.position = "Position is required.";
-    if (!formValues.number.trim()) newErrors.number = "Number is required.";
-    if (formValues.number.length < 14) newErrors.number = 'Phone Number Must be of 14 Digits Minimum';
+    
+    if (!formValues.number.trim()) newErrors.number = "Mobile Number is required.";
+    if (formValues.number.length < 14) newErrors.number = 'Mobile Number Must be of 14 Digits Minimum';
     if (!/^\(\d{3}\) \d{3}-\d{4}$/.test(formValues.number)) {
-      newErrors.number = 'Phone Number must be in the format (XXX) XXX-XXXX';
+      newErrors.number = 'Mobile Number must be in the format (XXX) XXX-XXXX';
     }
-    if (formValues.number.length > 14) newErrors.number = 'Phone Number Must be of 14 Digits Maximum';
+    if (formValues.number.length > 14) newErrors.number = 'Mobile Number Must be of 14 Digits Maximum';
     
 
     if (!formValues.bio.trim()) newErrors.bio = "Bio is required.";
@@ -263,7 +341,7 @@ export default function Register() {
   <div className="flex flex-col justify-center bg-white p-4 w-full">
     <div className="bg-white rounded-lg p-0 w-full md:max-w-3xl lg:max-w-5xl m-auto">
       <h2 className="text-2xl lg:text-3xl font-bold mb-2 text-left">Add Your Personal Information</h2>
-      <p className="text-red-500">( All fields are mandatory including player&lsquo;s photo upload.)</p>
+      <p className="text-red-500">( All fiels are mandatory including player&lsquo;s photo upload.)</p>
       {error && <p style={{ color: "red" }}>{error}</p>}
       {successMessage && <p style={{ color: "green" }}>{successMessage}</p>}
       <form onSubmit={handleSubmit} >
@@ -330,55 +408,6 @@ export default function Register() {
         </div>
 
        </div>
-       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 pb-5">
-        <div>
-          <label htmlFor="country" className="block text-gray-700 text-sm font-semibold mb-2">Country</label>
-          <select
-            name="country"
-            className="border border-gray-300 rounded-lg py-2 px-4 w-full"
-            value={formValues.country}
-            onChange={handleChange}
-          >
-            <option value="">Select</option>
-            <option value="Freshman">United States of America</option>
-           
-          </select>
-          
-          {validationErrors.country && <p className="text-red-500 text-sm">{validationErrors.country}</p>}
-        </div>
-        <div>
-          <label htmlFor="state" className="block text-gray-700 text-sm font-semibold mb-2">State</label>
-          
-        
-          <select
-        name="state"
-        id="state"
-        value={formValues.state}
-        onChange={handleChange}
-        className="border border-gray-300 rounded-lg py-2 px-4 w-full"
-      >
-        <option value="">Select a state</option>
-        {states.map((state) => (
-          <option key={state.abbreviation} value={state.abbreviation}>
-            {state.name}
-          </option>
-        ))}
-      </select>
-          {validationErrors.state && <p className="text-red-500 text-sm">{validationErrors.state}</p>}
-        </div>
-        <div>
-          <label htmlFor="city" className="block text-gray-700 text-sm font-semibold mb-2">City</label>
-          <input
-            type="text"
-            name="city"
-            className="border border-gray-300 rounded-lg py-2 px-4 w-full"
-            value={formValues.city}
-            onChange={handleChange}
-          />
-          {validationErrors.city && <p className="text-red-500 text-sm">{validationErrors.city}</p>}
-        </div>
-
-        </div>
        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 pb-5">
         <div>
           <label htmlFor="birthday" className="block text-gray-700 text-sm font-semibold mb-2">Birth Date</label>
@@ -449,15 +478,15 @@ export default function Register() {
             <option value="Soccer">Soccer</option>
             
           </select>
-          <p className="text-xs text-gray-500">( Right now, D1 NOTES is only available for soccer coaching )</p>
+          <p className="text-xs text-gray-500">( Right now, D1 Notes is only available for soccer coaching )</p>
           {validationErrors.sport && <p className="text-red-500 text-sm">{validationErrors.sport}</p>}
         </div>
 
         {/* Team */}
         <div>
-          <label htmlFor="team" className="block text-gray-700 text-sm font-semibold mb-2">Team Name</label>
+          <label htmlFor="team" className="block text-gray-700 text-sm font-semibold mb-2">Team Name/ Year</label>
           <input
-          placeholder="Team Name"
+          placeholder="Team Name/ 2024"
             type="text"
             name="team"
             className="border border-gray-300 rounded-lg py-2 px-4 w-full"
@@ -483,18 +512,36 @@ export default function Register() {
 
         {/* Number */}
         <div>
-          <label htmlFor="number" className="block text-gray-700 text-sm font-semibold mb-2">Mobile Number <span className="text-xs text-gray-500">(Optional)</span></label>
-          <input
-          placeholder="(342) 342-3423"
-          type="text"
-          name="number"
-          className="border border-gray-300 rounded-lg py-2 px-4 w-full"
-          value={formValues.number}
-          onChange={handlePhoneNumberChange}
-          maxLength={14} // (123) 456-7890 is 14 characters long
-        />
-          {validationErrors.number && <p className="text-red-500 text-sm">{validationErrors.number}</p>}
-        </div>
+  <label htmlFor="number" className="block text-gray-700 text-sm font-semibold mb-2">Mobile Number</label>
+  
+  <div className="flex">
+    <select  
+      name="countryCode" 
+      className="border border-gray-300 rounded-lg py-2 px-4 w-1/3 mr-1" // Added mr-4 for margin-right
+      value={formValues.countrycode} 
+      onChange={handleChange}
+    >
+     {countryCodes.map((item) => (
+        <option key={item.id} value={item.code}>
+          {item.code} ({item.country})
+        </option>
+      ))}
+    </select>
+
+    <input
+      placeholder="(342) 342-3423"
+      type="text"
+      name="number"
+      className="border border-gray-300 rounded-lg py-2 px-4 w-2/3"
+      value={formValues.number}
+      onChange={handlePhoneNumberChange}
+      maxLength={14} // (123) 456-7890 is 14 characters long
+    />
+  </div>
+
+  {validationErrors.number && <p className="text-red-500 text-sm">{validationErrors.number}</p>}
+</div>
+
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-6 pb-5">
         <div>
@@ -524,7 +571,55 @@ export default function Register() {
           {validationErrors.bio && <p className="text-red-500 text-sm">{validationErrors.bio}</p>}
         </div>
         </div>
-       
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 pb-5">
+        <div>
+          <label htmlFor="country" className="block text-gray-700 text-sm font-semibold mb-2">Country</label>
+          <select
+            name="country"
+            className="border border-gray-300 rounded-lg py-2 px-4 w-full"
+            value={formValues.country}
+            onChange={handleChange}
+          >
+            <option value="">Select</option>
+            <option value="United States of America">United States of America</option>
+           
+          </select>
+          
+          {validationErrors.country && <p className="text-red-500 text-sm">{validationErrors.country}</p>}
+        </div>
+        <div>
+          <label htmlFor="state" className="block text-gray-700 text-sm font-semibold mb-2">State</label>
+          
+        
+          <select
+        name="state"
+        id="state"
+        value={formValues.state}
+        onChange={handleChange}
+        className="border border-gray-300 rounded-lg py-2 px-4 w-full"
+      >
+        <option value="">Select a state</option>
+        {states.map((state) => (
+          <option key={state.abbreviation} value={state.abbreviation}>
+            {state.name}
+          </option>
+        ))}
+      </select>
+          {validationErrors.state && <p className="text-red-500 text-sm">{validationErrors.state}</p>}
+        </div>
+        <div>
+          <label htmlFor="city" className="block text-gray-700 text-sm font-semibold mb-2">City</label>
+          <input
+            type="text"
+            name="city"
+            className="border border-gray-300 rounded-lg py-2 px-4 w-full"
+            value={formValues.city}
+            onChange={handleChange}
+          />
+          {validationErrors.city && <p className="text-red-500 text-sm">{validationErrors.city}</p>}
+        </div>
+
+        </div>
         
 <div className="col-span-1 sm:col-span-2 lg:col-span-3 flex justify-center">
   <button

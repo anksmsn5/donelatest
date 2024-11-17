@@ -19,6 +19,8 @@ const Header: React.FC = () => {
   const router = useRouter();
   const [helpOpen, setHelpOpen] = useState<boolean>(false);
   const [isUserImageAvailable, setIsUserImageAvailable] = useState(false);
+  const createAccountRef = useRef<HTMLLIElement>(null);
+  const [createAccountOpen, setCreateAccountOpen] = useState<boolean>(false);
 
   // Refs to detect outside click
   const dropdownRef = useRef<HTMLLIElement>(null);
@@ -54,6 +56,7 @@ const Header: React.FC = () => {
   const closeMenu = () => {
     setMenuOpen(false);
   };
+  const toggleCreateAccount = () => setCreateAccountOpen(!createAccountOpen);
 
   useEffect(() => {
     const userImage = localStorage.getItem('userImage');
@@ -67,10 +70,12 @@ const Header: React.FC = () => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
         dropdownRef.current && !dropdownRef.current.contains(event.target as Node) &&
-        helpRef.current && !helpRef.current.contains(event.target as Node)
+        helpRef.current && !helpRef.current.contains(event.target as Node) &&
+        createAccountRef.current && !createAccountRef.current.contains(event.target as Node)
       ) {
         setDropdownOpen(false);
         setHelpOpen(false);
+        setCreateAccountOpen(false);
       }
     };
 
@@ -79,7 +84,7 @@ const Header: React.FC = () => {
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, [dropdownRef, helpRef, session]);
+  }, [dropdownRef, helpRef,createAccountRef,  session]);
 
   const fetchUserImage = async () => {
     try {
@@ -150,7 +155,7 @@ const Header: React.FC = () => {
             <ul className="flex flex-col md:flex-row md:space-x-4 space-y-4 md:space-y-0 mt-4 md:mt-0">
               {session ? (
                 <>
-                  {session?.user?.type !== 'coach' && isUserImageAvailable && (
+                  {session?.user?.type === 'player' && isUserImageAvailable && (
                     <li className="pt-[8px]">
                       <Link href="/browse" className="text-black hover:text-black-300" onClick={closeMenu}>
                         Browse Coaches
@@ -171,7 +176,7 @@ const Header: React.FC = () => {
                       </li>
                     </>
                   )}
-                  {session?.user?.type !== 'coach' && (
+                  {session?.user?.type === 'player' && (
                     <>
                       <li className="pt-[8px]">
                         <Link href="/dashboard" className="text-black hover:text-black-300" onClick={closeMenu}>
@@ -180,6 +185,20 @@ const Header: React.FC = () => {
                       </li>
                       <li className="pt-[8px]">
                         <Link href="/dashboard" className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick={closeMenu}>
+                          Hello, {session?.user?.name || "Player"}!
+                        </Link>
+                      </li>
+                    </>
+                  )}
+                   {session?.user?.type === 'enterprise' && (
+                    <>
+                      <li className="pt-[8px]">
+                        <Link href="/enterprise/dashboard" className="text-black hover:text-black-300" onClick={closeMenu}>
+                          Dashboard
+                        </Link>
+                      </li>
+                      <li className="pt-[8px]">
+                        <Link href="/enterprise/dashboard" className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick={closeMenu}>
                           Hello, {session?.user?.name || "Player"}!
                         </Link>
                       </li>
@@ -224,21 +243,39 @@ const Header: React.FC = () => {
                 </>
               ) : (
                 <>
+                 
                   <li>
                     <Link href="/browse" className="text-black hover:text-black-300" onClick={closeMenu}>
                       Browse Coaches
                     </Link>
                   </li>
-                  <li>
-                    <Link href="/coach/signup" className="text-black hover:text-black-300" onClick={closeMenu}>
-                      Coach Sign Up
-                    </Link>
+                  <li ref={createAccountRef} className="relative">
+                    <button onClick={toggleCreateAccount} className="text-black hover:text-blue-300">
+                      Create Account
+                    </button>
+                    {createAccountOpen && (
+                      <div className="absolute left-0 mt-2 w-48 bg-white shadow-lg rounded-md">
+                        <ul>
+                          <li className="pt-[8px]">
+                            <Link href="/register" className="block px-4 py-2 text-black hover:bg-blue-300" onClick={closeMenu}>
+                              Player Signup
+                            </Link>
+                          </li>
+                          <li className="pt-[8px]">
+                            <Link href="/coach/signup" className="block px-4 py-2 text-black hover:bg-blue-300" onClick={closeMenu}>
+                              Coach Signup
+                            </Link>
+                          </li>
+                          <li className="pt-[8px]">
+                            <Link href="/enterprise/signup" className="block px-4 py-2 text-black hover:bg-blue-300" onClick={closeMenu}>
+                              Enterprise Signup
+                            </Link>
+                          </li>
+                        </ul>
+                      </div>
+                    )}
                   </li>
-                  <li>
-                    <Link href="/register" className="text-black hover:text-black-300" onClick={closeMenu}>
-                      Player Sign Up
-                    </Link>
-                  </li>
+                  
                   <li>
                     <Link href="/login" className="text-black hover:text-blue-300" onClick={closeMenu}>
                       Login
@@ -252,7 +289,7 @@ const Header: React.FC = () => {
                 </button>
                 {helpOpen && (
                   <div className="absolute right-0 mt-2 w-56 bg-white shadow-lg rounded-md p-4">
-                    <p>For technical difficulties and general site feedback, email us at </p>
+                    <p>For technical difficulties and general site feedback, Email us at </p>
                     <a className="font-bold" href='mailto:team@d1notes.com'>team@d1notes.com</a>
                     <button onClick={toggleHelp} className="text-blue-500 mt-2">
                       Close

@@ -72,7 +72,7 @@ export default function Home(): JSX.Element {
             <span className="text-blue-600">Youth Soccer</span>
           </h1>
           <p className="mt-4 text-lg text-gray-500">
-            D1 Notes is setting the standard for game film evaluation that offers
+            D1 NOTES is setting the standard for game film evaluation that offers
             young athletes the edge they have been missing.
           </p>
         </div>

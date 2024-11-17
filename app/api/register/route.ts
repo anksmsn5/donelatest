@@ -3,12 +3,13 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { hash } from 'bcryptjs';
 import { db } from '../../../lib/db';
-import { users } from '../../../lib/schema'
+import { users, otps } from '../../../lib/schema'
 import debug from 'debug';
-import { eq } from 'drizzle-orm';
+import { eq, and, gt } from 'drizzle-orm';
+import { sendEmail } from '@/lib/helpers';
  
 import { SECRET_KEY } from '@/lib/constants';
-
+import nodemailer from "nodemailer";
 import jwt from 'jsonwebtoken';
 import next from 'next';
  
@@ -17,11 +18,26 @@ export async function POST(req: NextRequest) {
 
   const logError = debug('app:error');
   const body = await req.json();
-  const { email, password } = body;
+  const { email, password, otp } = body;
   if (!email || !password) {
     return NextResponse.json({ message: 'Email and password are required' }, { status: 400 });
   }
 
+  const existingOtp = await db
+  .select()
+  .from(otps)
+  .where(and(
+    eq(otps.email, email), 
+    eq(otps.otp, otp)
+  ))
+  .limit(1)
+  .execute();
+
+  if(existingOtp.length < 1)
+  {
+    return NextResponse.json({ message: 'OTP Do not match. Enter valid OTP.' }, { status: 400 });
+  }
+    
   const hashedPassword = await hash(password, 10);
 
   try {
@@ -47,7 +63,13 @@ export async function POST(req: NextRequest) {
       createdAt: new Date(), // Store the current timestamp as createdAt
     }).returning();
 
-    
+    const emailResult = await sendEmail({
+      to: email,
+      subject: "D1 NOTES Player Registration",
+      text: "D1 NOTES Player Registration",
+      html: `<p>Dear Player! Your account creation as a Player on D1 NOTES has been started. </p><p>Please complete your profile in next step to enjoy the evaluation from best coaches.</p>`,
+  });
+
 
     return NextResponse.json({ id: insertedUser }, { status: 200 });
   } catch (error) {
@@ -80,11 +102,13 @@ export async function PUT(req: NextRequest) {
   const bio = formData.get('bio') as string;
   const jersey = formData.get('jersey') as string;
   const league = formData.get('league') as string;
+  const countrycode = formData.get('countrycode') as string;
  
 
   const imageFile = formData.get('image') as string | null;
   
   const playerIDAsNumber = parseInt(playerID, 10);
+  try{
   const updatedUser = await db
     .update(users)
     .set({
@@ -104,13 +128,38 @@ export async function PUT(req: NextRequest) {
       bio:bio || null,
       jersey:jersey||null,
       league:league||null,
+      countrycode:league||null,
       image:imageFile
 
     })
     .where(eq(users.id, playerIDAsNumber))
 
     .execute();
+  
+    const user = await db
+    .select({
+        firstName: users.first_name,
+        lastName: users.last_name,
+        email: users.email // Add email to the selection
+    })
+    .from(users)
+    .where(eq(users.id, playerIDAsNumber))
+    .execute()
+    .then(result => result[0]);
+    
+    const emailResult = await sendEmail({
+      to: user.email,
+      subject: "D1 NOTES Player Registration",
+      text: "D1 NOTES Player Registration",
+      html: `<p>Dear ${user.firstName} ${user.lastName || ''}! Your account creation as a Player on D1 NOTES has been started. </p><p>Please complete your profile in next step to enjoy the evaluation from best coaches.</p>`,
+  });
   return NextResponse.json({ message:"Profile Completed", image:imageFile }, { status: 200 });
+}
+catch (error) {
+  return NextResponse.json({ message:"Some issue occured"}, { status: 500 });
+
+}
+ 
 }
 
 

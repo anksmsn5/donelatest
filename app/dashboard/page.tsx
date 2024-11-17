@@ -76,17 +76,16 @@ const Dashboard: React.FC = () => {
         
       },
       {
-        Header: "Coach Name",  // Combine all video links under this column
-        accessor: "first_name",  // Or just leave it as undefined if it's not needed
+        Header: "Coach Name",
+        accessor: "first_name",
         Cell: ({ row }: CellProps<Evaluation>) => (
           <div className="space-y-2"> {/* Stack links vertically with spacing */}
-           <a href={`coach/${row.original.slug}`} target="_blank" rel="noopener noreferrer">
-    {row.original.first_name} {row.original.last_name}
+          <a href={`coach/${row.original.slug}`} target="_blank" rel="noopener noreferrer">
+   {row.original.first_name} {row.original.last_name}
 </a>
-          </div>
+         </div>
         ),
       },
- 
       { Header: "Review Title", accessor: "review_title" }, // Use the correct accessor
       {
         Header: "Video Links",  // Combine all video links under this column
