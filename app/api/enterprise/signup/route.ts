@@ -49,6 +49,15 @@ export async function POST(req: NextRequest) {
             createdAt: new Date(),
         }).returning({ insertedId: enterprises.id });
 
+        const emailResult = await sendEmail({
+            to: email,
+            subject: "D1 NOTES Enterprise  Registration",
+            text: "D1 NOTES Enterprise Registration",
+            html: `<p>Dear ${contactPerson}! You have successfully created D1 NOTES Enterprise account for ${organizationName}. </p><p>Your login credentials are as given below:.</p>
+            <p><b>Email: </b>${email}</p>
+            <p><b>Password: </b>${password}</p>`,
+        });
+
         return NextResponse.json({ message: "Profile Completed", image: imageFile }, { status: 200 });
     }
     catch (error) {

@@ -3,10 +3,10 @@
   "/enterprise/paymentDone/page": "app/enterprise/paymentDone/page.js",
   "/enterprise/licenses/page": "app/enterprise/licenses/page.js",
   "/payment-history/page": "app/payment-history/page.js",
-  "/enterprise/signup/page": "app/enterprise/signup/page.js",
   "/enterprise/upgrade/page": "app/enterprise/upgrade/page.js",
   "/api/packages/route": "app/api/packages/route.js",
   "/api/auth/[...nextauth]/route": "app/api/auth/[...nextauth]/route.js",
-  "/api/packages/packagedetails/route": "app/api/packages/packagedetails/route.js",
-  "/api/userimage/route": "app/api/userimage/route.js"
+  "/api/userimage/route": "app/api/userimage/route.js",
+  "/login/page": "app/login/page.js",
+  "/enterprise/signup/page": "app/enterprise/signup/page.js"
 }
