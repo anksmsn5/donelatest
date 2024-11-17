@@ -118,7 +118,7 @@ export default function Signup() {
         loginAs: formValues.loginAs,
       });
 
-     /// window.location.href = '/enterprise/dashboard';
+     window.location.href = '/enterprise/dashboard';
     } catch (err) {
       setLoading(false);
       showError(err instanceof Error ? err.message : 'Something went wrong!');
@@ -376,14 +376,20 @@ export default function Signup() {
             </div>
             
 
-            {/* Submit Button */}
-            <button
-              type="submit"
-              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-lg w-full"
-              disabled={loading}
-            >
-              {loading ? <FaSpinner className="animate-spin mr-2" /> : <FaCheck className="mr-2" />} Sign Up
-            </button>
+            <div className="flex items-center justify-center ">
+  <button
+    type="submit"
+    className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-lg flex items-center justify-center"
+    disabled={loading}
+  >
+    {loading ? (
+      <FaSpinner className="animate-spin mr-2" />
+    ) : (
+      <FaCheck className="mr-2" />
+    )}
+    <span>Sign Up</span>
+  </button>
+</div>
           </form>
         </div>
       </div>

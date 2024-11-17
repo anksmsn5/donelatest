@@ -29,6 +29,33 @@
       "static/chunks/main-app.js",
       "static/css/app/enterprise/signup/page.css",
       "static/chunks/app/enterprise/signup/page.js"
+    ],
+    "/enterprise/dashboard/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/css/app/enterprise/dashboard/page.css",
+      "static/chunks/app/enterprise/dashboard/page.js"
+    ],
+    "/enterprise/paymentDone/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/enterprise/paymentDone/page.js"
+    ],
+    "/enterprise/licenses/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/enterprise/licenses/page.js"
+    ],
+    "/payment-history/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/payment-history/page.js"
+    ],
+    "/enterprise/upgrade/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/css/app/enterprise/upgrade/page.css",
+      "static/chunks/app/enterprise/upgrade/page.js"
     ]
   }
 }
