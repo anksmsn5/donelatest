@@ -13,7 +13,7 @@ const formSchema = z.object({
   organizationName: z.string().min(1, 'Organization Name is required.'),
   contactPerson: z.string().min(1, 'Contact Person is required.'),
   email: z.string().email('Invalid email format.'),
-  mobileNumber: z.string().min(10, 'Mobile Number must be at least 10 digits.'),
+  mobileNumber: z.string().min(14, 'Mobile Number must be at least 10 digits.'),
   address: z.string().min(1, 'Address is required.'),
   country: z.string().min(1, 'Country is required.'),
   state: z.string().min(1, 'State is required.'),
@@ -51,12 +51,26 @@ export default function Signup() {
   const [otpLoading, setOtpLoading] = useState<boolean>(false);
   const [logoPreview, setLogoPreview] = useState<string | null>(null);
   const { data: session } = useSession();
+  const formatPhoneNumber = (value: string) => {
+    if (!value) return value;
 
-  useEffect(() => {
-    if (session && !session.user.name) {
-      window.location.href = '/completeprofile';
+    const phoneNumber = value.replace(/[^\d]/g, ""); // Remove all non-numeric characters
+
+    const phoneNumberLength = phoneNumber.length;
+
+    if (phoneNumberLength < 4) return phoneNumber;
+
+    if (phoneNumberLength < 7) {
+      return `(${phoneNumber.slice(0, 3)}) ${phoneNumber.slice(3)}`;
     }
-  }, [session]);
+
+    return `(${phoneNumber.slice(0, 3)}) ${phoneNumber.slice(3, 6)}-${phoneNumber.slice(6, 10)}`;
+  };
+  const handlePhoneNumberChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const formattedNumber = formatPhoneNumber(event.target.value);
+    setFormValues({ ...formValues, mobileNumber: formattedNumber });
+  };
+ 
 
   const sendOtp = async () => {
  
@@ -223,9 +237,11 @@ export default function Signup() {
                 </label>
                 <input
                   type="text"
+                  placeholder='(444) 444-4444'
                   name="mobileNumber"
                   value={formValues.mobileNumber}
-                  onChange={handleChange}
+                 
+                  onChange={handlePhoneNumberChange}
                   className="border border-gray-300 rounded-lg py-2 px-4 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
                   onFocus={() => {
                     if (!otpSent) sendOtp(); // Trigger OTP when focusing on the password field
