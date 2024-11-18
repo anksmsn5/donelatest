@@ -1,12 +1,9 @@
 "use client"
 import { useState, useEffect } from 'react';
-import { useSearchParams } from 'next/navigation'; // Use this hook to access query params
 import Loading from '../components/Loading';
 import { showError, showSuccess } from '../components/Toastr';
 
 const ResetPasswordPage = () => {
-  const searchParams = useSearchParams();
-  const token = searchParams.get('token'); // Access the token from the URL query
   const [isValid, setIsValid] = useState<boolean | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [formData, setFormData] = useState<{
@@ -16,16 +13,28 @@ const ResetPasswordPage = () => {
   }>({
     password: '',
     confirm_password: '',
-    token: token || null, // token from URL or null initially
+    token: null, // token will be fetched from the URL
   });
 
   const [errors, setErrors] = useState({
     password: '',
     confirm_password: '',
-    token:''
+    token: ''
   });
 
   const [submissionStatus, setSubmissionStatus] = useState<string | null>(null);
+
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const tokenFromUrl = urlParams.get('token');
+    if (tokenFromUrl) {
+      setFormData((prevData) => ({
+        ...prevData,
+        token: tokenFromUrl,
+      }));
+      validateToken(tokenFromUrl);
+    }
+  }, []);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { id, value } = e.target;
@@ -36,7 +45,7 @@ const ResetPasswordPage = () => {
   };
 
   const validateForm = () => {
-    const newErrors = { password: '', confirm_password: '', token:'' };
+    const newErrors = { password: '', confirm_password: '', token: '' };
     let isValid = true;
 
     if (!formData.password) {
@@ -76,7 +85,7 @@ const ResetPasswordPage = () => {
 
         if (response.ok) {
           showSuccess('Your message has been sent successfully!');
-          setFormData({ password: '', confirm_password: '', token:'' });
+          setFormData({ password: '', confirm_password: '', token: '' });
           setLoading(false);
           window.location.href = '/login';
         } else {
@@ -89,13 +98,6 @@ const ResetPasswordPage = () => {
       }
     }
   };
-
-  useEffect(() => {
-    if (token) {
-      // Validate the token on component mount
-      validateToken(token);
-    }
-  }, [token]);
 
   const validateToken = async (token: string) => {
     try {
@@ -167,14 +169,14 @@ const ResetPasswordPage = () => {
         </div>
       ) : (
         <div className="container mx-auto px-4 md:px-8 lg:px-12 py-12">
-    <div className="bg-red-100 border-l-4 border-red-500 text-red-700 p-4">
-      <h3 className="font-semibold text-lg">Invalid Token</h3>
-      <p className="mt-2">The token you provided is invalid or has expired. Please try again with a valid token.</p>
-      <a href="/forgot-password" className="mt-4 text-blue-600 hover:text-blue-800 font-semibold">
-        Request a new token
-      </a>
-    </div>
-  </div>
+          <div className="bg-red-100 border-l-4 border-red-500 text-red-700 p-4">
+            <h3 className="font-semibold text-lg">Invalid Token</h3>
+            <p className="mt-2">The token you provided is invalid or has expired. Please try again with a valid token.</p>
+            <a href="/forgot-password" className="mt-4 text-blue-600 hover:text-blue-800 font-semibold">
+              Request a new token
+            </a>
+          </div>
+        </div>
       )}
     </div>
   );
