@@ -6,6 +6,7 @@ import Image from 'next/image';
 import { showError, showSuccess } from '../../components/Toastr';
 import { z } from 'zod';
 import { FaCheck, FaSpinner } from 'react-icons/fa';
+import TermsAndConditions from '@/app/components/TermsAndConditions';
 
 // Zod schema for validation
 const formSchema = z.object({
@@ -26,7 +27,7 @@ export default function Register() {
   const [otpLoading, setOtpLoading] = useState<boolean>(false); 
   const { data: session } = useSession();
 
-  
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const sendOtp = async () => {
     if (!formSchema.shape.email.safeParse(formValues.email).success) {
       return; // Don't send OTP if email is invalid
@@ -200,7 +201,7 @@ if (!termsAccepted) {
               />
               <label htmlFor="terms" className="text-gray-700 text-sm">
                 I accept the{' '}
-                <a href="/terms" className="text-blue-500 hover:underline">
+                <a href="#"  onClick={() => setIsModalOpen(true)} className="text-blue-500 hover:underline">
                   terms & conditions
                 </a>
               </label>
@@ -230,6 +231,7 @@ if (!termsAccepted) {
               </a>
             </p>
           </div>
+          <TermsAndConditions  isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}/>
         </div>
 
         {/* Brand Section */}

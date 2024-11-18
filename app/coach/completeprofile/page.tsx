@@ -412,7 +412,7 @@ export default function Register() {
         <div className="flex-1 bg-white p-1 md:p-8">
           <div className="bg-white rounded-lg p-4  mx-auto">
           <h2 className="text-2xl lg:text-3xl font-bold mb-2 text-left">Add Your Personal Information</h2>
-          <p className="text-red-500">( All fiels are mandatory including photo upload.)</p>
+          <p className="text-red-500">( All fields are mandatory including coach&lsquo;s photo upload.)</p>
             {error && <p className="text-red-600">{error}</p>}
             {successMessage && <p className="text-green-600">{successMessage}</p>}
             {loading && <p className="text-blue-600">Submitting your information... Please wait.</p>}

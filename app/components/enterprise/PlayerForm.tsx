@@ -368,7 +368,7 @@ if (!response.ok) {
   <div className="flex flex-col justify-center bg-white p-2 w-full">
     <div className="bg-white rounded-lg p-0 w-full md:max-w-3xl lg:max-w-5xl m-auto">
      
-      <p className="text-red-500">( All fiels are mandatory including player&lsquo;s photo upload.)</p>
+      <p className="text-red-500">( All fiedls are mandatory including player&lsquo;s photo upload.)</p>
       {error && <p style={{ color: "red" }}>{error}</p>}
       {successMessage && <p style={{ color: "green" }}>{successMessage}</p>}
       <form onSubmit={handleSubmit} >

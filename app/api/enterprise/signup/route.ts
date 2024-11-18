@@ -20,6 +20,7 @@ export async function POST(req: NextRequest) {
     const mobileNumber = formData.get('mobileNumber') as string;
     const address = formData.get('address') as string;
     const country = formData.get('country') as string;
+    const countryCodes = formData.get('countryCodes') as string;
     const state = formData.get('state') as string;
     const city = formData.get('city') as string;
     const logo = formData.get('logo') as string;
@@ -38,6 +39,7 @@ export async function POST(req: NextRequest) {
             contactPerson,
             email,
             mobileNumber,
+            countryCodes,
             address,
             country,
             state,

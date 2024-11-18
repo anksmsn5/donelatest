@@ -4,6 +4,7 @@ import { signIn, useSession } from 'next-auth/react';
 import Brand from '../public/images/brand.jpg';
 import Image from 'next/image';
 import { showSuccess, showError } from '../components/Toastr';
+import ForgotPassword from '../components/ForgotPassword';
 
 interface FormValues {
   email: string;
@@ -186,9 +187,7 @@ export default function Login() {
             </p>
             <p className="text-center text-gray-600 text-sm mt-4">
              Forgot password?{' '}
-              <a href="/register" className="text-blue-500 hover:underline">
-                Click to Reset
-              </a>
+             <ForgotPassword/>
             </p>
           </div>
         </div>

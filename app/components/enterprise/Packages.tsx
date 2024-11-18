@@ -65,7 +65,7 @@ interface PackageData {
             className="bg-white text-black rounded-lg shadow-lg p-6 w-80 border-t-8 border-blue-500"
           >
             <h3 className="text-2xl font-semibold text-center">{pkg.packageName}</h3>
-            <p className="text-center text-4xl font-bold mt-4">${pkg.amount}<span className="text-lg"> per month</span></p>
+            <p className="text-center text-4xl font-bold mt-4">${pkg.amount} </p>
             <p className="text-center text-sm text-gray-500  mt-5">{pkg.details}</p>
             <button
             onClick={() => handleBuyNow(pkg.id.toString(),parseFloat(pkg.amount))}

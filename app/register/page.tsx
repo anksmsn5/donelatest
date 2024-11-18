@@ -6,6 +6,7 @@ import Image from 'next/image';
 import { showError, showSuccess } from '../components/Toastr';
 import { z } from 'zod';
 import { FaCheck, FaSpinner } from 'react-icons/fa';
+import TermsAndConditions from '../components/TermsAndConditions';
 
 // Zod schema for validation - Removed .optional() to make 'otp' a required string
 const formSchema = z.object({
@@ -29,7 +30,7 @@ export default function Register() {
   const [loading, setLoading] = useState<boolean>(false);
   const [otpLoading, setOtpLoading] = useState<boolean>(false); // Loader state for OTP
   const { data: session } = useSession();
-
+  const [isModalOpen, setIsModalOpen] = useState(false);
   useEffect(() => {
     if (session && !session.user.name) {
       window.location.href = '/completeprofile';
@@ -198,7 +199,7 @@ export default function Register() {
               />
               <label htmlFor="terms" className="text-gray-700 text-sm">
                 I accept the{' '}
-                <a href="/terms" className="text-blue-500 hover:underline">
+                <a href="#" className="text-blue-500 hover:underline" onClick={() => setIsModalOpen(true)}>
                   terms & conditions
                 </a>
               </label>
@@ -223,11 +224,13 @@ export default function Register() {
           </form>
           <p className="text-center text-gray-600 text-sm mt-4">
             Already have an account?{' '}
-            <a href="/login" className="text-blue-500 hover:underline">
+            <a href="/login"  className="text-blue-500 hover:underline">
               Login
             </a>
           </p>
         </div>
+        <TermsAndConditions  isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}/>
+      
       </div>
 
       {/* Brand Section */}

@@ -430,7 +430,7 @@ const CoachForm: React.FC<CoachFormProps> = ({ onSubmit }) => {
                     <div className="flex-1 bg-white p-1 md:p-8">
                         <div className="bg-white rounded-lg p-4  mx-auto">
 
-                            <p className="text-red-500">( All fiels are mandatory including photo upload.)</p>
+                            <p className="text-red-500">( All fiedls are mandatory including coach&lsquo;s photo upload.)</p>
                             {error && <p className="text-red-600">{error}</p>}
                             {successMessage && <p className="text-green-600">{successMessage}</p>}
                             {loading && <p className="text-blue-600">Submitting your information... Please wait.</p>}

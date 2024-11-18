@@ -1,28 +1,15 @@
 {
   "pages": {
-    "/enterprise/coaches/page": [
+    "/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/css/app/enterprise/coaches/page.css",
-      "static/chunks/app/enterprise/coaches/page.js"
+      "static/chunks/app/page.js"
     ],
     "/layout": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
       "static/css/app/layout.css",
       "static/chunks/app/layout.js"
-    ],
-    "/login/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/css/app/login/page.css",
-      "static/chunks/app/login/page.js"
-    ],
-    "/register/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/css/app/register/page.css",
-      "static/chunks/app/register/page.js"
     ],
     "/enterprise/signup/page": [
       "static/chunks/webpack.js",
@@ -36,26 +23,35 @@
       "static/css/app/enterprise/dashboard/page.css",
       "static/chunks/app/enterprise/dashboard/page.js"
     ],
-    "/enterprise/paymentDone/page": [
+    "/login/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/enterprise/paymentDone/page.js"
+      "static/css/app/login/page.css",
+      "static/chunks/app/login/page.js"
     ],
-    "/enterprise/licenses/page": [
+    "/register/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/enterprise/licenses/page.js"
+      "static/css/app/register/page.css",
+      "static/chunks/app/register/page.js"
     ],
-    "/payment-history/page": [
+    "/coach/signup/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/payment-history/page.js"
+      "static/css/app/coach/signup/page.css",
+      "static/chunks/app/coach/signup/page.js"
     ],
-    "/enterprise/upgrade/page": [
+    "/reset-password/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/css/app/enterprise/upgrade/page.css",
-      "static/chunks/app/enterprise/upgrade/page.js"
+      "static/css/app/reset-password/page.css",
+      "static/chunks/app/reset-password/page.js"
+    ],
+    "/coach/dashboard/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/css/app/coach/dashboard/page.css",
+      "static/chunks/app/coach/dashboard/page.js"
     ]
   }
 }

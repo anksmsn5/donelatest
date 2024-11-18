@@ -63,7 +63,7 @@ const Sidebar: React.FC = () => {
             <a href="/enterprise/upgrade" className="flex items-center space-x-2 p-2">
             
               <FaDollarSign className='text-xl'/>
-              <span>Upgrade Package</span>
+              <span>Purchase More Licenses</span>
             </a>
           </li>
 

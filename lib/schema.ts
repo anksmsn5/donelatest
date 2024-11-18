@@ -13,6 +13,7 @@ import {
   integer // Ensure integer is imported from drizzle-orm/pg-core
 } from "drizzle-orm/pg-core";
 import { number } from "zod";
+ 
 
 // Users table
 export const users = pgTable(
@@ -163,6 +164,7 @@ export const enterprises=pgTable('enterprises', {
   package_id: integer('package_id'),
   email: text('email').notNull(),
   mobileNumber: text('mobileNumber'),
+  countryCodes: text('countryCodes'),
   address: text('address'),
   country: text('country'),
   state: text('state'),
@@ -206,3 +208,13 @@ export const licenses=pgTable('licenses', {
   status:text('status').notNull(),
   createdAt: timestamp('createdAt').defaultNow().notNull(),
 });
+
+export const forgetPassword=pgTable('forgetPassword', {
+  id: serial('id').primaryKey(),
+  email: text('email').notNull(),
+  token: text('token').notNull(),
+  role: text('role').notNull(),
+ 
+  createdAt: timestamp('createdAt').defaultNow().notNull(),
+});
+

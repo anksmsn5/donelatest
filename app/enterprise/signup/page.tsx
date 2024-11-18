@@ -7,6 +7,8 @@ import { showError, showSuccess } from '../../components/Toastr';
 import { z } from 'zod';
 import DefaultPic from "../../public/default.jpg";
 import { FaCheck, FaSpinner } from 'react-icons/fa';
+import { countryCodesList } from '@/lib/constants';
+import TermsAndConditions from '@/app/components/TermsAndConditions';
 
 // Zod schema for validation
 const formSchema = z.object({
@@ -16,6 +18,7 @@ const formSchema = z.object({
   mobileNumber: z.string().min(14, 'Mobile Number must be at least 10 digits.'),
   address: z.string().min(1, 'Address is required.'),
   country: z.string().min(1, 'Country is required.'),
+  countryCodes: z.string().min(1, 'Country Code is required.'),
   state: z.string().min(1, 'State is required.'),
   city: z.string().min(1, 'City is required.'),
   password: z.string().min(6, 'Password must be at least 6 characters long.'),
@@ -34,6 +37,7 @@ export default function Signup() {
     contactPerson: '',
     email: '',
     mobileNumber: '',
+    countryCodes: '',
     address: '',
     country: '',
     state: '',
@@ -46,7 +50,7 @@ export default function Signup() {
   });
   const [termsAccepted, setTermsAccepted] = useState(false);
   const [otpSent, setOtpSent] = useState(false);
-  
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [loading, setLoading] = useState<boolean>(false);
   const [otpLoading, setOtpLoading] = useState<boolean>(false);
   const [logoPreview, setLogoPreview] = useState<string | null>(null);
@@ -145,7 +149,7 @@ export default function Signup() {
     }
   };
 
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = event.target;
     setFormValues({ ...formValues, [name]: value });
     if (name === "email") setOtpSent(false);
@@ -231,22 +235,39 @@ export default function Signup() {
                   
                 />
               </div>
+              
               <div className="flex-1">
                 <label htmlFor="mobileNumber" className="block text-gray-700 text-sm font-semibold mb-2">
                   Mobile Number
                 </label>
-                <input
-                  type="text"
-                  placeholder='(444) 444-4444'
-                  name="mobileNumber"
-                  value={formValues.mobileNumber}
-                 
-                  onChange={handlePhoneNumberChange}
-                  className="border border-gray-300 rounded-lg py-2 px-4 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  onFocus={() => {
-                    if (!otpSent) sendOtp(); // Trigger OTP when focusing on the password field
-                  }}
-                />
+                <div className="flex">
+    <select  
+      name="countryCodes" 
+      className="border border-gray-300 rounded-lg py-2 px-4 w-1/3 mr-1" // Added mr-4 for margin-right
+      value={formValues.countryCodes} 
+      onChange={handleChange}
+    >
+     {countryCodesList.map((item) => (
+        <option key={item.id} value={item.code}>
+          {item.code} ({item.country})
+        </option>
+      ))}
+    </select>
+
+    <input
+      placeholder="(342) 342-3423"
+      type="text"
+      name="number"
+      className="border border-gray-300 rounded-lg py-2 px-4 w-2/3"
+      value={formValues.mobileNumber}
+      onChange={handlePhoneNumberChange}
+      maxLength={14} 
+      onFocus={() => {
+        if (!otpSent) sendOtp(); // Trigger OTP when focusing on the password field
+      }}
+    />
+  </div>
+          
                  {otpLoading && <FaSpinner className="animate-spin ml-2 text-blue-500" />}
               </div>
             </div>
@@ -387,7 +408,7 @@ export default function Signup() {
                   onChange={(e) => setTermsAccepted(e.target.checked)}
                   className="mr-2"
                 />
-                <span className="text-gray-700 text-sm font-semibold">I accept the terms and conditions.</span>
+                <span className="text-gray-700 text-sm font-semibold">I accept the <a href="#" className="text-blue-500 hover:underline" onClick={() => setIsModalOpen(true)}>terms and conditions</a>.</span>
               </label>
             </div>
             
@@ -407,9 +428,12 @@ export default function Signup() {
   </button>
 </div>
           </form>
+          <TermsAndConditions  isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}/>
+      
         </div>
       </div>
-
+      
+       
       {/* Brand Section */}
       <div className="flex-1 hidden md:block">
         <Image src={Brand} alt="brand" layout="responsive" width={550} height={500} className="object-cover" />
