@@ -67,24 +67,30 @@ const Header: React.FC = () => {
       fetchUserImage();
     }
 
+   
+  }, [session]);
+
+
+  useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (
-        dropdownRef.current && !dropdownRef.current.contains(event.target as Node) &&
-        helpRef.current && !helpRef.current.contains(event.target as Node) &&
-        createAccountRef.current && !createAccountRef.current.contains(event.target as Node)
-      ) {
+      const dropdowns = [dropdownRef.current, helpRef.current, createAccountRef.current];
+      const clickedInsideDropdown = dropdowns.some(
+        (ref) => ref && ref.contains(event.target as Node)
+      );
+  
+      if (!clickedInsideDropdown) {
         setDropdownOpen(false);
         setHelpOpen(false);
         setCreateAccountOpen(false);
       }
     };
-
+  
     document.addEventListener('mousedown', handleClickOutside);
-
+  
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, [dropdownRef, helpRef,createAccountRef,  session]);
+  }, []);
 
   const fetchUserImage = async () => {
     try {
