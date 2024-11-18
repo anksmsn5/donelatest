@@ -29,9 +29,9 @@ export async function POST(req: NextRequest) {
         }
         if (tokens[0].role == 'player') {
            
-            const user = await db.update(coaches).set({
+            const user = await db.update(users).set({
                 password: hashedPassword,
-            }).where(eq(coaches.email, tokens[0].email));
+            }).where(eq(users.email, tokens[0].email));
         }
         if (tokens[0].role == 'enterprise') {
             
