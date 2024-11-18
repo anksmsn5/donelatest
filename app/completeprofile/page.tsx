@@ -425,14 +425,16 @@ export default function Register() {
         {/* Grade Level */}
         <div>
           <label htmlFor="grade_level" className="block text-gray-700 text-sm font-semibold mb-2"> Level</label>
-          <input
-          placeholder="Specify level"
-            type="text"
-            name="grade_level"
-            className="border border-gray-300 rounded-lg py-2 px-4 w-full"
-            value={formValues.grade_level}
-            onChange={handleChange}
-          />
+
+          <select name="grade_level" onChange={handleChange} className="border border-gray-300 rounded-lg py-2 px-4 w-full" value={formValues.grade_level}>
+            <option value="">Select</option>
+            <option value="Rec">Rec</option>
+            <option value="Club">Club</option>
+            <option value="School">School</option>
+            <option value="Semi Pro">Semi Pro</option>
+            <option value="Pro">Pro</option>
+          </select>
+ 
           
           {validationErrors.grade_level && <p className="text-red-500 text-sm">{validationErrors.grade_level}</p>}
         </div>
@@ -548,7 +550,7 @@ export default function Register() {
           <label htmlFor="bio" className="block text-gray-700 text-sm font-semibold mb-2">League</label>
           <input
           type="text"
-            placeholder="Specify experience league (AYSO, club, school, etc.)"
+            placeholder="Rec, AYSO, Club, Pre EcnL, Ercl, Acedemy, NPL, BPC, MSL, High School and College"
             name="league"
             className="border border-gray-300 rounded-lg py-2 px-4 w-full"
             value={formValues.league}
@@ -561,8 +563,7 @@ export default function Register() {
         <div>
           <label htmlFor="bio" className="block text-gray-700 text-sm font-semibold mb-2">Experience/Accolades</label>
           <textarea
-            placeholder="Tell us about your player’s experience/ competition level, any 
-          accolades and goals."
+            placeholder="Tell us about your player’s experience/competition level, any accolades and aspirations."
             name="bio"
             className="border border-gray-300 rounded-lg py-2 px-4 w-full"
             value={formValues.bio}
