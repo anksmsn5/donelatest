@@ -6,9 +6,11 @@ import Brand from "../public/images/brand.jpg";
 import Image from "next/image";
 import DefaultPic from "../public/default.jpg";
 import { useSession } from "next-auth/react";
-
+import { type PutBlobResult } from '@vercel/blob';
+import { upload } from '@vercel/blob/client';
 import Select from "react-select";
 import { FaCheck, FaSpinner } from "react-icons/fa";
+import FileUploader from "../components/FileUploader";
 interface FormValues {
   first_name: string;
   last_name: string;
@@ -58,6 +60,7 @@ export default function Register() {
   const [validationErrors, setValidationErrors] = useState<Partial<FormValues>>({});
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [loading, setLoading] = useState<boolean>(false); 
+  const [photoUpoading, setPhotoUpoading] = useState<boolean>(false); 
   const [maxDate, setMaxDate] = useState('');
   const positionOptions = [
     { value: "Goalkeeper", label: "Goalkeeper" },
@@ -290,20 +293,27 @@ export default function Register() {
     setValidationErrors({ ...validationErrors, [name]: "" }); // Clear error when input is changed
   };
 
-  const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target.files) {
-      const file = event.target.files[0];
-      const reader = new FileReader();
-
-      reader.onloadend = () => {
-        setFormValues({ ...formValues, image: reader.result as string });
-      };
-
-      if (file) {
-        reader.readAsDataURL(file); // Convert the image file to base64
+  const handleImageChange = async () => {
+    if (!fileInputRef.current?.files) {
+        throw new Error('No file selected');
       }
-    }
-  };
+      setPhotoUpoading(true);
+      const file = fileInputRef.current.files[0];
+  
+      try {
+        const newBlob = await upload(file.name, file, {
+          access: 'public',
+          handleUploadUrl: '/api/uploads',
+        });
+        setPhotoUpoading(false);
+        const imageUrl = newBlob.url;
+        setFormValues({ ...formValues, image: imageUrl });
+        
+      } catch (error) {
+        setPhotoUpoading(false);
+        console.error('Error uploading file:', error);
+      }
+};
   const formatPhoneNumber = (value: string) => {
     if (!value) return value;
 
@@ -362,6 +372,15 @@ export default function Register() {
               className="hidden"
               ref={fileInputRef}
             />
+            {photoUpoading ? (
+                                            <>
+                                                <FileUploader/>
+                                            </>
+                                        ) : (
+                                            <>
+                                                
+                                            </>
+                                        )}
             {validationErrors.image && <p className="text-red-500 text-sm text-center mt-2">{validationErrors.image}</p>}
           </div>
         </div>

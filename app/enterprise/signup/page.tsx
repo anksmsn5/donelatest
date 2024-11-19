@@ -5,10 +5,13 @@ import Brand from '../../public/images/brand.jpg';
 import Image from 'next/image';
 import { showError, showSuccess } from '../../components/Toastr';
 import { z } from 'zod';
+import { type PutBlobResult } from '@vercel/blob';
+import { upload } from '@vercel/blob/client';
 import DefaultPic from "../../public/default.jpg";
 import { FaCheck, FaSpinner } from 'react-icons/fa';
 import { countryCodesList } from '@/lib/constants';
 import TermsAndConditions from '@/app/components/TermsAndConditions';
+import FileUploader from '@/app/components/FileUploader';
 
 // Zod schema for validation
 const formSchema = z.object({
@@ -32,7 +35,8 @@ type FormValues = z.infer<typeof formSchema>;
 
 export default function Signup() {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
-  const [formValues, setFormValues] = useState<FormValues>({
+  const pdfInputRef = useRef<HTMLInputElement | null>(null);
+    const [formValues, setFormValues] = useState<FormValues>({
     organizationName: '',
     contactPerson: '',
     email: '',
@@ -54,6 +58,8 @@ export default function Signup() {
   const [loading, setLoading] = useState<boolean>(false);
   const [otpLoading, setOtpLoading] = useState<boolean>(false);
   const [logoPreview, setLogoPreview] = useState<string | null>(null);
+  const [photoUpoading, setPhotoUploading] = useState<boolean>(false);
+  const [pdfUpoading, setPdfUploading] = useState<boolean>(false);
   const { data: session } = useSession();
   const formatPhoneNumber = (value: string) => {
     if (!value) return value;
@@ -154,33 +160,47 @@ export default function Signup() {
     setFormValues({ ...formValues, [name]: value });
     if (name === "email") setOtpSent(false);
   };
-  const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target.files) {
-      const file = event.target.files[0];
-     
-      // Convert image to base64
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        const base64Image = reader.result as string;
-        setLogoPreview(base64Image);
-        setFormValues((prev) => ({ ...prev, logo: base64Image })); // Store the base64 string
-      };
-      reader.readAsDataURL(file);
-    }
-  };
+  const handleImageChange = async () => {
+    if (!fileInputRef.current?.files) {
+        throw new Error('No file selected');
+      }
+      setPhotoUploading(true);
+      const file = fileInputRef.current.files[0];
+  
+      try {
+        const newBlob = await upload(file.name, file, {
+          access: 'public',
+          handleUploadUrl: '/api/uploads',
+        });
+        setPhotoUploading(false);
+        const imageUrl = newBlob.url;
+        setFormValues({ ...formValues, logo: imageUrl });
+        
+      } catch (error) {
+        setPhotoUploading(false);
+        console.error('Error uploading file:', error);
+      }
+};
 
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, files } = event.target;
-    if (files) {
-      const file = files[0];
+  const handleFileChange = async() => {
+    if (!pdfInputRef.current?.files) {
+      throw new Error('No file selected');
+    }
+    setPdfUploading(true);
+    const file = pdfInputRef.current.files[0];
+
+    try {
+      const newBlob = await upload(file.name, file, {
+        access: 'public',
+        handleUploadUrl: '/api/uploads',
+      });
+      setPdfUploading(false);
+      const fileUrl = newBlob.url;
+      setFormValues({ ...formValues, affiliationDocs: fileUrl });
       
-      // Convert PDF to base64
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        const base64File = reader.result as string;
-        setFormValues((prev) => ({ ...prev, [name]: base64File })); // Store the base64 string
-      };
-      reader.readAsDataURL(file);
+    } catch (error) {
+      setPdfUploading(false);
+      console.error('Error uploading file:', error);
     }
   };
 
@@ -331,7 +351,7 @@ export default function Signup() {
               <div onClick={handleImageClick}>
                 <label className="block text-gray-700 text-sm font-semibold mb-2 text-center">Organization Logo</label>
                 <Image
-                  src={logoPreview || DefaultPic}
+                  src={formValues.logo || DefaultPic}
                   alt="Profile Image"
                   width={100}
                   height={100}
@@ -344,13 +364,31 @@ export default function Signup() {
                   className="hidden"
                   ref={fileInputRef}
                 />
+                {photoUpoading ? (
+                                            <>
+                                                <FileUploader/>
+                                            </>
+                                        ) : (
+                                            <>
+                                                
+                                            </>
+                                        )}
               </div>
             </div>
 
             {/* Affiliation Documents */}
             <div className="mb-4">
               <label className="block text-gray-700 text-sm font-semibold mb-2">Affiliation Documents (PDF)</label>
-              <input type="file" name="affiliationDocs" accept="application/pdf" onChange={handleFileChange} />
+              <input type="file" name="affiliationDocs" accept="application/pdf" onChange={handleFileChange}  ref={pdfInputRef} />
+              {pdfUpoading ? (
+                                            <>
+                                                <FileUploader/>
+                                            </>
+                                        ) : (
+                                            <>
+                                                
+                                            </>
+                                        )}
             </div>
             <div className="mb-4 md:flex md:space-x-4">
             <div className="flex-1">

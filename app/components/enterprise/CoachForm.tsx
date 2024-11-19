@@ -3,11 +3,14 @@
 import { useState, useRef, useEffect } from 'react';
 import { signIn, useSession } from 'next-auth/react';
 import DefaultPic from "../../public/default.jpg";
+import { type PutBlobResult } from '@vercel/blob';
+import { upload } from '@vercel/blob/client';
 import Brand from '../../public/images/brand.jpg';
 import CertificateImage from '../../public/certificate.png'
 import Image from 'next/image';
 import { showError, showSuccess } from '../../components/Toastr';
 import { FaCheck, FaSpinner } from 'react-icons/fa';
+import FileUploader from '../FileUploader';
 interface CoachFormProps {
     onSubmit: (formData: any) => void;
 }
@@ -102,7 +105,10 @@ const CoachForm: React.FC<CoachFormProps> = ({ onSubmit }) => {
     const [error, setError] = useState<string | null>(null);
     const [successMessage, setSuccessMessage] = useState<string | null>(null);
     const [loading, setLoading] = useState<boolean>(false);
+    const [photoUpoading, setPhotoUploading] = useState<boolean>(false);
+    const [certificateUploading, setCertificateUploading] = useState<boolean>(false);
     const fileInputRef = useRef<HTMLInputElement | null>(null);
+    const [blob, setBlob] = useState<PutBlobResult | null>(null);
     const certificateInputRef = useRef<HTMLInputElement | null>(null);
     const { data: session } = useSession();
     const [validationErrors, setValidationErrors] = useState<Partial<FormValues>>({});
@@ -355,19 +361,26 @@ const CoachForm: React.FC<CoachFormProps> = ({ onSubmit }) => {
         }
     };
 
-    const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        if (event.target.files) {
-            const file = event.target.files[0];
-            const reader = new FileReader();
-
-            reader.onloadend = () => {
-                setFormValues({ ...formValues, image: reader.result as string }); // Set the base64 string
-            };
-
-            if (file) {
-                reader.readAsDataURL(file); // Convert the image file to base64
-            }
-        }
+    const handleImageChange = async () => {
+        if (!fileInputRef.current?.files) {
+            throw new Error('No file selected');
+          }
+          setPhotoUploading(true);
+          const file = fileInputRef.current.files[0];
+      
+          try {
+            const newBlob = await upload(file.name, file, {
+              access: 'public',
+              handleUploadUrl: '/api/uploads',
+            });
+            setPhotoUploading(false);
+            const imageUrl = newBlob.url;
+            setFormValues({ ...formValues, image: imageUrl });
+            setBlob(newBlob);
+          } catch (error) {
+            setPhotoUploading(false);
+            console.error('Error uploading file:', error);
+          }
     };
     const formatPhoneNumber = (value: string) => {
         if (!value) return value;
@@ -402,19 +415,26 @@ const CoachForm: React.FC<CoachFormProps> = ({ onSubmit }) => {
     };
 
 
-    const handleCertificateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        if (event.target.files) {
-            const file = event.target.files[0];
-            const reader = new FileReader();
-
-            reader.onloadend = () => {
-                setFormValues({ ...formValues, certificate: reader.result as string }); // Set the base64 string
-            };
-
-            if (file) {
-                reader.readAsDataURL(file); // Convert the image file to base64
-            }
-        }
+    const handleCertificateChange = async() => {
+        if (!certificateInputRef.current?.files) {
+            throw new Error('No file selected');
+          }
+          setCertificateUploading(true);
+          const file = certificateInputRef.current.files[0];
+      
+          try {
+            const newBlob = await upload(file.name, file, {
+              access: 'public',
+              handleUploadUrl: '/api/uploads',
+            });
+            setCertificateUploading(false);
+            const certificate = newBlob.url;
+            setFormValues({ ...formValues, certificate: certificate });
+            setBlob(newBlob);
+          } catch (error) {
+            setCertificateUploading(false);
+            console.error('Error uploading file:', error);
+          }
     };
 
     useEffect(() => {
@@ -457,6 +477,16 @@ const CoachForm: React.FC<CoachFormProps> = ({ onSubmit }) => {
                                             className="hidden"
                                             ref={fileInputRef}
                                         />
+                                      {photoUpoading ? (
+                                            <>
+                                                <FileUploader/>
+                                            </>
+                                        ) : (
+                                            <>
+                                                
+                                            </>
+                                        )}
+                                       
                                         {formErrors.image && <p className="text-red-600 text-sm text-center">{formErrors.image}</p>}
                                     </div>
                                 </div>
@@ -691,7 +721,15 @@ const CoachForm: React.FC<CoachFormProps> = ({ onSubmit }) => {
                                             className="hidden"
                                             ref={certificateInputRef}
                                         />
-
+{certificateUploading ? (
+                                            <>
+                                                <FileUploader/>
+                                            </>
+                                        ) : (
+                                            <>
+                                                
+                                            </>
+                                        )}
                                     </div>
                                 </div>
                                 {/* Submit Button */}

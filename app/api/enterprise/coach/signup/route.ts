@@ -7,10 +7,11 @@ import jwt from 'jsonwebtoken';
 import { SECRET_KEY } from '@/lib/constants';
 import { eq, isNotNull, and, between, lt, ilike, or, count, desc } from 'drizzle-orm';
 import { sendEmail } from '@/lib/helpers';
-
+ 
 
 export async function POST(req: NextRequest) {
   const formData = await req.formData();
+  
   const enterprise_id = formData.get('enterprise_id') as string;
   const license = formData.get('license') as string;
   const randomPassword = Array(12)

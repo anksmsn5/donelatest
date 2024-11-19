@@ -6,10 +6,12 @@ import Brand from "../../public/images/brand.jpg";
 import Image from "next/image";
 import DefaultPic from "../../public/default.jpg";
 import { useSession } from "next-auth/react";
-
+import { type PutBlobResult } from '@vercel/blob';
+import { upload } from '@vercel/blob/client';
 import Select from "react-select";
 import { FaCheck, FaSpinner } from "react-icons/fa";
 import { showError, showSuccess } from "../Toastr";
+import FileUploader from "../FileUploader";
 interface PlayerFormProps {
     onSubmit: (formData: any) => void;
 }
@@ -69,6 +71,7 @@ const PlayerForm: React.FC<PlayerFormProps> = ({ onSubmit }) => {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [loading, setLoading] = useState<boolean>(false); 
   const [maxDate, setMaxDate] = useState('');
+  const [photoUpoading, setPhotoUploading] = useState<boolean>(false);
   const positionOptions = [
     { value: "Goalkeeper", label: "Goalkeeper" },
     { value: "Defender", label: "Defender" },
@@ -313,19 +316,26 @@ if (!response.ok) {
     setValidationErrors({ ...validationErrors, [name]: "" }); // Clear error when input is changed
   };
 
-  const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target.files) {
-      const file = event.target.files[0];
-      const reader = new FileReader();
-
-      reader.onloadend = () => {
-        setFormValues({ ...formValues, image: reader.result as string });
-      };
-
-      if (file) {
-        reader.readAsDataURL(file); // Convert the image file to base64
+  const handleImageChange = async() => {
+    if (!fileInputRef.current?.files) {
+        throw new Error('No file selected');
       }
-    }
+      setPhotoUploading(true);
+      const file = fileInputRef.current.files[0];
+  
+      try {
+        const newBlob = await upload(file.name, file, {
+          access: 'public',
+          handleUploadUrl: '/api/uploads',
+        });
+        setPhotoUploading(false);
+        const imageUrl = newBlob.url;
+        setFormValues({ ...formValues, image: imageUrl });
+     
+      } catch (error) {
+        setPhotoUploading(false);
+        console.error('Error uploading file:', error);
+      }
   };
   const formatPhoneNumber = (value: string) => {
     if (!value) return value;
@@ -346,12 +356,14 @@ if (!response.ok) {
     const formattedNumber = formatPhoneNumber(event.target.value);
     setFormValues({ ...formValues, number: formattedNumber });
   };
+  
   const handleImageClick = () => {
     if (fileInputRef.current) {
       fileInputRef.current.click(); // Trigger file input click
     }
+    
   };
-
+   
   const handlePositionChange = (selectedOptions: any) => {
     // Convert selected options into a comma-separated string
     const positions = selectedOptions ? selectedOptions.map((option: any) => option.value).join(", ") : "";
@@ -389,6 +401,15 @@ if (!response.ok) {
               className="hidden"
               ref={fileInputRef}
             />
+             {photoUpoading ? (
+                                            <>
+                                                <FileUploader/>
+                                            </>
+                                        ) : (
+                                            <>
+                                                
+                                            </>
+                                        )}
             {validationErrors.image && <p className="text-red-500 text-sm text-center mt-2">{validationErrors.image}</p>}
           </div>
         </div>
